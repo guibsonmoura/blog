@@ -22,12 +22,6 @@
 </div>
 
 <article class="mx-auto mt-12 max-w-3xl">
-  <% if @post.cover_image.attached? %>
-    <%= image_tag @post.cover_image,
-                  class: "mb-10 aspect-[16/9] w-full rounded-md object-cover",
-                  alt: "" %>
-  <% end %>
-
   <p class="text-lg leading-8 text-neutral-700 dark:text-neutral-300"><%= @post.excerpt %></p>
 
   <div class="markdown mt-10">

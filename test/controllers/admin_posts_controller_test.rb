@@ -1,6 +1,11 @@
 require "test_helper"
 
 class AdminPostsControllerTest < ActionDispatch::IntegrationTest
+  # Helper: build markdown following the pattern the form requires
+  def markdown(title: "Test Post", excerpt: "The excerpt.", body: "Content here.")
+    "# #{title}\n\n#{excerpt}\n\n---\n\n#{body}"
+  end
+
   # --- Authentication guards ---
 
   test "redirects anonymous user from index" do
@@ -21,9 +26,8 @@ class AdminPostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to superadmin_login_path
   end
 
-  test "expired jwt cookie redirects to login" do
-    expired_token = JsonWebToken.encode({ sub: users(:admin).id }, expires_at: 1.second.ago)
-    cookies.encrypted[:admin_token] = expired_token
+  test "invalid jwt cookie redirects to login" do
+    cookies[:admin_token] = "garbage-token-that-cannot-be-decoded"
 
     get admin_posts_path
 
@@ -60,34 +64,114 @@ class AdminPostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "admin can create a draft post" do
+  test "new post form has no title or excerpt fields" do
+    sign_in_as users(:admin)
+    get new_admin_post_path
+
+    assert_select "input[name='post[title]']", count: 0
+    assert_select "textarea[name='post[excerpt]']", count: 0
+    assert_select "input[name='post[slug]']", count: 0
+  end
+
+  test "new post form has a body_markdown textarea" do
+    sign_in_as users(:admin)
+    get new_admin_post_path
+
+    assert_select "textarea[name='post[body_markdown]']"
+  end
+
+  test "creating a post extracts title and excerpt from markdown" do
     sign_in_as users(:admin)
 
     assert_difference "Post.count", 1 do
       post admin_posts_path, params: {
-        post: { title: "New Draft", excerpt: "Draft excerpt", body_markdown: "Draft body", status: "draft" }
+        post: {
+          body_markdown: markdown(title: "My New Post", excerpt: "This is the excerpt."),
+          status: "draft"
+        }
       }
     end
 
-    assert_redirected_to admin_post_path(Post.order(:created_at).last)
+    created = Post.order(:created_at).last
+    assert_equal "My New Post", created.title
+    assert_equal "This is the excerpt.", created.excerpt
+    assert_equal "my-new-post", created.slug
+    assert_redirected_to admin_post_path(created)
   end
 
-  test "admin can create a post with a custom slug" do
+  test "creating a draft post does not set published_at" do
     sign_in_as users(:admin)
 
     post admin_posts_path, params: {
-      post: { title: "Custom Slug Post", slug: "my-custom-slug", excerpt: "Excerpt", body_markdown: "Body", status: "draft" }
+      post: { body_markdown: markdown, status: "draft" }
     }
 
-    assert_equal "my-custom-slug", Post.order(:created_at).last.slug
+    assert_nil Post.order(:created_at).last.published_at
   end
 
-  test "post creation with blank title returns 422" do
+  test "creating a published post sets published_at automatically" do
+    sign_in_as users(:admin)
+
+    post admin_posts_path, params: {
+      post: { body_markdown: markdown(title: "Published Now"), status: "published" }
+    }
+
+    created = Post.order(:created_at).last
+    assert created.published?
+    assert_not_nil created.published_at
+    assert_in_delta Time.current, created.published_at, 5.seconds
+  end
+
+  test "title slug excerpt params submitted directly are ignored" do
+    sign_in_as users(:admin)
+
+    post admin_posts_path, params: {
+      post: {
+        title: "Injected Title",
+        slug: "injected-slug",
+        excerpt: "Injected excerpt",
+        body_markdown: markdown(title: "Real Title", excerpt: "Real excerpt."),
+        status: "draft"
+      }
+    }
+
+    created = Post.order(:created_at).last
+    assert_equal "Real Title", created.title
+    assert_equal "real-title", created.slug
+    assert_equal "Real excerpt.", created.excerpt
+  end
+
+  test "markdown without h1 heading fails and returns 422" do
     sign_in_as users(:admin)
 
     assert_no_difference "Post.count" do
       post admin_posts_path, params: {
-        post: { title: "", excerpt: "Excerpt", body_markdown: "Body", status: "draft" }
+        post: { body_markdown: "No heading here.", status: "draft" }
+      }
+    end
+
+    assert_response :unprocessable_entity
+  end
+
+  test "markdown without excerpt paragraph fails and returns 422" do
+    sign_in_as users(:admin)
+    md = "# Title Only\n\n## A subheading\n\n---\n\nBody."
+
+    assert_no_difference "Post.count" do
+      post admin_posts_path, params: {
+        post: { body_markdown: md, status: "draft" }
+      }
+    end
+
+    assert_response :unprocessable_entity
+  end
+
+  test "blank body_markdown fails and returns 422" do
+    sign_in_as users(:admin)
+
+    assert_no_difference "Post.count" do
+      post admin_posts_path, params: {
+        post: { body_markdown: "", status: "draft" }
       }
     end
 
@@ -103,35 +187,60 @@ class AdminPostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "admin can update a post" do
+  test "edit form pre-fills body_markdown" do
     sign_in_as users(:admin)
+    get edit_admin_post_path(posts(:draft))
+
+    assert_select "textarea[name='post[body_markdown]']", text: /Draft Post/
+  end
+
+  test "updating body_markdown re-extracts title and excerpt" do
+    sign_in_as users(:admin)
+    new_md = markdown(title: "Revised Title", excerpt: "Revised excerpt.")
+
     patch admin_post_path(posts(:draft)), params: {
-      post: { title: "Updated Title", excerpt: posts(:draft).excerpt, body_markdown: posts(:draft).body_markdown }
+      post: { body_markdown: new_md }
+    }
+
+    posts(:draft).reload
+    assert_equal "Revised Title", posts(:draft).title
+    assert_equal "Revised excerpt.", posts(:draft).excerpt
+    assert_redirected_to admin_post_path(posts(:draft))
+  end
+
+  test "updating with markdown missing h1 heading preserves existing title" do
+    sign_in_as users(:admin)
+    original_title = posts(:draft).title
+
+    patch admin_post_path(posts(:draft)), params: {
+      post: { body_markdown: "No heading — title stays from before." }
     }
 
     assert_redirected_to admin_post_path(posts(:draft))
-    assert_equal "Updated Title", posts(:draft).reload.title
-  end
-
-  test "update with blank title returns 422" do
-    sign_in_as users(:admin)
-    patch admin_post_path(posts(:draft)), params: {
-      post: { title: "", excerpt: posts(:draft).excerpt, body_markdown: posts(:draft).body_markdown }
-    }
-
-    assert_response :unprocessable_entity
+    assert_equal original_title, posts(:draft).reload.title
   end
 
   test "publishing a draft post sets published_at" do
     sign_in_as users(:admin)
+
     patch admin_post_path(posts(:draft)), params: {
-      post: { title: posts(:draft).title, excerpt: posts(:draft).excerpt, body_markdown: posts(:draft).body_markdown, status: "published" }
+      post: { body_markdown: posts(:draft).body_markdown, status: "published" }
     }
 
     posts(:draft).reload
     assert posts(:draft).published?
     assert_not_nil posts(:draft).published_at
     assert_in_delta Time.current, posts(:draft).published_at, 5.seconds
+  end
+
+  test "reverting a published post to draft clears published_at" do
+    sign_in_as users(:admin)
+
+    patch admin_post_path(posts(:published)), params: {
+      post: { body_markdown: posts(:published).body_markdown, status: "draft" }
+    }
+
+    assert_nil posts(:published).reload.published_at
   end
 
   # --- Destroy ---
