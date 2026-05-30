@@ -34,3 +34,35 @@
     <%= @post.rendered_body %>
   </div>
 </article>
+
+<section class="mx-auto mt-16 max-w-3xl border-t border-neutral-200 pt-10 dark:border-neutral-800">
+  <h2 class="text-sm font-medium uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
+    Comments (<%= @post.comments.size %>)
+  </h2>
+
+  <% if @post.comments.any? %>
+    <div class="mt-6 divide-y divide-neutral-100 dark:divide-neutral-800">
+      <% @post.comments.order(:created_at).each do |comment| %>
+        <div class="flex items-start justify-between gap-4 py-4">
+          <div class="min-w-0">
+            <p class="text-sm font-medium text-neutral-950 dark:text-neutral-50">
+              <%= h(comment.author_name) %>
+              <% if comment.author_email.present? %>
+                <span class="ml-2 font-normal text-neutral-400"><%= h(comment.author_email) %></span>
+              <% end %>
+              <span class="ml-2 font-normal text-neutral-400"><%= comment.created_at.to_fs(:short) %></span>
+            </p>
+            <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-300 whitespace-pre-wrap"><%= h(comment.body) %></p>
+          </div>
+          <%= button_to "Delete",
+                        admin_comment_path(comment),
+                        method: :delete,
+                        form: { data: { turbo_confirm: "Delete this comment?" } },
+                        class: "shrink-0 text-xs text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300" %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="mt-4 text-sm text-neutral-500 dark:text-neutral-400">No comments yet.</p>
+  <% end %>
+</section>

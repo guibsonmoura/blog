@@ -3,7 +3,7 @@
 <article class="mx-auto max-w-3xl">
   <header>
     <p class="text-sm text-neutral-500 dark:text-neutral-400">
-      <%= display_date(@post.published_at) %> by <%= @post.user.name %>
+      <%= display_date(@post.published_at) %> <%= t("posts.show.by", author: @post.user.name) %>
     </p>
 
     <h1 class="mt-4 text-4xl font-semibold leading-tight text-neutral-950 dark:text-neutral-50">
@@ -25,3 +25,8 @@
     <%= @post.rendered_body %>
   </div>
 </article>
+
+<div class="mx-auto mt-16 max-w-3xl space-y-12 border-t border-neutral-200 pt-12 dark:border-neutral-800">
+  <%= render "reactions", post: @post %>
+  <%= render "comments", post: @post %>
+</div>
