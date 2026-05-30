@@ -9,6 +9,7 @@ class Post < ApplicationRecord
   before_validation :extract_from_markdown, prepend: true
   before_validation :normalize_slug
   before_validation :assign_published_at
+  after_save :enqueue_translation, if: :saved_change_to_status?
 
   scope :recent_first, -> { order(published_at: :desc, created_at: :desc) }
   scope :visible, -> { published.where("published_at <= ?", Time.current).recent_first }
@@ -29,7 +30,24 @@ class Post < ApplicationRecord
     MarkdownRenderer.render(body_markdown)
   end
 
+  def localized_title
+    I18n.locale == :pt || title_en.blank? ? title : title_en
+  end
+
+  def localized_excerpt
+    I18n.locale == :pt || excerpt_en.blank? ? excerpt : excerpt_en
+  end
+
+  def localized_body
+    source = I18n.locale == :pt || body_markdown_en.blank? ? body_markdown : body_markdown_en
+    MarkdownRenderer.render(source)
+  end
+
   private
+
+  def enqueue_translation
+    TranslatePostJob.perform_later(id) if published?
+  end
 
   def extract_from_markdown
     return if body_markdown.blank?

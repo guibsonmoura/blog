@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_30_010200) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_30_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,19 +42,42 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_30_010200) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "comments", force: :cascade do |t|
+    t.string "author_email"
+    t.string "author_name", null: false
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.bigint "post_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_comments_on_post_id"
+  end
+
   create_table "posts", force: :cascade do |t|
     t.text "body_markdown", null: false
+    t.text "body_markdown_en"
     t.datetime "created_at", null: false
     t.text "excerpt", null: false
+    t.string "excerpt_en"
     t.datetime "published_at"
     t.string "slug", null: false
     t.integer "status", default: 0, null: false
     t.string "title", null: false
+    t.string "title_en"
+    t.string "translation_status", default: "pending"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["slug"], name: "index_posts_on_slug", unique: true
     t.index ["status", "published_at"], name: "index_posts_on_status_and_published_at"
     t.index ["user_id"], name: "index_posts_on_user_id"
+  end
+
+  create_table "reactions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "post_id", null: false
+    t.integer "reaction_type", null: false
+    t.string "session_id", null: false
+    t.index ["post_id", "session_id", "reaction_type"], name: "index_reactions_on_post_id_and_session_id_and_reaction_type", unique: true
+    t.index ["post_id"], name: "index_reactions_on_post_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -69,5 +92,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_30_010200) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "comments", "posts", on_delete: :cascade
   add_foreign_key "posts", "users"
+  add_foreign_key "reactions", "posts", on_delete: :cascade
 end

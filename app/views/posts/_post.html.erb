@@ -4,11 +4,11 @@
   </p>
 
   <h2 class="mt-3 text-2xl font-semibold leading-tight text-neutral-950 dark:text-neutral-50">
-    <%= link_to post.title, post_path(post), class: "hover:text-blue-700 dark:hover:text-blue-300" %>
+    <%= link_to post.localized_title, post_path(post), class: "hover:text-blue-700 dark:hover:text-blue-300" %>
   </h2>
 
   <p class="mt-4 leading-7 text-neutral-700 dark:text-neutral-300">
-    <%= post.excerpt %>
+    <%= post.localized_excerpt %>
   </p>
 
   <% reaction_count = post.reactions.size; comment_count = post.comments.size %>

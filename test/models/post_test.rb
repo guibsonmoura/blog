@@ -243,4 +243,92 @@ class PostTest < ActiveSupport::TestCase
     assert_not_includes html, "<script>"
     assert_not_includes html, "javascript:"
   end
+
+  # --- Auto-translation trigger ---
+
+  test "publishing a post enqueues TranslatePostJob" do
+    post = users(:admin).posts.create!(
+      title: "New Post", excerpt: "Excerpt", body_markdown: "Body", status: :draft
+    )
+
+    assert_enqueued_with(job: TranslatePostJob, args: [ post.id ]) do
+      post.update!(status: :published)
+    end
+  end
+
+  test "saving a published post without status change does not re-enqueue" do
+    assert_no_enqueued_jobs(only: TranslatePostJob) do
+      posts(:published).update!(body_markdown: posts(:published).body_markdown + " ")
+    end
+  end
+
+  test "reverting to draft does not enqueue translation" do
+    assert_no_enqueued_jobs(only: TranslatePostJob) do
+      posts(:published).update!(status: :draft)
+    end
+  end
+
+  # --- Localized reader methods ---
+
+  test "localized_title returns PT title when locale is pt" do
+    post = posts(:published)
+    post.title_en = "English Title"
+
+    I18n.with_locale(:pt) { assert_equal post.title, post.localized_title }
+  end
+
+  test "localized_title returns EN title when locale is en and title_en is present" do
+    post = posts(:published)
+    post.title_en = "English Title"
+
+    I18n.with_locale(:en) { assert_equal "English Title", post.localized_title }
+  end
+
+  test "localized_title falls back to PT title when title_en is blank" do
+    post = posts(:published)
+    post.title_en = nil
+
+    I18n.with_locale(:en) { assert_equal post.title, post.localized_title }
+  end
+
+  test "localized_excerpt returns EN excerpt when locale is en and excerpt_en is present" do
+    post = posts(:published)
+    post.excerpt_en = "English excerpt."
+
+    I18n.with_locale(:en) { assert_equal "English excerpt.", post.localized_excerpt }
+  end
+
+  test "localized_excerpt falls back to PT when excerpt_en is blank" do
+    post = posts(:published)
+    post.excerpt_en = nil
+
+    I18n.with_locale(:en) { assert_equal post.excerpt, post.localized_excerpt }
+  end
+
+  test "localized_body renders EN markdown when locale is en and body_markdown_en is present" do
+    post = posts(:published)
+    post.body_markdown_en = "# EN\n\nEN excerpt.\n\n---\n\n**EN body**"
+
+    I18n.with_locale(:en) do
+      assert_includes post.localized_body, "<strong>EN body</strong>"
+    end
+  end
+
+  test "localized_body renders PT markdown when locale is pt" do
+    post = posts(:published)
+    post.body_markdown_en = "# EN\n\nEN excerpt.\n\n---\n\n**EN body**"
+
+    I18n.with_locale(:pt) do
+      assert_not_includes post.localized_body, "EN body"
+    end
+  end
+
+  test "localized_body falls back to PT when body_markdown_en is blank" do
+    post = posts(:published)
+    post.body_markdown_en = nil
+
+    I18n.with_locale(:en) do
+      assert_includes post.localized_body, post.rendered_body
+    end
+  end
 end
