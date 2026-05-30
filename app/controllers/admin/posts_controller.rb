@@ -28,7 +28,6 @@ module Admin
 
     def update
       if @post.update(post_params)
-        @post.cover_image.purge_later if remove_cover_image? && params.dig(:post, :cover_image).blank?
         redirect_to admin_post_path(@post), notice: "Post updated."
       else
         render :edit, status: :unprocessable_entity
@@ -47,19 +46,7 @@ module Admin
     end
 
     def post_params
-      params.require(:post).permit(
-        :title,
-        :slug,
-        :excerpt,
-        :body_markdown,
-        :status,
-        :published_at,
-        :cover_image
-      )
-    end
-
-    def remove_cover_image?
-      params.dig(:post, :remove_cover_image) == "1"
+      params.require(:post).permit(:body_markdown, :status, :published_at)
     end
   end
 end

@@ -1,4 +1,4 @@
-<%= form_with model: [ :admin, post ], class: "space-y-8" do |form| %>
+<%= form_with model: [ :admin, post ], class: "space-y-6" do |form| %>
   <% if post.errors.any? %>
     <div class="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-800 dark:border-red-900/80 dark:bg-red-950/40 dark:text-red-200">
       <p class="font-medium"><%= pluralize(post.errors.count, "error") %> prevented this post from saving.</p>
@@ -10,26 +10,11 @@
     </div>
   <% end %>
 
-  <div class="grid gap-6 md:grid-cols-2">
-    <div>
-      <%= form.label :title, class: "block text-sm font-medium text-neutral-700 dark:text-neutral-300" %>
-      <%= form.text_field :title,
-                          required: true,
-                          class: "mt-2 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-neutral-950 shadow-sm focus:border-blue-600 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50" %>
-    </div>
-
-    <div>
-      <%= form.label :slug, class: "block text-sm font-medium text-neutral-700 dark:text-neutral-300" %>
-      <%= form.text_field :slug,
-                          class: "mt-2 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-neutral-950 shadow-sm focus:border-blue-600 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50" %>
-    </div>
-  </div>
-
-  <div class="grid gap-6 md:grid-cols-2">
+  <div class="grid gap-6 sm:grid-cols-2">
     <div>
       <%= form.label :status, class: "block text-sm font-medium text-neutral-700 dark:text-neutral-300" %>
       <%= form.select :status,
-                      Post.statuses.keys.map { |status| [ status.titleize, status ] },
+                      Post.statuses.keys.map { |s| [ s.titleize, s ] },
                       {},
                       class: "mt-2 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-neutral-950 shadow-sm focus:border-blue-600 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50" %>
     </div>
@@ -42,58 +27,35 @@
   </div>
 
   <div>
-    <%= form.label :excerpt, class: "block text-sm font-medium text-neutral-700 dark:text-neutral-300" %>
-    <%= form.text_area :excerpt,
-                       rows: 3,
-                       required: true,
-                       class: "mt-2 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-neutral-950 shadow-sm focus:border-blue-600 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50" %>
-  </div>
-
-  <div>
-    <%= form.label :cover_image, class: "block text-sm font-medium text-neutral-700 dark:text-neutral-300" %>
-    <%= form.file_field :cover_image,
-                        accept: "image/png,image/jpeg,image/webp,image/gif",
-                        class: "mt-2 block w-full text-sm text-neutral-700 file:mr-4 file:rounded-md file:border-0 file:bg-neutral-950 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-blue-700 dark:text-neutral-300 dark:file:bg-neutral-100 dark:file:text-neutral-950 dark:hover:file:bg-blue-200" %>
-
-    <% if post.cover_image.attached? %>
-      <label class="mt-3 flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
-        <%= form.check_box :remove_cover_image, { checked: false }, "1", "0" %>
-        Remove current cover image
-      </label>
-    <% end %>
-  </div>
-
-  <div class="grid gap-6 lg:grid-cols-2"
-       data-controller="markdown-preview"
-       data-markdown-preview-url-value="<%= admin_markdown_preview_path %>"
-       data-markdown-preview-upload-url-value="<%= admin_images_path %>">
-    <div>
+    <div class="flex items-baseline justify-between">
       <%= form.label :body_markdown, "Markdown", class: "block text-sm font-medium text-neutral-700 dark:text-neutral-300" %>
-      <div class="mt-2 flex flex-wrap items-center gap-3">
-        <label class="text-sm font-medium text-neutral-700 dark:text-neutral-300" for="inline_image_upload">Inline image</label>
-        <input id="inline_image_upload"
-               type="file"
-               accept="image/png,image/jpeg,image/webp,image/gif"
-               data-markdown-preview-target="image"
-               data-action="change->markdown-preview#uploadImage"
-               class="block text-sm text-neutral-700 file:mr-4 file:rounded-md file:border-0 file:bg-neutral-950 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-blue-700 dark:text-neutral-300 dark:file:bg-neutral-100 dark:file:text-neutral-950 dark:hover:file:bg-blue-200">
-        <span class="text-sm text-neutral-500 dark:text-neutral-400" data-markdown-preview-target="uploadStatus"></span>
-      </div>
-      <%= form.text_area :body_markdown,
-                         rows: 22,
-                         required: true,
-                         data: {
-                           markdown_preview_target: "source",
-                           action: "input->markdown-preview#queuePreview"
-                         },
-                         class: "mt-2 min-h-[32rem] w-full rounded-md border border-neutral-300 bg-white px-3 py-2 font-mono text-sm text-neutral-950 shadow-sm focus:border-blue-600 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50" %>
+      <details class="text-xs text-neutral-500 dark:text-neutral-400">
+        <summary class="cursor-pointer select-none hover:text-neutral-700 dark:hover:text-neutral-200">Pattern</summary>
+        <pre class="mt-3 overflow-x-auto rounded-md border border-neutral-200 bg-neutral-50 p-4 font-mono leading-6 dark:border-neutral-800 dark:bg-neutral-900"><code># Post Title
+
+One-paragraph summary — becomes the excerpt automatically.
+Keep it under 500 characters.
+
+---
+
+Your content starts here. Everything after the first
+paragraph is the body shown to readers.
+
+## Section heading
+
+**Bold**, *italic*, [links](https://example.com), `code`
+
+```python
+code blocks work too
+```</code></pre>
+      </details>
     </div>
 
-    <div>
-      <p class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">Preview</p>
-      <div class="markdown mt-2 min-h-[32rem] rounded-md border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900"
-           data-markdown-preview-target="preview"></div>
-    </div>
+    <%= form.text_area :body_markdown,
+                       rows: 32,
+                       required: true,
+                       placeholder: "# Post Title\n\nOne-paragraph excerpt.\n\n---\n\nContent...",
+                       class: "mt-2 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 font-mono text-sm text-neutral-950 shadow-sm focus:border-blue-600 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50" %>
   </div>
 
   <div class="flex flex-wrap items-center gap-3 border-t border-neutral-200 pt-6 dark:border-neutral-800">
