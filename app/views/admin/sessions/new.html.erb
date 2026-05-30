@@ -3,7 +3,7 @@
 <section class="mx-auto w-full max-w-sm">
   <h1 class="text-3xl font-semibold text-neutral-950 dark:text-neutral-50">Admin sign in</h1>
 
-  <%= form_with url: admin_session_path, class: "mt-8 space-y-5" do |form| %>
+  <%= form_with url: superadmin_login_path, class: "mt-8 space-y-5" do |form| %>
     <div>
       <%= form.label :email, class: "block text-sm font-medium text-neutral-700 dark:text-neutral-300" %>
       <%= form.email_field :email,

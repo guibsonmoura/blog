@@ -16,7 +16,7 @@ end
 
 module AdminAuthenticationHelper
   def sign_in_as(user, password: "password12345")
-    post admin_session_path, params: { email: user.email, password: password }
+    post superadmin_login_path, params: { email: user.email, password: password }
   end
 end
 
