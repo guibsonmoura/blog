@@ -23,7 +23,7 @@ class AdminSessionsControllerTest < ActionDispatch::IntegrationTest
   test "sign in sets an http-only encrypted cookie" do
     post superadmin_login_path, params: { email: users(:admin).email, password: "password12345" }
 
-    cookie_header = response.headers["Set-Cookie"]
+    cookie_header = Array(response.headers["Set-Cookie"]).join("; ")
     assert_match "admin_token", cookie_header
     assert_match(/HttpOnly/i, cookie_header)
   end
