@@ -1,0 +1,21 @@
+# Ignore Rails runtime artifacts
+/tmp/*
+!/tmp/.keep
+/log/*
+!/log/.keep
+/storage/*
+!/storage/.keep
+
+# Bundler
+/.bundle
+/vendor/bundle
+
+# Credentials
+/config/credentials/*.key
+/config/master.key
+
+# Node
+/node_modules
+
+# OS
+.DS_Store
