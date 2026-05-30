@@ -38,6 +38,25 @@ app/
 - Tailwind CSS with class-based dark mode; no Node build step — uses `tailwindcss-rails`.
 - Hotwire (Turbo + Stimulus) for the live Markdown preview; no full SPA.
 
+## Dev Container (VS Code)
+
+The repository ships with a ready-to-use dev container so you can skip local Ruby/PostgreSQL/MinIO installation entirely.
+
+**Requirements:** Docker and the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) VS Code extension.
+
+Open the repo in VS Code and choose **Dev Containers: Reopen in Container**. On first start it automatically installs gems, runs `bin/rails db:prepare`, and starts all services.
+
+Forwarded ports:
+
+| Port | Service |
+|------|---------|
+| `3000` | Rails server |
+| `5432` | PostgreSQL (host: `db` inside the container) |
+| `9000` | MinIO S3 API |
+| `9001` | MinIO web console (`minioadmin` / `minioadmin123`) |
+
+The container pre-creates a private `blog-images` bucket in MinIO. Images are served through Rails' Active Storage proxy — not direct MinIO URLs. See `.devcontainer/README.md` for the full configuration reference.
+
 ## Requirements
 
 - Ruby 3.3.11
