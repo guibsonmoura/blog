@@ -52,6 +52,42 @@ posts with `published_at <= now` are visible.
 **Storage:** Active Storage proxied through Rails (not direct S3 URLs) — configured in
 `config/application.rb`. MinIO credentials via `MINIO_*` env vars; service name via `ACTIVE_STORAGE_SERVICE`.
 
+## Dev Container
+
+This project runs inside a **VS Code Dev Container** (`.devcontainer/`). The container stack is:
+
+| Service | Container | Port |
+|---|---|---|
+| Rails app | `devcontainer-app-1` | 3000 |
+| PostgreSQL 17 | `devcontainer-db-1` | 5432 (internal) |
+| MinIO (S3) | `devcontainer-minio-1` | 9000 API / 9001 console |
+
+**Starting the stack:**
+
+```bash
+# From repo root — starts all three services
+docker compose -f .devcontainer/docker-compose.yml up -d
+```
+
+**Running commands inside the container:**
+
+```bash
+docker exec devcontainer-app-1 bash -c "cd /workspace && bin/rails db:prepare"
+docker exec devcontainer-app-1 bash -c "cd /workspace && bin/rails test"
+docker exec devcontainer-app-1 bash -c "cd /workspace && bin/rails tailwindcss:build"
+```
+
+**Starting the Rails server (if not already running):**
+
+```bash
+docker exec -d devcontainer-app-1 bash -c "cd /workspace && bin/rails server -b 0.0.0.0 >> /tmp/rails.log 2>&1"
+# Verify: curl -sf http://localhost:3000/up
+```
+
+The `post-create.sh` script (`.devcontainer/post-create.sh`) runs automatically on container creation and handles `bundle install` + `db:prepare`.
+
+All env vars (database credentials, MinIO keys, JWT secret) are pre-set in `.devcontainer/docker-compose.yml` for local development — no `.env` file needed.
+
 ## Git Worktrees
 
 Worktrees let you check out multiple branches simultaneously in separate directories. All worktrees
