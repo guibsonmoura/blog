@@ -21,7 +21,7 @@ gem "tailwindcss-rails"
 gem "argon2", "~> 2.3"
 
 # Admin authentication token signing.
-gem "jwt", "~> 2.10"
+gem "jwt", "~> 3.2"
 
 # Markdown rendering for post bodies.
 gem "redcarpet", "~> 3.6"
