@@ -20,7 +20,7 @@ module Admin
 
     def destroy
       cookies.delete(:admin_token)
-      redirect_to new_admin_session_path, notice: "Signed out."
+      redirect_to superadmin_login_path, notice: "Signed out."
     end
 
     private

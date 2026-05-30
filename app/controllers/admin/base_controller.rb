@@ -16,7 +16,7 @@ module Admin
     def require_admin!
       return if current_admin&.admin?
 
-      redirect_to new_admin_session_path, alert: "Sign in to continue."
+      redirect_to superadmin_login_path, alert: "Sign in to continue."
     end
   end
 end

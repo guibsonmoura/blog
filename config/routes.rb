@@ -3,10 +3,13 @@ Rails.application.routes.draw do
 
   resources :posts, only: [ :index, :show ]
 
+  get    "superadmin/login",  to: "admin/sessions#new",     as: :superadmin_login
+  post   "superadmin/login",  to: "admin/sessions#create"
+  delete "superadmin/logout", to: "admin/sessions#destroy", as: :superadmin_logout
+
   namespace :admin do
     root "posts#index"
 
-    resource :session, only: [ :new, :create, :destroy ]
     post "markdown_preview", to: "markdown_previews#create"
 
     resources :images, only: [ :create ]

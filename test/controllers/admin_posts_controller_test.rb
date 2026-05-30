@@ -4,7 +4,7 @@ class AdminPostsControllerTest < ActionDispatch::IntegrationTest
   test "redirects anonymous users to sign in" do
     get admin_posts_path
 
-    assert_redirected_to new_admin_session_path
+    assert_redirected_to superadmin_login_path
   end
 
   test "admin can list posts" do
