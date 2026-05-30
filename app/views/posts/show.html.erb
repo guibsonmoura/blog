@@ -1,4 +1,4 @@
-<% page_title @post.title %>
+<% page_title @post.localized_title %>
 
 <article class="mx-auto max-w-3xl">
   <header>
@@ -7,16 +7,16 @@
     </p>
 
     <h1 class="mt-4 text-4xl font-semibold leading-tight text-neutral-950 dark:text-neutral-50">
-      <%= @post.title %>
+      <%= @post.localized_title %>
     </h1>
 
     <p class="mt-6 text-lg leading-8 text-neutral-700 dark:text-neutral-300">
-      <%= @post.excerpt %>
+      <%= @post.localized_excerpt %>
     </p>
   </header>
 
   <div class="markdown mt-12">
-    <%= @post.rendered_body %>
+    <%= @post.localized_body %>
   </div>
 </article>
 

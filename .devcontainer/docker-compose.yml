@@ -16,6 +16,8 @@ services:
         condition: service_healthy
       createbuckets:
         condition: service_completed_successfully
+      translator:
+        condition: service_healthy
     environment:
       RAILS_ENV: development
       RACK_ENV: development
@@ -37,6 +39,7 @@ services:
       AWS_REGION: us-east-1
       SECRET_KEY_BASE: 49fdc0d8a871fa516757961f94e9201a67c07e9883f2b0e201949ef94bf97627f6bf9e31711497f443fb3e1d3e5b6f09e8d12d0fab3fd1c410f4fa556507d4e6
       JWT_SECRET: devcontainer-jwt-secret-change-outside-local-dev
+      TRANSLATION_SERVICE_URL: http://translator:8000
     networks:
       - blog-dev
 
@@ -86,6 +89,20 @@ services:
       mc mb --ignore-existing local/blog-images;
       mc anonymous set none local/blog-images;
       "
+    networks:
+      - blog-dev
+
+  translator:
+    build:
+      context: ..
+      dockerfile: translate-service/Dockerfile
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     networks:
       - blog-dev
 
