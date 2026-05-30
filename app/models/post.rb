@@ -35,11 +35,12 @@ class Post < ApplicationRecord
     return if body_markdown.blank?
 
     lines = body_markdown.strip.lines
-
     title_line = lines.find { |l| l.match?(/\A#\s+\S/) }
-    self.title = title_line&.sub(/\A#\s+/, "")&.strip
+    return unless title_line
 
-    rest = title_line ? lines.drop(lines.index(title_line) + 1) : lines
+    self.title = title_line.sub(/\A#\s+/, "").strip
+
+    rest = lines.drop(lines.index(title_line) + 1)
     para = []
     rest.each do |line|
       break if line.strip == "---"
