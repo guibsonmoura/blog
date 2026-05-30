@@ -1,0 +1,849 @@
+  [1m[36mActiveRecord::InternalMetadata Load (1.5ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
+  [1m[36mActiveRecord::SchemaMigration Load (1.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.7ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.2ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.8ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (1.0ms)[0m  [1m[35mALTER TABLE "schema_migrations" DISABLE TRIGGER ALL;ALTER TABLE "ar_internal_metadata" DISABLE TRIGGER ALL;ALTER TABLE "users" DISABLE TRIGGER ALL;ALTER TABLE "posts" DISABLE TRIGGER ALL;ALTER TABLE "active_storage_blobs" DISABLE TRIGGER ALL;ALTER TABLE "active_storage_attachments" DISABLE TRIGGER ALL;ALTER TABLE "active_storage_variant_records" DISABLE TRIGGER ALL[0m
+  [1m[36mFixtures Load (2.3ms)[0m  [1m[31mDELETE FROM "posts";
+DELETE FROM "users";
+INSERT INTO "posts" ("id", "user_id", "title", "slug", "excerpt", "body_markdown", "status", "published_at", "created_at", "updated_at") VALUES (675045400, 135138680, 'Published Post', 'published-post', 'A public excerpt.', '# Published
+
+This post is visible.
+', 1, '2026-05-29 12:56:26', '2026-05-30 12:56:26.837469', '2026-05-30 12:56:26.837469'), (108828309, 135138680, 'Draft Post', 'draft-post', 'A draft excerpt.', '# Draft
+
+This post is private.
+', 0, NULL, '2026-05-30 12:56:26.837469', '2026-05-30 12:56:26.837469');
+INSERT INTO "users" ("id", "email", "name", "password_digest", "admin", "created_at", "updated_at") VALUES (135138680, 'admin@example.com', 'Admin', '$2a$12$Ca7Qw9ZI.yMNf3QLnxAqAOwVvD5xP2/mlIPbdreJI2yXBreGrdpi.', TRUE, '2026-05-30 12:56:26.869090', '2026-05-30 12:56:26.869090'), (396417156, 'writer@example.com', 'Writer', '$2a$12$lWEtxzIAEnkI0f1oLYm.MuBI38BIuJMapDQnGLrwdbtFi9U21GzSO', FALSE, '2026-05-30 12:56:26.869090', '2026-05-30 12:56:26.869090')[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[35m (0.5ms)[0m  [1m[35mALTER TABLE "schema_migrations" ENABLE TRIGGER ALL;ALTER TABLE "ar_internal_metadata" ENABLE TRIGGER ALL;ALTER TABLE "users" ENABLE TRIGGER ALL;ALTER TABLE "posts" ENABLE TRIGGER ALL;ALTER TABLE "active_storage_blobs" ENABLE TRIGGER ALL;ALTER TABLE "active_storage_attachments" ENABLE TRIGGER ALL;ALTER TABLE "active_storage_variant_records" ENABLE TRIGGER ALL[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (1.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (14.3ms)[0m  [1m[35mdo $$
+  declare r record;
+BEGIN
+FOR r IN (
+  SELECT FORMAT(
+    'UPDATE pg_catalog.pg_constraint SET convalidated=false WHERE conname = ''%1$I'' AND connamespace::regnamespace = ''%2$I''::regnamespace; ALTER TABLE %2$I.%3$I VALIDATE CONSTRAINT %1$I;',
+    constraint_name,
+    table_schema,
+    table_name
+  ) AS constraint_check
+  FROM information_schema.table_constraints WHERE constraint_type = 'FOREIGN KEY'
+)
+  LOOP
+    EXECUTE (r.constraint_check);
+  END LOOP;
+END;
+$$;
+[0m
+  [1m[36mTRANSACTION (2.7ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-----------------------------------------------------
+JsonWebTokenTest: test_returns_nil_for_invalid_tokens
+-----------------------------------------------------
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+-------------------------------------------------
+JsonWebTokenTest: test_encodes_and_decodes_claims
+-------------------------------------------------
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+----------------------------------------------------------
+AdminSessionsControllerTest: test_non_admin_cannot_sign_in
+----------------------------------------------------------
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 396417156], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 12:56:29 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+  Rendering layout layouts/application.html.erb
+  Rendering admin/sessions/new.html.erb within layouts/application
+  Rendered admin/sessions/new.html.erb within layouts/application (Duration: 114.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 215.4ms | GC: 0.0ms)
+Completed 422 Unprocessable Content in 785ms (Views: 476.4ms | ActiveRecord: 0.8ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------
+AdminSessionsControllerTest: test_admin_can_sign_in
+---------------------------------------------------
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 12:56:31 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+Redirected to http://www.example.com/admin
+Completed 302 Found in 210ms (ActiveRecord: 0.4ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+------------------------------------------------------------
+AdminPostsControllerTest: test_admin_can_create_a_draft_post
+------------------------------------------------------------
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 12:56:32 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+Redirected to http://www.example.com/admin
+Completed 302 Found in 213ms (ActiveRecord: 0.5ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mPost Count (0.8ms)[0m  [1m[34mSELECT COUNT(*) FROM "posts"[0m
+Started POST "/admin/posts" for 127.0.0.1 at 2026-05-30 12:56:33 +0000
+Processing by Admin::PostsController#create as HTML
+  Parameters: {"post"=>{"title"=>"New Draft", "excerpt"=>"Draft excerpt", "body_markdown"=>"Draft body", "status"=>"draft"}}
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mPost Exists? (5.1ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."slug" = $1 LIMIT $2[0m  [["slug", "new-draft"], ["LIMIT", 1]]
+  [1m[36mPost Create (0.9ms)[0m  [1m[32mINSERT INTO "posts" ("user_id", "title", "slug", "excerpt", "body_markdown", "status", "published_at", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING "id"[0m  [["user_id", 135138680], ["title", "New Draft"], ["slug", "new-draft"], ["excerpt", "Draft excerpt"], ["body_markdown", "Draft body"], ["status", 0], ["published_at", nil], ["created_at", "2026-05-30 12:56:33.722251"], ["updated_at", "2026-05-30 12:56:33.722251"]]
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Redirected to http://www.example.com/admin/posts/new-draft
+Completed 302 Found in 421ms (ActiveRecord: 7.6ms (3 queries, 1 cached) | GC: 3.5ms)
+  [1m[36mPost Count (0.5ms)[0m  [1m[34mSELECT COUNT(*) FROM "posts"[0m
+  [1m[36mPost Load (1.2ms)[0m  [1m[34mSELECT "posts".* FROM "posts" ORDER BY "posts"."created_at" DESC LIMIT $1[0m  [["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------
+AdminPostsControllerTest: test_admin_can_list_posts
+---------------------------------------------------
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 12:56:33 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+Redirected to http://www.example.com/admin
+Completed 302 Found in 296ms (ActiveRecord: 0.5ms (1 query, 0 cached) | GC: 0.6ms)
+Started GET "/admin/posts" for 127.0.0.1 at 2026-05-30 12:56:34 +0000
+Processing by Admin::PostsController#index as HTML
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+  Rendering layout layouts/application.html.erb
+  Rendering admin/posts/index.html.erb within layouts/application
+  [1m[36mPost Load (0.5ms)[0m  [1m[34mSELECT "posts".* FROM "posts" ORDER BY "posts"."created_at" DESC[0m
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1[0m  [["id", 135138680]]
+  Rendered admin/posts/index.html.erb within layouts/application (Duration: 84.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 86.5ms | GC: 0.0ms)
+Completed 200 OK in 103ms (Views: 92.8ms | ActiveRecord: 0.9ms (3 queries, 1 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-------------------------------------------------------------------
+AdminPostsControllerTest: test_redirects_anonymous_users_to_sign_in
+-------------------------------------------------------------------
+Started GET "/admin/posts" for 127.0.0.1 at 2026-05-30 12:56:34 +0000
+Processing by Admin::PostsController#index as HTML
+Redirected to http://www.example.com/admin/session/new
+Filter chain halted as :require_admin! rendered or redirected
+Completed 302 Found in 1ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+----------------------------------------------------------------------
+PostTest: test_rendered_body_sanitizes_unsafe_html_and_javascript_urls
+----------------------------------------------------------------------
+  [1m[36mPost Load (0.7ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-----------------------------------------
+PostTest: test_sets_a_slug_from_the_title
+-----------------------------------------
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+  [1m[36mPost Exists? (0.6ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."slug" = $1 LIMIT $2[0m  [["slug", "a-clean-rails-blog"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------
+PostTest: test_visible_returns_published_posts_only
+---------------------------------------------------
+  [1m[36mPost Load (0.4ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+  [1m[36mPost Exists? (0.9ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) AND "posts"."id" = $3 LIMIT $4[0m  [["status", 1], [nil, "2026-05-30 12:56:34.247307"], ["id", 675045400], ["LIMIT", 1]]
+  [1m[36mPost Load (0.3ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 108828309], ["LIMIT", 1]]
+  [1m[36mPost Exists? (0.6ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) AND "posts"."id" = $3 LIMIT $4[0m  [["status", 1], [nil, "2026-05-30 12:56:34.251147"], ["id", 108828309], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+------------------------------------------------------------
+PostsControllerTest: test_does_not_show_draft_posts_publicly
+------------------------------------------------------------
+  [1m[36mPost Load (0.4ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 108828309], ["LIMIT", 1]]
+Started GET "/posts/draft-post" for 127.0.0.1 at 2026-05-30 12:56:34 +0000
+Processing by PostsController#show as HTML
+  Parameters: {"id"=>"draft-post"}
+  [1m[36mPost Load (0.9ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) AND "posts"."slug" = $3 ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT $4[0m  [["status", 1], [nil, "2026-05-30 12:56:34.294549"], ["slug", "draft-post"], ["LIMIT", 1]]
+Completed 404 Not Found in 4ms (ActiveRecord: 0.9ms (1 query, 0 cached) | GC: 0.0ms)
+  
+ActiveRecord::RecordNotFound (Couldn't find Post with [WHERE "posts"."status" = $1 AND (published_at <= $2) AND "posts"."slug" = $3]):
+  
+app/controllers/posts_controller.rb:13:in `show'
+test/controllers/posts_controller_test.rb:20:in `block in <class:PostsControllerTest>'
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-----------------------------------------------
+PostsControllerTest: test_lists_published_posts
+-----------------------------------------------
+Started GET "/" for 127.0.0.1 at 2026-05-30 12:56:34 +0000
+Processing by PostsController#index as HTML
+  [1m[36mPost Count (0.5ms)[0m  [1m[34mSELECT COUNT(*) FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2)[0m  [["status", 1], [nil, "2026-05-30 12:56:34.628788"]]
+  Rendering layout layouts/application.html.erb
+  Rendering posts/index.html.erb within layouts/application
+  [1m[36mPost Exists? (0.5ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) LIMIT $3 OFFSET $4[0m  [["status", 1], [nil, "2026-05-30 12:56:34.628788"], ["LIMIT", 1], ["OFFSET", 0]]
+  [1m[36mPost Load (0.8ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT $3 OFFSET $4[0m  [["status", 1], [nil, "2026-05-30 12:56:34.628788"], ["LIMIT", 6], ["OFFSET", 0]]
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1[0m  [["id", 135138680]]
+  [1m[36mActiveStorage::Attachment Load (0.6ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_type" = $1 AND "active_storage_attachments"."name" = $2 AND "active_storage_attachments"."record_id" = $3[0m  [["record_type", "Post"], ["name", "cover_image"], ["record_id", 675045400]]
+  Rendered collection of posts/_post.html.erb [1 times] (Duration: 3.9ms | GC: 0.0ms)
+  Rendered posts/index.html.erb within layouts/application (Duration: 195.6ms | GC: 1.1ms)
+  Rendered layout layouts/application.html.erb (Duration: 197.1ms | GC: 1.1ms)
+Completed 200 OK in 209ms (Views: 196.8ms | ActiveRecord: 4.3ms (5 queries, 0 cached) | GC: 1.1ms)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN[0m
+------------------------------------------------
+PostsControllerTest: test_shows_a_published_post
+------------------------------------------------
+  [1m[36mPost Load (0.5ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+Started GET "/posts/published-post" for 127.0.0.1 at 2026-05-30 12:56:34 +0000
+Processing by PostsController#show as HTML
+  Parameters: {"id"=>"published-post"}
+  [1m[36mPost Load (0.7ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) AND "posts"."slug" = $3 ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT $4[0m  [["status", 1], [nil, "2026-05-30 12:56:34.856646"], ["slug", "published-post"], ["LIMIT", 1]]
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1[0m  [["id", 135138680]]
+  [1m[36mActiveStorage::Attachment Load (0.5ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_type" = $1 AND "active_storage_attachments"."name" = $2 AND "active_storage_attachments"."record_id" = $3[0m  [["record_type", "Post"], ["name", "cover_image"], ["record_id", 675045400]]
+  Rendering layout layouts/application.html.erb
+  Rendering posts/show.html.erb within layouts/application
+  Rendered posts/show.html.erb within layouts/application (Duration: 7.6ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 11.9ms | GC: 0.0ms)
+Completed 200 OK in 40ms (Views: 15.3ms | ActiveRecord: 1.7ms (3 queries, 0 cached) | GC: 0.7ms)
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-------------------------------------------------
+UserTest: test_normalizes_email_before_validation
+-------------------------------------------------
+  [1m[36mUser Exists? (1.0ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER($1) LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mBEGIN[0m
+----------------------------------------------------------------
+AdminImagesControllerTest: test_admin_can_upload_an_inline_image
+----------------------------------------------------------------
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 12:56:34 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+Redirected to http://www.example.com/admin
+Completed 302 Found in 264ms (ActiveRecord: 0.8ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mActiveStorage::Blob Count (0.6ms)[0m  [1m[34mSELECT COUNT(*) FROM "active_storage_blobs"[0m
+AdminImagesControllerTest - test_admin_can_upload_an_inline_image: ArgumentError raised.
+If you expected this exception, use `assert_raises` as near to the code that raises as possible.
+Other block based assertions (e.g. `assert_difference`) can be used, as long as `assert_raises` is inside their block.
+
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------------------------
+AdminImagesControllerTest: test_admin_cannot_upload_unsupported_files
+---------------------------------------------------------------------
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 12:56:35 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+Redirected to http://www.example.com/admin
+Completed 302 Found in 214ms (ActiveRecord: 0.6ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------------
+AdminImagesControllerTest: test_redirects_anonymous_users
+---------------------------------------------------------
+Started POST "/admin/images" for 127.0.0.1 at 2026-05-30 12:56:35 +0000
+Processing by Admin::ImagesController#create as HTML
+Redirected to http://www.example.com/admin/session/new
+Filter chain halted as :require_admin! rendered or redirected
+Completed 302 Found in 2ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[35mSET search_path TO public[0m
+  [1m[35m (225.0ms)[0m  [1m[35mCREATE DATABASE "blog_test" ENCODING = 'unicode'[0m
+  [1m[35mSQL (0.6ms)[0m  [1m[35mCREATE EXTENSION IF NOT EXISTS "plpgsql" SCHEMA pg_catalog[0m
+  [1m[35m (0.5ms)[0m  [1m[35mDROP TABLE IF EXISTS "active_storage_attachments" CASCADE[0m
+  [1m[35m (5.4ms)[0m  [1m[35mCREATE TABLE "active_storage_attachments" ("id" bigserial primary key, "blob_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "name" character varying NOT NULL, "record_id" bigint NOT NULL, "record_type" character varying NOT NULL)[0m
+  [1m[35m (2.7ms)[0m  [1m[35mCREATE INDEX "index_active_storage_attachments_on_blob_id" ON "active_storage_attachments" ("blob_id")[0m
+  [1m[35m (2.4ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_active_storage_attachments_uniqueness" ON "active_storage_attachments" ("record_type", "record_id", "name", "blob_id")[0m
+  [1m[35m (0.3ms)[0m  [1m[35mDROP TABLE IF EXISTS "active_storage_blobs" CASCADE[0m
+  [1m[35m (3.5ms)[0m  [1m[35mCREATE TABLE "active_storage_blobs" ("id" bigserial primary key, "byte_size" bigint NOT NULL, "checksum" character varying, "content_type" character varying, "created_at" timestamp(6) NOT NULL, "filename" character varying NOT NULL, "key" character varying NOT NULL, "metadata" text, "service_name" character varying NOT NULL)[0m
+  [1m[35m (4.2ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_active_storage_blobs_on_key" ON "active_storage_blobs" ("key")[0m
+  [1m[35m (0.4ms)[0m  [1m[35mDROP TABLE IF EXISTS "active_storage_variant_records" CASCADE[0m
+  [1m[35m (3.6ms)[0m  [1m[35mCREATE TABLE "active_storage_variant_records" ("id" bigserial primary key, "blob_id" bigint NOT NULL, "variation_digest" character varying NOT NULL)[0m
+  [1m[35m (2.6ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_active_storage_variant_records_uniqueness" ON "active_storage_variant_records" ("blob_id", "variation_digest")[0m
+  [1m[35m (0.4ms)[0m  [1m[35mDROP TABLE IF EXISTS "posts" CASCADE[0m
+  [1m[35m (3.2ms)[0m  [1m[35mCREATE TABLE "posts" ("id" bigserial primary key, "body_markdown" text NOT NULL, "created_at" timestamp(6) NOT NULL, "excerpt" text NOT NULL, "published_at" timestamp(6), "slug" character varying NOT NULL, "status" integer DEFAULT 0 NOT NULL, "title" character varying NOT NULL, "updated_at" timestamp(6) NOT NULL, "user_id" bigint NOT NULL)[0m
+  [1m[35m (2.2ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_posts_on_slug" ON "posts" ("slug")[0m
+  [1m[35m (2.5ms)[0m  [1m[35mCREATE INDEX "index_posts_on_status_and_published_at" ON "posts" ("status", "published_at")[0m
+  [1m[35m (2.7ms)[0m  [1m[35mCREATE INDEX "index_posts_on_user_id" ON "posts" ("user_id")[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE IF EXISTS "users" CASCADE[0m
+  [1m[35m (2.6ms)[0m  [1m[35mCREATE TABLE "users" ("id" bigserial primary key, "admin" boolean DEFAULT FALSE NOT NULL, "created_at" timestamp(6) NOT NULL, "email" character varying NOT NULL, "name" character varying NOT NULL, "password_digest" character varying NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (1.8ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")[0m
+  [1m[35m (3.7ms)[0m  [1m[35mALTER TABLE "active_storage_attachments" ADD CONSTRAINT "fk_rails_c3b3935057"
+FOREIGN KEY ("blob_id")
+  REFERENCES "active_storage_blobs" ("id")
+[0m
+  [1m[35m (2.4ms)[0m  [1m[35mALTER TABLE "active_storage_variant_records" ADD CONSTRAINT "fk_rails_993965df05"
+FOREIGN KEY ("blob_id")
+  REFERENCES "active_storage_blobs" ("id")
+[0m
+  [1m[35m (2.6ms)[0m  [1m[35mALTER TABLE "posts" ADD CONSTRAINT "fk_rails_5b5ddfd518"
+FOREIGN KEY ("user_id")
+  REFERENCES "users" ("id")
+[0m
+  [1m[35m (2.4ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (2.9ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES (20260530010200)[0m
+  [1m[35m (2.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES
+(20260530010100),
+(20260530010000);[0m
+  [1m[35m (2.6ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.7ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::InternalMetadata Create (2.6ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'test', '2026-05-30 13:05:09.956048', '2026-05-30 13:05:09.956055') RETURNING "key"[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.9ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
+  [1m[36mActiveRecord::InternalMetadata Create (1.7ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('schema_sha1', '5b1b23716ba11f62c0309421cfea4a46346a3385', '2026-05-30 13:05:09.966164', '2026-05-30 13:05:09.966166') RETURNING "key"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mUser Load (0.9ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mUser Exists? (2.5ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER($1) LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+  [1m[36mUser Create (0.8ms)[0m  [1m[32mINSERT INTO "users" ("admin", "created_at", "email", "name", "password_digest", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["admin", true], ["created_at", "2026-05-30 13:05:10.291780"], ["email", "[FILTERED]"], ["name", "Admin"], ["password_digest", "[FILTERED]"], ["updated_at", "2026-05-30 13:05:10.291780"]]
+  [1m[36mTRANSACTION (2.7ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mPost Load (1.0ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."slug" = $1 LIMIT $2[0m  [["slug", "welcome"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.8ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mPost Exists? (1.3ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."slug" = $1 LIMIT $2[0m  [["slug", "welcome"], ["LIMIT", 1]]
+  [1m[36mPost Create (2.3ms)[0m  [1m[32mINSERT INTO "posts" ("body_markdown", "created_at", "excerpt", "published_at", "slug", "status", "title", "updated_at", "user_id") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING "id"[0m  [["body_markdown", "## Hello\n\nThis is the first post in the blog. Edit it from the admin panel.\n"], ["created_at", "2026-05-30 13:05:10.787565"], ["excerpt", "A first published post for the Rails blog."], ["published_at", "2026-05-30 13:05:10.686563"], ["slug", "welcome"], ["status", 1], ["title", "Welcome"], ["updated_at", "2026-05-30 13:05:10.787565"], ["user_id", 1]]
+  [1m[36mTRANSACTION (2.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.7ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
+  [1m[36mActiveRecord::SchemaMigration Load (1.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (0.7ms)[0m  [1m[35mALTER TABLE "schema_migrations" DISABLE TRIGGER ALL;ALTER TABLE "active_storage_blobs" DISABLE TRIGGER ALL;ALTER TABLE "active_storage_attachments" DISABLE TRIGGER ALL;ALTER TABLE "active_storage_variant_records" DISABLE TRIGGER ALL;ALTER TABLE "users" DISABLE TRIGGER ALL;ALTER TABLE "posts" DISABLE TRIGGER ALL;ALTER TABLE "ar_internal_metadata" DISABLE TRIGGER ALL[0m
+  [1m[36mFixtures Load (1.3ms)[0m  [1m[31mDELETE FROM "posts";
+DELETE FROM "users";
+INSERT INTO "posts" ("id", "body_markdown", "created_at", "excerpt", "published_at", "slug", "status", "title", "updated_at", "user_id") VALUES (675045400, '# Published
+
+This post is visible.
+', '2026-05-30 13:35:27.667199', 'A public excerpt.', '2026-05-29 13:35:26', 'published-post', 1, 'Published Post', '2026-05-30 13:35:27.667199', 135138680), (108828309, '# Draft
+
+This post is private.
+', '2026-05-30 13:35:27.667199', 'A draft excerpt.', NULL, 'draft-post', 0, 'Draft Post', '2026-05-30 13:35:27.667199', 135138680);
+INSERT INTO "users" ("id", "admin", "created_at", "email", "name", "password_digest", "updated_at") VALUES (135138680, TRUE, '2026-05-30 13:35:27.673606', 'admin@example.com', 'Admin', '$2a$12$7rqGqmtxRZylTFYb6mzdjO5Twutd/hpRWC8NzmBRTAbucQw4zplNW', '2026-05-30 13:35:27.673606'), (396417156, FALSE, '2026-05-30 13:35:27.673606', 'writer@example.com', 'Writer', '$2a$12$ZyAW4WXlktoyEolNRlLx/uwGcclsfRyQw.AFkdzQ4LNn/t1ILoh.e', '2026-05-30 13:35:27.673606')[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[35m (0.4ms)[0m  [1m[35mALTER TABLE "schema_migrations" ENABLE TRIGGER ALL;ALTER TABLE "active_storage_blobs" ENABLE TRIGGER ALL;ALTER TABLE "active_storage_attachments" ENABLE TRIGGER ALL;ALTER TABLE "active_storage_variant_records" ENABLE TRIGGER ALL;ALTER TABLE "users" ENABLE TRIGGER ALL;ALTER TABLE "posts" ENABLE TRIGGER ALL;ALTER TABLE "ar_internal_metadata" ENABLE TRIGGER ALL[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (3.6ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (7.6ms)[0m  [1m[35mdo $$
+  declare r record;
+BEGIN
+FOR r IN (
+  SELECT FORMAT(
+    'UPDATE pg_catalog.pg_constraint SET convalidated=false WHERE conname = ''%1$I'' AND connamespace::regnamespace = ''%2$I''::regnamespace; ALTER TABLE %2$I.%3$I VALIDATE CONSTRAINT %1$I;',
+    constraint_name,
+    table_schema,
+    table_name
+  ) AS constraint_check
+  FROM information_schema.table_constraints WHERE constraint_type = 'FOREIGN KEY'
+)
+  LOOP
+    EXECUTE (r.constraint_check);
+  END LOOP;
+END;
+$$;
+[0m
+  [1m[36mTRANSACTION (2.4ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------
+AdminSessionsControllerTest: test_admin_can_sign_in
+---------------------------------------------------
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 13:35:29 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.9ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+Redirected to http://www.example.com/admin
+Completed 302 Found in 562ms (ActiveRecord: 0.8ms (1 query, 0 cached) | GC: 1.2ms)
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+----------------------------------------------------------
+AdminSessionsControllerTest: test_non_admin_cannot_sign_in
+----------------------------------------------------------
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 396417156], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 13:35:31 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+  Rendering layout layouts/application.html.erb
+  Rendering admin/sessions/new.html.erb within layouts/application
+  Rendered admin/sessions/new.html.erb within layouts/application (Duration: 117.9ms | GC: 1.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 226.8ms | GC: 1.0ms)
+Completed 422 Unprocessable Content in 442ms (Views: 437.3ms | ActiveRecord: 0.4ms (1 query, 0 cached) | GC: 1.5ms)
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+------------------------------------------------------------
+PostsControllerTest: test_does_not_show_draft_posts_publicly
+------------------------------------------------------------
+  [1m[36mPost Load (1.1ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 108828309], ["LIMIT", 1]]
+Started GET "/posts/draft-post" for 127.0.0.1 at 2026-05-30 13:35:31 +0000
+Processing by PostsController#show as HTML
+  Parameters: {"id"=>"draft-post"}
+  [1m[36mPost Load (1.0ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) AND "posts"."slug" = $3 ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT $4[0m  [["status", 1], [nil, "2026-05-30 13:35:31.748412"], ["slug", "draft-post"], ["LIMIT", 1]]
+Completed 404 Not Found in 65ms (ActiveRecord: 1.0ms (1 query, 0 cached) | GC: 0.0ms)
+  
+ActiveRecord::RecordNotFound (Couldn't find Post with [WHERE "posts"."status" = $1 AND (published_at <= $2) AND "posts"."slug" = $3]):
+  
+app/controllers/posts_controller.rb:13:in `show'
+test/controllers/posts_controller_test.rb:20:in `block in <class:PostsControllerTest>'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+------------------------------------------------
+PostsControllerTest: test_shows_a_published_post
+------------------------------------------------
+  [1m[36mPost Load (0.5ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+Started GET "/posts/published-post" for 127.0.0.1 at 2026-05-30 13:35:32 +0000
+Processing by PostsController#show as HTML
+  Parameters: {"id"=>"published-post"}
+  [1m[36mPost Load (0.6ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) AND "posts"."slug" = $3 ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT $4[0m  [["status", 1], [nil, "2026-05-30 13:35:32.108027"], ["slug", "published-post"], ["LIMIT", 1]]
+  [1m[36mUser Load (0.9ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1[0m  [["id", 135138680]]
+  [1m[36mActiveStorage::Attachment Load (0.6ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_type" = $1 AND "active_storage_attachments"."name" = $2 AND "active_storage_attachments"."record_id" = $3[0m  [["record_type", "Post"], ["name", "cover_image"], ["record_id", 675045400]]
+  Rendering layout layouts/application.html.erb
+  Rendering posts/show.html.erb within layouts/application
+  Rendered posts/show.html.erb within layouts/application (Duration: 23.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 25.5ms | GC: 0.0ms)
+Completed 200 OK in 129ms (Views: 30.4ms | ActiveRecord: 3.6ms (3 queries, 0 cached) | GC: 5.5ms)
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-----------------------------------------------
+PostsControllerTest: test_lists_published_posts
+-----------------------------------------------
+Started GET "/" for 127.0.0.1 at 2026-05-30 13:35:32 +0000
+Processing by PostsController#index as HTML
+  [1m[36mPost Count (1.0ms)[0m  [1m[34mSELECT COUNT(*) FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2)[0m  [["status", 1], [nil, "2026-05-30 13:35:32.255962"]]
+  Rendering layout layouts/application.html.erb
+  Rendering posts/index.html.erb within layouts/application
+  [1m[36mPost Exists? (1.0ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) LIMIT $3 OFFSET $4[0m  [["status", 1], [nil, "2026-05-30 13:35:32.255962"], ["LIMIT", 1], ["OFFSET", 0]]
+  [1m[36mPost Load (1.2ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT $3 OFFSET $4[0m  [["status", 1], [nil, "2026-05-30 13:35:32.255962"], ["LIMIT", 6], ["OFFSET", 0]]
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1[0m  [["id", 135138680]]
+  [1m[36mActiveStorage::Attachment Load (0.8ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_type" = $1 AND "active_storage_attachments"."name" = $2 AND "active_storage_attachments"."record_id" = $3[0m  [["record_type", "Post"], ["name", "cover_image"], ["record_id", 675045400]]
+  Rendered collection of posts/_post.html.erb [1 times] (Duration: 11.2ms | GC: 0.0ms)
+  Rendered posts/index.html.erb within layouts/application (Duration: 87.5ms | GC: 0.4ms)
+  Rendered layout layouts/application.html.erb (Duration: 90.2ms | GC: 0.4ms)
+Completed 200 OK in 107ms (Views: 89.0ms | ActiveRecord: 4.6ms (5 queries, 0 cached) | GC: 0.4ms)
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mBEGIN[0m
+----------------------------------------------------------------
+AdminImagesControllerTest: test_admin_can_upload_an_inline_image
+----------------------------------------------------------------
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 13:35:32 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (1.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+Redirected to http://www.example.com/admin
+Completed 302 Found in 269ms (ActiveRecord: 1.0ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mActiveStorage::Blob Count (0.6ms)[0m  [1m[34mSELECT COUNT(*) FROM "active_storage_blobs"[0m
+Started POST "/admin/images" for 127.0.0.1 at 2026-05-30 13:35:32 +0000
+Processing by Admin::ImagesController#create as HTML
+  Parameters: {"image"=>#<ActionDispatch::Http::UploadedFile:0x000073dbbabe3200 @tempfile=#<Tempfile:/tmp/RackMultipart20260530-1-ntmjpg.png>, @content_type="image/png", @original_filename="test-image.png", @headers="content-disposition: form-data; name=\"image\"; filename=\"test-image.png\"\r\ncontent-type: image/png\r\ncontent-length: 19\r\n">}
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mActiveStorage::Blob Create (2.0ms)[0m  [1m[32mINSERT INTO "active_storage_blobs" ("byte_size", "checksum", "content_type", "created_at", "filename", "key", "metadata", "service_name") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING "id"[0m  [["byte_size", 19], ["checksum", "ccHdFOREBr4LkDsEiKGi6A=="], ["content_type", "image/png"], ["created_at", "2026-05-30 13:35:32.920021"], ["filename", "test-image.png"], ["key", "u4gu1efu7yefb6zu1u7feouy6obn"], ["metadata", "{\"identified\":true}"], ["service_name", "test"]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+[36m  Disk Storage (17.6ms) [0m[32mUploaded file to key: u4gu1efu7yefb6zu1u7feouy6obn (checksum: ccHdFOREBr4LkDsEiKGi6A==)[0m
+Completed 201 Created in 152ms (Views: 0.1ms | ActiveRecord: 3.8ms (2 queries, 1 cached) | GC: 1.8ms)
+  [1m[36mActiveStorage::Blob Count (0.3ms)[0m  [1m[34mSELECT COUNT(*) FROM "active_storage_blobs"[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------------
+AdminImagesControllerTest: test_redirects_anonymous_users
+---------------------------------------------------------
+Started POST "/admin/images" for 127.0.0.1 at 2026-05-30 13:35:32 +0000
+Processing by Admin::ImagesController#create as HTML
+Redirected to http://www.example.com/admin/session/new
+Filter chain halted as :require_admin! rendered or redirected
+Completed 302 Found in 3ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------------------------
+AdminImagesControllerTest: test_admin_cannot_upload_unsupported_files
+---------------------------------------------------------------------
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 13:35:32 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+Redirected to http://www.example.com/admin
+Completed 302 Found in 211ms (ActiveRecord: 0.4ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/admin/images" for 127.0.0.1 at 2026-05-30 13:35:33 +0000
+Processing by Admin::ImagesController#create as HTML
+  Parameters: {"image"=>#<ActionDispatch::Http::UploadedFile:0x000073dbbae3a878 @tempfile=#<Tempfile:/tmp/RackMultipart20260530-1-nppruw.png>, @content_type="text/plain", @original_filename="test-image.png", @headers="content-disposition: form-data; name=\"image\"; filename=\"test-image.png\"\r\ncontent-type: text/plain\r\ncontent-length: 19\r\n">}
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Completed 422 Unprocessable Content in 3ms (Views: 0.1ms | ActiveRecord: 0.0ms (1 query, 1 cached) | GC: 0.3ms)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+----------------------------------------------------------------------
+PostTest: test_rendered_body_sanitizes_unsafe_html_and_javascript_urls
+----------------------------------------------------------------------
+  [1m[36mPost Load (0.4ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------
+PostTest: test_visible_returns_published_posts_only
+---------------------------------------------------
+  [1m[36mPost Load (0.5ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+  [1m[36mPost Exists? (0.5ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) AND "posts"."id" = $3 LIMIT $4[0m  [["status", 1], [nil, "2026-05-30 13:35:33.209758"], ["id", 675045400], ["LIMIT", 1]]
+  [1m[36mPost Load (0.3ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 108828309], ["LIMIT", 1]]
+  [1m[36mPost Exists? (0.4ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) AND "posts"."id" = $3 LIMIT $4[0m  [["status", 1], [nil, "2026-05-30 13:35:33.214435"], ["id", 108828309], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-----------------------------------------
+PostTest: test_sets_a_slug_from_the_title
+-----------------------------------------
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+  [1m[36mPost Exists? (0.5ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."slug" = $1 LIMIT $2[0m  [["slug", "a-clean-rails-blog"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+-------------------------------------------------
+JsonWebTokenTest: test_encodes_and_decodes_claims
+-------------------------------------------------
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-----------------------------------------------------
+JsonWebTokenTest: test_returns_nil_for_invalid_tokens
+-----------------------------------------------------
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-------------------------------------------------
+UserTest: test_normalizes_email_before_validation
+-------------------------------------------------
+  [1m[36mUser Exists? (0.5ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER($1) LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+------------------------------------------------------------
+AdminPostsControllerTest: test_admin_can_create_a_draft_post
+------------------------------------------------------------
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 13:35:33 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+Redirected to http://www.example.com/admin
+Completed 302 Found in 215ms (ActiveRecord: 0.4ms (1 query, 0 cached) | GC: 0.3ms)
+  [1m[36mPost Count (0.4ms)[0m  [1m[34mSELECT COUNT(*) FROM "posts"[0m
+Started POST "/admin/posts" for 127.0.0.1 at 2026-05-30 13:35:33 +0000
+Processing by Admin::PostsController#create as HTML
+  Parameters: {"post"=>{"title"=>"New Draft", "excerpt"=>"Draft excerpt", "body_markdown"=>"Draft body", "status"=>"draft"}}
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mPost Exists? (1.3ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."slug" = $1 LIMIT $2[0m  [["slug", "new-draft"], ["LIMIT", 1]]
+  [1m[36mPost Create (0.6ms)[0m  [1m[32mINSERT INTO "posts" ("body_markdown", "created_at", "excerpt", "published_at", "slug", "status", "title", "updated_at", "user_id") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING "id"[0m  [["body_markdown", "Draft body"], ["created_at", "2026-05-30 13:35:33.566466"], ["excerpt", "Draft excerpt"], ["published_at", nil], ["slug", "new-draft"], ["status", 0], ["title", "New Draft"], ["updated_at", "2026-05-30 13:35:33.566466"], ["user_id", 135138680]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Redirected to http://www.example.com/admin/posts/new-draft
+Completed 302 Found in 10ms (ActiveRecord: 2.4ms (3 queries, 1 cached) | GC: 0.0ms)
+  [1m[36mPost Count (0.3ms)[0m  [1m[34mSELECT COUNT(*) FROM "posts"[0m
+  [1m[36mPost Load (0.5ms)[0m  [1m[34mSELECT "posts".* FROM "posts" ORDER BY "posts"."created_at" DESC LIMIT $1[0m  [["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-------------------------------------------------------------------
+AdminPostsControllerTest: test_redirects_anonymous_users_to_sign_in
+-------------------------------------------------------------------
+Started GET "/admin/posts" for 127.0.0.1 at 2026-05-30 13:35:33 +0000
+Processing by Admin::PostsController#index as HTML
+Redirected to http://www.example.com/admin/session/new
+Filter chain halted as :require_admin! rendered or redirected
+Completed 302 Found in 1ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------
+AdminPostsControllerTest: test_admin_can_list_posts
+---------------------------------------------------
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 13:35:33 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+Redirected to http://www.example.com/admin
+Completed 302 Found in 212ms (ActiveRecord: 0.5ms (1 query, 0 cached) | GC: 0.0ms)
+Started GET "/admin/posts" for 127.0.0.1 at 2026-05-30 13:35:33 +0000
+Processing by Admin::PostsController#index as HTML
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+  Rendering layout layouts/application.html.erb
+  Rendering admin/posts/index.html.erb within layouts/application
+  [1m[36mPost Load (0.5ms)[0m  [1m[34mSELECT "posts".* FROM "posts" ORDER BY "posts"."created_at" DESC[0m
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1[0m  [["id", 135138680]]
+  Rendered admin/posts/index.html.erb within layouts/application (Duration: 6.9ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 8.4ms | GC: 0.0ms)
+Completed 200 OK in 25ms (Views: 13.7ms | ActiveRecord: 0.7ms (3 queries, 1 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mActiveRecord::InternalMetadata Load (2.5ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
+  [1m[36mActiveRecord::SchemaMigration Load (1.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (1.5ms)[0m  [1m[35mALTER TABLE "schema_migrations" DISABLE TRIGGER ALL;ALTER TABLE "active_storage_blobs" DISABLE TRIGGER ALL;ALTER TABLE "active_storage_attachments" DISABLE TRIGGER ALL;ALTER TABLE "active_storage_variant_records" DISABLE TRIGGER ALL;ALTER TABLE "users" DISABLE TRIGGER ALL;ALTER TABLE "posts" DISABLE TRIGGER ALL;ALTER TABLE "ar_internal_metadata" DISABLE TRIGGER ALL[0m
+  [1m[36mFixtures Load (3.4ms)[0m  [1m[31mDELETE FROM "posts";
+DELETE FROM "users";
+INSERT INTO "posts" ("id", "body_markdown", "created_at", "excerpt", "published_at", "slug", "status", "title", "updated_at", "user_id") VALUES (675045400, '# Published
+
+This post is visible.
+', '2026-05-30 15:54:31.615848', 'A public excerpt.', '2026-05-29 15:54:31', 'published-post', 1, 'Published Post', '2026-05-30 15:54:31.615848', 135138680), (108828309, '# Draft
+
+This post is private.
+', '2026-05-30 15:54:31.615848', 'A draft excerpt.', NULL, 'draft-post', 0, 'Draft Post', '2026-05-30 15:54:31.615848', 135138680);
+INSERT INTO "users" ("id", "admin", "created_at", "email", "name", "password_digest", "updated_at") VALUES (135138680, TRUE, '2026-05-30 15:54:31.625561', 'admin@example.com', 'Admin', '$argon2id$v=19$m=65536,t=3,p=4$FgPwop3zOnFx8VQ1QQiiuw$r1BphrlTKlIkcDTVKOrGIRyYi275N1NBSh/R1Ps5c+I', '2026-05-30 15:54:31.625561'), (396417156, FALSE, '2026-05-30 15:54:31.625561', 'writer@example.com', 'Writer', '$argon2id$v=19$m=65536,t=3,p=4$1k9JXKQ/YwFGZDZezQJ9Pw$CNmkOGaso4NrPnTJI9M4/lB5rkTkWL91TUjjsvQuf7Q', '2026-05-30 15:54:31.625561')[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[35m (0.6ms)[0m  [1m[35mALTER TABLE "schema_migrations" ENABLE TRIGGER ALL;ALTER TABLE "active_storage_blobs" ENABLE TRIGGER ALL;ALTER TABLE "active_storage_attachments" ENABLE TRIGGER ALL;ALTER TABLE "active_storage_variant_records" ENABLE TRIGGER ALL;ALTER TABLE "users" ENABLE TRIGGER ALL;ALTER TABLE "posts" ENABLE TRIGGER ALL;ALTER TABLE "ar_internal_metadata" ENABLE TRIGGER ALL[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (2.2ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (11.1ms)[0m  [1m[35mdo $$
+  declare r record;
+BEGIN
+FOR r IN (
+  SELECT FORMAT(
+    'UPDATE pg_catalog.pg_constraint SET convalidated=false WHERE conname = ''%1$I'' AND connamespace::regnamespace = ''%2$I''::regnamespace; ALTER TABLE %2$I.%3$I VALIDATE CONSTRAINT %1$I;',
+    constraint_name,
+    table_schema,
+    table_name
+  ) AS constraint_check
+  FROM information_schema.table_constraints WHERE constraint_type = 'FOREIGN KEY'
+)
+  LOOP
+    EXECUTE (r.constraint_check);
+  END LOOP;
+END;
+$$;
+[0m
+  [1m[36mTRANSACTION (6.8ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------
+PostTest: test_visible_returns_published_posts_only
+---------------------------------------------------
+  [1m[36mPost Load (0.7ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+  [1m[36mPost Exists? (0.9ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) AND "posts"."id" = $3 LIMIT $4[0m  [["status", 1], [nil, "2026-05-30 15:54:31.708713"], ["id", 675045400], ["LIMIT", 1]]
+  [1m[36mPost Load (0.4ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 108828309], ["LIMIT", 1]]
+  [1m[36mPost Exists? (0.4ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) AND "posts"."id" = $3 LIMIT $4[0m  [["status", 1], [nil, "2026-05-30 15:54:31.718237"], ["id", 108828309], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+----------------------------------------------------------------------
+PostTest: test_rendered_body_sanitizes_unsafe_html_and_javascript_urls
+----------------------------------------------------------------------
+  [1m[36mPost Load (1.0ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-----------------------------------------
+PostTest: test_sets_a_slug_from_the_title
+-----------------------------------------
+  [1m[36mUser Load (0.9ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+  [1m[36mPost Exists? (0.4ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."slug" = $1 LIMIT $2[0m  [["slug", "a-clean-rails-blog"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-------------------------------------------------
+UserTest: test_normalizes_email_before_validation
+-------------------------------------------------
+  [1m[36mUser Exists? (1.8ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER($1) LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+------------------------------------------------------
+UserTest: test_authenticates_with_argon2_password_hash
+------------------------------------------------------
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-------------------------------------------
+UserTest: test_hashes_passwords_with_argon2
+-------------------------------------------
+  [1m[36mUser Exists? (0.5ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER($1) LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-------------------------------------------------
+JsonWebTokenTest: test_encodes_and_decodes_claims
+-------------------------------------------------
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-----------------------------------------------------
+JsonWebTokenTest: test_returns_nil_for_invalid_tokens
+-----------------------------------------------------
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------------
+AdminImagesControllerTest: test_redirects_anonymous_users
+---------------------------------------------------------
+Started POST "/admin/images" for 127.0.0.1 at 2026-05-30 15:54:32 +0000
+Processing by Admin::ImagesController#create as HTML
+Redirected to http://www.example.com/admin/session/new
+Filter chain halted as :require_admin! rendered or redirected
+Completed 302 Found in 79ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.2ms)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+----------------------------------------------------------------
+AdminImagesControllerTest: test_admin_can_upload_an_inline_image
+----------------------------------------------------------------
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 15:54:33 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (1.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+Redirected to http://www.example.com/admin
+Completed 302 Found in 102ms (ActiveRecord: 1.7ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mActiveStorage::Blob Count (0.6ms)[0m  [1m[34mSELECT COUNT(*) FROM "active_storage_blobs"[0m
+Started POST "/admin/images" for 127.0.0.1 at 2026-05-30 15:54:33 +0000
+Processing by Admin::ImagesController#create as HTML
+  Parameters: {"image"=>#<ActionDispatch::Http::UploadedFile:0x000078718471d3b0 @tempfile=#<Tempfile:/tmp/RackMultipart20260530-1-dvhnjz.png>, @content_type="image/png", @original_filename="test-image.png", @headers="content-disposition: form-data; name=\"image\"; filename=\"test-image.png\"\r\ncontent-type: image/png\r\ncontent-length: 19\r\n">}
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mActiveStorage::Blob Create (2.1ms)[0m  [1m[32mINSERT INTO "active_storage_blobs" ("byte_size", "checksum", "content_type", "created_at", "filename", "key", "metadata", "service_name") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING "id"[0m  [["byte_size", 19], ["checksum", "ccHdFOREBr4LkDsEiKGi6A=="], ["content_type", "image/png"], ["created_at", "2026-05-30 15:54:33.310190"], ["filename", "test-image.png"], ["key", "gu9twjxghklozuy903awksbeq3hd"], ["metadata", "{\"identified\":true}"], ["service_name", "test"]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+[36m  Disk Storage (21.4ms) [0m[32mUploaded file to key: gu9twjxghklozuy903awksbeq3hd (checksum: ccHdFOREBr4LkDsEiKGi6A==)[0m
+Completed 201 Created in 93ms (Views: 0.3ms | ActiveRecord: 3.9ms (2 queries, 1 cached) | GC: 23.1ms)
+  [1m[36mActiveStorage::Blob Count (0.4ms)[0m  [1m[34mSELECT COUNT(*) FROM "active_storage_blobs"[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------------------------
+AdminImagesControllerTest: test_admin_cannot_upload_unsupported_files
+---------------------------------------------------------------------
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 15:54:33 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+Redirected to http://www.example.com/admin
+Completed 302 Found in 72ms (ActiveRecord: 0.7ms (1 query, 0 cached) | GC: 0.9ms)
+Started POST "/admin/images" for 127.0.0.1 at 2026-05-30 15:54:33 +0000
+Processing by Admin::ImagesController#create as HTML
+  Parameters: {"image"=>#<ActionDispatch::Http::UploadedFile:0x0000787186a82d00 @tempfile=#<Tempfile:/tmp/RackMultipart20260530-1-2w6wee.png>, @content_type="text/plain", @original_filename="test-image.png", @headers="content-disposition: form-data; name=\"image\"; filename=\"test-image.png\"\r\ncontent-type: text/plain\r\ncontent-length: 19\r\n">}
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Completed 422 Unprocessable Content in 5ms (Views: 0.1ms | ActiveRecord: 0.0ms (1 query, 1 cached) | GC: 2.4ms)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-------------------------------------------------------------------
+AdminPostsControllerTest: test_redirects_anonymous_users_to_sign_in
+-------------------------------------------------------------------
+Started GET "/admin/posts" for 127.0.0.1 at 2026-05-30 15:54:33 +0000
+Processing by Admin::PostsController#index as HTML
+Redirected to http://www.example.com/admin/session/new
+Filter chain halted as :require_admin! rendered or redirected
+Completed 302 Found in 4ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 1.2ms)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+------------------------------------------------------------
+AdminPostsControllerTest: test_admin_can_create_a_draft_post
+------------------------------------------------------------
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 15:54:33 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+Redirected to http://www.example.com/admin
+Completed 302 Found in 91ms (ActiveRecord: 0.4ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mPost Count (0.3ms)[0m  [1m[34mSELECT COUNT(*) FROM "posts"[0m
+Started POST "/admin/posts" for 127.0.0.1 at 2026-05-30 15:54:33 +0000
+Processing by Admin::PostsController#create as HTML
+  Parameters: {"post"=>{"title"=>"New Draft", "excerpt"=>"Draft excerpt", "body_markdown"=>"Draft body", "status"=>"draft"}}
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mPost Exists? (1.4ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."slug" = $1 LIMIT $2[0m  [["slug", "new-draft"], ["LIMIT", 1]]
+  [1m[36mPost Create (0.7ms)[0m  [1m[32mINSERT INTO "posts" ("body_markdown", "created_at", "excerpt", "published_at", "slug", "status", "title", "updated_at", "user_id") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING "id"[0m  [["body_markdown", "Draft body"], ["created_at", "2026-05-30 15:54:33.604940"], ["excerpt", "Draft excerpt"], ["published_at", nil], ["slug", "new-draft"], ["status", 0], ["title", "New Draft"], ["updated_at", "2026-05-30 15:54:33.604940"], ["user_id", 135138680]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Redirected to http://www.example.com/admin/posts/new-draft
+Completed 302 Found in 11ms (ActiveRecord: 2.5ms (3 queries, 1 cached) | GC: 0.0ms)
+  [1m[36mPost Count (0.4ms)[0m  [1m[34mSELECT COUNT(*) FROM "posts"[0m
+  [1m[36mPost Load (1.0ms)[0m  [1m[34mSELECT "posts".* FROM "posts" ORDER BY "posts"."created_at" DESC LIMIT $1[0m  [["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------
+AdminPostsControllerTest: test_admin_can_list_posts
+---------------------------------------------------
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 15:54:33 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+Redirected to http://www.example.com/admin
+Completed 302 Found in 102ms (ActiveRecord: 0.3ms (1 query, 0 cached) | GC: 0.0ms)
+Started GET "/admin/posts" for 127.0.0.1 at 2026-05-30 15:54:33 +0000
+Processing by Admin::PostsController#index as HTML
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+  Rendering layout layouts/application.html.erb
+  Rendering admin/posts/index.html.erb within layouts/application
+  [1m[36mPost Load (0.8ms)[0m  [1m[34mSELECT "posts".* FROM "posts" ORDER BY "posts"."created_at" DESC[0m
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1[0m  [["id", 135138680]]
+  Rendered admin/posts/index.html.erb within layouts/application (Duration: 60.0ms | GC: 0.2ms)
+  Rendered layout layouts/application.html.erb (Duration: 337.2ms | GC: 1.5ms)
+Completed 200 OK in 489ms (Views: 376.2ms | ActiveRecord: 1.6ms (3 queries, 1 cached) | GC: 1.5ms)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------
+AdminSessionsControllerTest: test_admin_can_sign_in
+---------------------------------------------------
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 135138680], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 15:54:34 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+Redirected to http://www.example.com/admin
+Completed 302 Found in 82ms (ActiveRecord: 0.6ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+----------------------------------------------------------
+AdminSessionsControllerTest: test_non_admin_cannot_sign_in
+----------------------------------------------------------
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 396417156], ["LIMIT", 1]]
+Started POST "/admin/session" for 127.0.0.1 at 2026-05-30 15:54:34 +0000
+Processing by Admin::SessionsController#create as HTML
+  Parameters: {"email"=>"[FILTERED]", "password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "[FILTERED]"], ["LIMIT", 1]]
+  Rendering layout layouts/application.html.erb
+  Rendering admin/sessions/new.html.erb within layouts/application
+  Rendered admin/sessions/new.html.erb within layouts/application (Duration: 34.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 35.7ms | GC: 0.0ms)
+Completed 422 Unprocessable Content in 45ms (Views: 43.5ms | ActiveRecord: 0.4ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+------------------------------------------------
+PostsControllerTest: test_shows_a_published_post
+------------------------------------------------
+  [1m[36mPost Load (0.4ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+Started GET "/posts/published-post" for 127.0.0.1 at 2026-05-30 15:54:34 +0000
+Processing by PostsController#show as HTML
+  Parameters: {"id"=>"published-post"}
+  [1m[36mPost Load (0.7ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) AND "posts"."slug" = $3 ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT $4[0m  [["status", 1], [nil, "2026-05-30 15:54:34.411619"], ["slug", "published-post"], ["LIMIT", 1]]
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1[0m  [["id", 135138680]]
+  [1m[36mActiveStorage::Attachment Load (0.5ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_type" = $1 AND "active_storage_attachments"."name" = $2 AND "active_storage_attachments"."record_id" = $3[0m  [["record_type", "Post"], ["name", "cover_image"], ["record_id", 675045400]]
+  Rendering layout layouts/application.html.erb
+  Rendering posts/show.html.erb within layouts/application
+  Rendered posts/show.html.erb within layouts/application (Duration: 4.4ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 6.2ms | GC: 0.0ms)
+Completed 200 OK in 23ms (Views: 9.7ms | ActiveRecord: 2.6ms (3 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+------------------------------------------------------------
+PostsControllerTest: test_does_not_show_draft_posts_publicly
+------------------------------------------------------------
+  [1m[36mPost Load (0.3ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 108828309], ["LIMIT", 1]]
+Started GET "/posts/draft-post" for 127.0.0.1 at 2026-05-30 15:54:34 +0000
+Processing by PostsController#show as HTML
+  Parameters: {"id"=>"draft-post"}
+  [1m[36mPost Load (0.4ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) AND "posts"."slug" = $3 ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT $4[0m  [["status", 1], [nil, "2026-05-30 15:54:34.447077"], ["slug", "draft-post"], ["LIMIT", 1]]
+Completed 404 Not Found in 2ms (ActiveRecord: 0.4ms (1 query, 0 cached) | GC: 0.0ms)
+  
+ActiveRecord::RecordNotFound (Couldn't find Post with [WHERE "posts"."status" = $1 AND (published_at <= $2) AND "posts"."slug" = $3]):
+  
+app/controllers/posts_controller.rb:13:in `show'
+test/controllers/posts_controller_test.rb:20:in `block in <class:PostsControllerTest>'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+-----------------------------------------------
+PostsControllerTest: test_lists_published_posts
+-----------------------------------------------
+Started GET "/" for 127.0.0.1 at 2026-05-30 15:54:34 +0000
+Processing by PostsController#index as HTML
+  [1m[36mPost Count (0.5ms)[0m  [1m[34mSELECT COUNT(*) FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2)[0m  [["status", 1], [nil, "2026-05-30 15:54:34.625135"]]
+  Rendering layout layouts/application.html.erb
+  Rendering posts/index.html.erb within layouts/application
+  [1m[36mPost Exists? (0.5ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) LIMIT $3 OFFSET $4[0m  [["status", 1], [nil, "2026-05-30 15:54:34.625135"], ["LIMIT", 1], ["OFFSET", 0]]
+  [1m[36mPost Load (0.6ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = $1 AND (published_at <= $2) ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT $3 OFFSET $4[0m  [["status", 1], [nil, "2026-05-30 15:54:34.625135"], ["LIMIT", 6], ["OFFSET", 0]]
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1[0m  [["id", 135138680]]
+  [1m[36mActiveStorage::Attachment Load (0.3ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_type" = $1 AND "active_storage_attachments"."name" = $2 AND "active_storage_attachments"."record_id" = $3[0m  [["record_type", "Post"], ["name", "cover_image"], ["record_id", 675045400]]
+  Rendered collection of posts/_post.html.erb [1 times] (Duration: 3.5ms | GC: 0.0ms)
+  Rendered posts/index.html.erb within layouts/application (Duration: 26.1ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 27.4ms | GC: 0.0ms)
+Completed 200 OK in 36ms (Views: 26.9ms | ActiveRecord: 2.2ms (5 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m

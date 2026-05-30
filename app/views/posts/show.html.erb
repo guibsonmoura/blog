@@ -1,0 +1,27 @@
+<% page_title @post.title %>
+
+<article class="mx-auto max-w-3xl">
+  <header>
+    <p class="text-sm text-neutral-500 dark:text-neutral-400">
+      <%= display_date(@post.published_at) %> by <%= @post.user.name %>
+    </p>
+
+    <h1 class="mt-4 text-4xl font-semibold leading-tight text-neutral-950 dark:text-neutral-50">
+      <%= @post.title %>
+    </h1>
+
+    <p class="mt-6 text-lg leading-8 text-neutral-700 dark:text-neutral-300">
+      <%= @post.excerpt %>
+    </p>
+  </header>
+
+  <% if @post.cover_image.attached? %>
+    <%= image_tag @post.cover_image,
+                  class: "mt-10 aspect-[16/9] w-full rounded-md object-cover",
+                  alt: "" %>
+  <% end %>
+
+  <div class="markdown mt-12">
+    <%= @post.rendered_body %>
+  </div>
+</article>

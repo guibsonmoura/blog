@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer components {
+  .markdown {
+    @apply text-base leading-7 text-neutral-800 dark:text-neutral-200;
+  }
+
+  .markdown > * + * {
+    @apply mt-5;
+  }
+
+  .markdown h1 {
+    @apply mt-10 text-3xl font-semibold leading-tight text-neutral-950 dark:text-neutral-50;
+  }
+
+  .markdown h2 {
+    @apply mt-10 text-2xl font-semibold leading-tight text-neutral-950 dark:text-neutral-50;
+  }
+
+  .markdown h3 {
+    @apply mt-8 text-xl font-semibold leading-snug text-neutral-950 dark:text-neutral-50;
+  }
+
+  .markdown a {
+    @apply text-blue-700 underline underline-offset-4 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-200;
+  }
+
+  .markdown blockquote {
+    @apply border-l-2 border-neutral-300 pl-5 text-neutral-700 dark:border-neutral-700 dark:text-neutral-300;
+  }
+
+  .markdown code {
+    @apply rounded bg-neutral-200 px-1.5 py-0.5 text-sm text-neutral-950 dark:bg-neutral-800 dark:text-neutral-100;
+  }
+
+  .markdown pre {
+    @apply overflow-x-auto rounded-md bg-neutral-950 p-4 text-sm leading-6 text-neutral-100;
+  }
+
+  .markdown pre code {
+    @apply bg-transparent p-0 text-neutral-100;
+  }
+
+  .markdown ul {
+    @apply list-disc pl-6;
+  }
+
+  .markdown ol {
+    @apply list-decimal pl-6;
+  }
+
+  .markdown img {
+    @apply rounded-md border border-neutral-200 dark:border-neutral-800;
+  }
+
+  .markdown table {
+    @apply w-full border-collapse text-left text-sm;
+  }
+
+  .markdown th,
+  .markdown td {
+    @apply border border-neutral-200 px-3 py-2 dark:border-neutral-800;
+  }
+}

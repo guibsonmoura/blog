@@ -1,0 +1,98 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    command: sleep infinity
+    volumes:
+      - ..:/workspace:cached
+      - bundle-cache:/usr/local/bundle
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      createbuckets:
+        condition: service_completed_successfully
+    environment:
+      RAILS_ENV: development
+      RACK_ENV: development
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: blog
+      POSTGRES_PASSWORD: blog_password
+      POSTGRES_DB: blog_development
+      POSTGRES_TEST_DB: blog_test
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_PUBLIC_ENDPOINT: http://localhost:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin123
+      MINIO_BUCKET: blog-images
+      MINIO_REGION: us-east-1
+      ACTIVE_STORAGE_SERVICE: minio
+      AWS_ACCESS_KEY_ID: minioadmin
+      AWS_SECRET_ACCESS_KEY: minioadmin123
+      AWS_REGION: us-east-1
+      SECRET_KEY_BASE: 49fdc0d8a871fa516757961f94e9201a67c07e9883f2b0e201949ef94bf97627f6bf9e31711497f443fb3e1d3e5b6f09e8d12d0fab3fd1c410f4fa556507d4e6
+      JWT_SECRET: devcontainer-jwt-secret-change-outside-local-dev
+    networks:
+      - blog-dev
+
+  db:
+    image: postgres:17.7-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: blog
+      POSTGRES_PASSWORD: blog_password
+      POSTGRES_DB: blog_development
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blog -d blog_development"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - blog-dev
+
+  minio:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z-cpuv1
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+      MINIO_REGION_NAME: us-east-1
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - blog-dev
+
+  createbuckets:
+    image: minio/mc:RELEASE.2025-08-13T08-35-41Z-cpuv1
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 minioadmin minioadmin123;
+      mc mb --ignore-existing local/blog-images;
+      mc anonymous set none local/blog-images;
+      "
+    networks:
+      - blog-dev
+
+networks:
+  blog-dev:
+
+volumes:
+  postgres-data:
+  minio-data:
+  bundle-cache:

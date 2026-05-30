@@ -1,0 +1,62 @@
+<% page_title "Admin posts" %>
+
+<div class="flex flex-wrap items-center justify-between gap-4">
+  <div>
+    <p class="text-sm uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">Admin</p>
+    <h1 class="mt-3 text-3xl font-semibold text-neutral-950 dark:text-neutral-50">Posts</h1>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <%= button_to "Sign out",
+                  admin_session_path,
+                  method: :delete,
+                  class: "rounded-md border border-neutral-300 px-4 py-2 text-sm text-neutral-700 hover:border-neutral-500 hover:text-neutral-950 dark:border-neutral-700 dark:text-neutral-300 dark:hover:border-neutral-500 dark:hover:text-neutral-50" %>
+    <%= link_to "New post",
+                new_admin_post_path,
+                class: "rounded-md bg-neutral-950 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:bg-neutral-100 dark:text-neutral-950 dark:hover:bg-blue-200" %>
+  </div>
+</div>
+
+<section class="mt-10 overflow-x-auto border-y border-neutral-200 dark:border-neutral-800">
+  <table class="min-w-full divide-y divide-neutral-200 text-left text-sm dark:divide-neutral-800">
+    <thead>
+      <tr class="text-neutral-500 dark:text-neutral-400">
+        <th class="py-3 pr-4 font-medium">Title</th>
+        <th class="px-4 py-3 font-medium">Status</th>
+        <th class="px-4 py-3 font-medium">Published</th>
+        <th class="py-3 pl-4 text-right font-medium">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-neutral-200 dark:divide-neutral-800">
+      <% @posts.each do |post| %>
+        <tr>
+          <td class="py-4 pr-4">
+            <p class="font-medium text-neutral-950 dark:text-neutral-50"><%= post.title %></p>
+            <p class="mt-1 text-neutral-500 dark:text-neutral-400"><%= post.slug %></p>
+          </td>
+          <td class="px-4 py-4">
+            <span class="rounded-full border border-neutral-300 px-2.5 py-1 text-xs capitalize text-neutral-700 dark:border-neutral-700 dark:text-neutral-300">
+              <%= post.status %>
+            </span>
+          </td>
+          <td class="px-4 py-4 text-neutral-600 dark:text-neutral-300"><%= display_date(post.published_at) %></td>
+          <td class="py-4 pl-4">
+            <div class="flex justify-end gap-3">
+              <%= link_to "View", admin_post_path(post), class: "text-neutral-600 hover:text-blue-700 dark:text-neutral-300 dark:hover:text-blue-300" %>
+              <%= link_to "Edit", edit_admin_post_path(post), class: "text-neutral-600 hover:text-blue-700 dark:text-neutral-300 dark:hover:text-blue-300" %>
+              <%= button_to "Delete",
+                            admin_post_path(post),
+                            method: :delete,
+                            form: { data: { turbo_confirm: "Delete this post?" } },
+                            class: "text-red-700 hover:text-red-900 dark:text-red-300 dark:hover:text-red-200" %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</section>
+
+<% if @posts.empty? %>
+  <p class="mt-8 text-neutral-600 dark:text-neutral-300">No posts yet.</p>
+<% end %>

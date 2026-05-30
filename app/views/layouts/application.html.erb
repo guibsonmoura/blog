@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    <title><%= content_for(:title) || "Blog" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Blog">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <script>
+      (function() {
+        var storedTheme = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+        if (storedTheme === "dark" || (!storedTheme && prefersDark)) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="min-h-full bg-stone-50 text-neutral-950 antialiased dark:bg-neutral-950 dark:text-neutral-100">
+    <header class="border-b border-neutral-200/80 bg-stone-50/90 backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/90">
+      <div class="mx-auto flex max-w-5xl items-center justify-between px-5 py-5">
+        <nav class="flex items-center gap-6 text-sm">
+          <%= link_to "Blog", root_path, class: "font-semibold tracking-wide text-neutral-950 dark:text-neutral-50" %>
+          <%= link_to "Admin", admin_root_path, class: "text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-neutral-50" %>
+        </nav>
+
+        <button type="button"
+                class="rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-700 hover:border-neutral-500 hover:text-neutral-950 dark:border-neutral-700 dark:text-neutral-300 dark:hover:border-neutral-500 dark:hover:text-neutral-50"
+                data-theme-toggle
+                aria-label="Toggle color theme">
+          Theme
+        </button>
+      </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-5xl px-5 py-12">
+      <% flash.each do |type, message| %>
+        <div class="mb-8 rounded-md border px-4 py-3 text-sm <%= type.to_s == "alert" ? "border-red-300 bg-red-50 text-red-800 dark:border-red-900/80 dark:bg-red-950/40 dark:text-red-200" : "border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-900/80 dark:bg-emerald-950/40 dark:text-emerald-200" %>">
+          <%= message %>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+published:
+  user: admin
+  title: Published Post
+  slug: published-post
+  excerpt: A public excerpt.
+  body_markdown: |
+    # Published
+
+    This post is visible.
+  status: 1
+  published_at: <%= 1.day.ago.to_fs(:db) %>
+
+draft:
+  user: admin
+  title: Draft Post
+  slug: draft-post
+  excerpt: A draft excerpt.
+  body_markdown: |
+    # Draft
+
+    This post is private.
+  status: 0
+  published_at:

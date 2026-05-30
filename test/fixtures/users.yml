@@ -1,0 +1,11 @@
+admin:
+  email: admin@example.com
+  name: Admin
+  admin: true
+  password_digest: <%= Argon2::Password.create("password12345") %>
+
+writer:
+  email: writer@example.com
+  name: Writer
+  admin: false
+  password_digest: <%= Argon2::Password.create("password12345") %>
