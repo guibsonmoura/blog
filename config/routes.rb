@@ -1,7 +1,12 @@
 Rails.application.routes.draw do
   root "posts#index"
 
-  resources :posts, only: [ :index, :show ]
+  get "set_locale/:locale", to: "locales#update", as: :set_locale
+
+  resources :posts, only: [ :index, :show ] do
+    resources :comments, only: [ :create ]
+    resources :reactions, only: [ :create ]
+  end
 
   get    "superadmin/login",  to: "admin/sessions#new",     as: :superadmin_login
   post   "superadmin/login",  to: "admin/sessions#create"
@@ -14,6 +19,7 @@ Rails.application.routes.draw do
 
     resources :images, only: [ :create ]
     resources :posts
+    resources :comments, only: [ :destroy ]
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

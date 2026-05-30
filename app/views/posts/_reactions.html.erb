@@ -1,0 +1,25 @@
+<section id="reactions" data-controller="reactions">
+  <h2 class="text-sm font-medium uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
+    <%= t("posts.show.reactions_section") %>
+  </h2>
+
+  <div class="mt-4 flex flex-wrap gap-2">
+    <% Reaction.reaction_types.each_key do |type| %>
+      <% count = post.reactions.count { |r| r.reaction_type == type } %>
+      <% active = post.reactions.any? { |r| r.reaction_type == type && r.session_id == session[:reader_id] } %>
+      <% active_classes = "border-blue-400 bg-blue-50 text-blue-700 dark:border-blue-700 dark:bg-blue-950/40 dark:text-blue-300" %>
+      <% inactive_classes = "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-600" %>
+
+      <%= form_with url: post_reactions_path(post, reaction_type: type),
+                    data: { reactions_target: "form", reaction_type: type, active: active.to_s },
+                    class: "inline-flex" do |f| %>
+        <%= f.button type: "submit",
+                     data: { reactions_target: "button", active: active.to_s },
+                     class: "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors #{active ? active_classes : inactive_classes}" do %>
+          <span aria-hidden="true"><%= t("reactions.#{type}") %></span>
+          <span data-reactions-target="count" class="tabular-nums"><%= count %></span>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+</section>

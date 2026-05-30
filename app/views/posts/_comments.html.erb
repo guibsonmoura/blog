@@ -1,0 +1,57 @@
+<section id="comments">
+  <h2 class="text-sm font-medium uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
+    <%= t("posts.show.comments_section") %>
+  </h2>
+
+  <% if post.comments.any? %>
+    <div class="mt-6 space-y-6">
+      <% post.comments.order(:created_at).each do |comment| %>
+        <div class="border-b border-neutral-100 pb-6 last:border-0 dark:border-neutral-800">
+          <div class="flex items-baseline gap-3">
+            <span class="text-sm font-medium text-neutral-950 dark:text-neutral-50"><%= h(comment.author_name) %></span>
+            <span class="text-xs text-neutral-400 dark:text-neutral-500"><%= time_ago_in_words(comment.created_at) %> ago</span>
+          </div>
+          <p class="mt-2 leading-7 text-neutral-700 dark:text-neutral-300 whitespace-pre-wrap"><%= h(comment.body) %></p>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="mt-4 text-sm text-neutral-500 dark:text-neutral-400"><%= t("posts.show.no_comments") %></p>
+  <% end %>
+
+  <div id="comment-form" class="mt-10">
+    <%= form_with url: post_comments_path(post), class: "space-y-5" do |f| %>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <%= f.label :author_name, t("comments.form.name_label"),
+                      class: "block text-sm font-medium text-neutral-700 dark:text-neutral-300" %>
+          <%= f.text_field :author_name,
+                           required: true,
+                           placeholder: t("comments.form.name_placeholder"),
+                           class: "mt-2 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-950 shadow-sm focus:border-blue-600 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50" %>
+        </div>
+
+        <div>
+          <%= f.label :author_email, t("comments.form.email_label"),
+                      class: "block text-sm font-medium text-neutral-700 dark:text-neutral-300" %>
+          <%= f.email_field :author_email,
+                            placeholder: t("comments.form.email_placeholder"),
+                            class: "mt-2 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-950 shadow-sm focus:border-blue-600 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50" %>
+        </div>
+      </div>
+
+      <div>
+        <%= f.label :body, t("comments.form.body_label"),
+                    class: "block text-sm font-medium text-neutral-700 dark:text-neutral-300" %>
+        <%= f.text_area :body,
+                        required: true,
+                        rows: 4,
+                        placeholder: t("comments.form.body_placeholder"),
+                        class: "mt-2 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-950 shadow-sm focus:border-blue-600 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50" %>
+      </div>
+
+      <%= f.submit t("comments.form.submit"),
+                   class: "rounded-md bg-neutral-950 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 dark:bg-neutral-100 dark:text-neutral-950 dark:hover:bg-blue-200" %>
+    <% end %>
+  </div>
+</section>

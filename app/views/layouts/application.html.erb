@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="<%= I18n.locale %>" class="h-full">
   <head>
     <title><%= content_for(:title) || "Blog" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -21,14 +21,10 @@
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
@@ -37,15 +33,21 @@
     <header class="border-b border-neutral-200/80 bg-stone-50/90 backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/90">
       <div class="mx-auto flex max-w-5xl items-center justify-between px-5 py-5">
         <nav class="flex items-center gap-6 text-sm">
-          <%= link_to "Blog", root_path, class: "font-semibold tracking-wide text-neutral-950 dark:text-neutral-50" %>
+          <%= link_to t("nav.home"), root_path, class: "font-semibold tracking-wide text-neutral-950 dark:text-neutral-50" %>
         </nav>
 
-        <button type="button"
-                class="rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-700 hover:border-neutral-500 hover:text-neutral-950 dark:border-neutral-700 dark:text-neutral-300 dark:hover:border-neutral-500 dark:hover:text-neutral-50"
-                data-theme-toggle
-                aria-label="Toggle color theme">
-          Theme
-        </button>
+        <div class="flex items-center gap-2">
+          <%= link_to t("nav.locale_toggle"),
+                      set_locale_path(locale: I18n.locale == :en ? :pt : :en),
+                      class: "rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-700 hover:border-neutral-500 hover:text-neutral-950 dark:border-neutral-700 dark:text-neutral-300 dark:hover:border-neutral-500 dark:hover:text-neutral-50" %>
+
+          <button type="button"
+                  class="rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-700 hover:border-neutral-500 hover:text-neutral-950 dark:border-neutral-700 dark:text-neutral-300 dark:hover:border-neutral-500 dark:hover:text-neutral-50"
+                  data-theme-toggle
+                  aria-label="Toggle color theme">
+            Theme
+          </button>
+        </div>
       </div>
     </header>
 

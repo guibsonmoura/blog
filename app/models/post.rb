@@ -2,6 +2,8 @@ class Post < ApplicationRecord
   belongs_to :user
 
   has_one_attached :cover_image
+  has_many :comments, dependent: :destroy
+  has_many :reactions, dependent: :destroy
 
   enum :status, { draft: 0, published: 1 }, default: :draft
 
