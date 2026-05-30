@@ -1,4 +1,25 @@
 pt:
+  dates:
+    unpublished: "Não publicado"
+
+  date:
+    formats:
+      long: "%-d de %B de %Y"
+    month_names:
+      - ~
+      - janeiro
+      - fevereiro
+      - março
+      - abril
+      - maio
+      - junho
+      - julho
+      - agosto
+      - setembro
+      - outubro
+      - novembro
+      - dezembro
+
   nav:
     home: "Blog"
     locale_toggle: "EN"
