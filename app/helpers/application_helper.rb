@@ -4,8 +4,8 @@ module ApplicationHelper
   end
 
   def display_date(time)
-    return "Unpublished" if time.blank?
+    return I18n.t("dates.unpublished") if time.blank?
 
-    time.to_date.to_fs(:long)
+    I18n.l(time.to_date, format: :long)
   end
 end

@@ -1,12 +1,15 @@
 class Post < ApplicationRecord
   belongs_to :user
 
-  has_one_attached :cover_image
+  has_many :comments, dependent: :destroy
+  has_many :reactions, dependent: :destroy
 
   enum :status, { draft: 0, published: 1 }, default: :draft
 
+  before_validation :extract_from_markdown, prepend: true
   before_validation :normalize_slug
   before_validation :assign_published_at
+  after_save :enqueue_translation, if: :saved_change_to_status?
 
   scope :recent_first, -> { order(published_at: :desc, created_at: :desc) }
   scope :visible, -> { published.where("published_at <= ?", Time.current).recent_first }
@@ -18,7 +21,6 @@ class Post < ApplicationRecord
                    format: { with: /\A[a-z0-9]+(?:-[a-z0-9]+)*\z/ }
   validates :excerpt, presence: true, length: { maximum: 500 }
   validates :body_markdown, presence: true
-  validate :cover_image_type_and_size
 
   def to_param
     slug
@@ -28,7 +30,45 @@ class Post < ApplicationRecord
     MarkdownRenderer.render(body_markdown)
   end
 
+  def localized_title
+    I18n.locale == :pt || title_en.blank? ? title : title_en
+  end
+
+  def localized_excerpt
+    I18n.locale == :pt || excerpt_en.blank? ? excerpt : excerpt_en
+  end
+
+  def localized_body
+    source = I18n.locale == :pt || body_markdown_en.blank? ? body_markdown : body_markdown_en
+    MarkdownRenderer.render(source)
+  end
+
   private
+
+  def enqueue_translation
+    TranslatePostJob.perform_later(id) if published?
+  end
+
+  def extract_from_markdown
+    return if body_markdown.blank?
+
+    lines = body_markdown.strip.lines
+    title_line = lines.find { |l| l.match?(/\A#\s+\S/) }
+    return unless title_line
+
+    self.title = title_line.sub(/\A#\s+/, "").strip
+
+    rest = lines.drop(lines.index(title_line) + 1)
+    para = []
+    rest.each do |line|
+      break if line.strip == "---"
+      next  if line.strip.empty? && para.empty?
+      break if line.strip.empty? && para.any?
+      next  if line.match?(/\A#+\s/)
+      para << line.strip
+    end
+    self.excerpt = para.join(" ").strip.truncate(500) if para.any?
+  end
 
   def normalize_slug
     source = slug.presence || title
@@ -38,17 +78,5 @@ class Post < ApplicationRecord
   def assign_published_at
     self.published_at ||= Time.current if published?
     self.published_at = nil if draft?
-  end
-
-  def cover_image_type_and_size
-    return unless cover_image.attached?
-
-    unless cover_image.content_type.in?(%w[image/png image/jpeg image/webp image/gif])
-      errors.add(:cover_image, "must be a PNG, JPG, WebP, or GIF")
-    end
-
-    if cover_image.byte_size > 5.megabytes
-      errors.add(:cover_image, "must be smaller than 5 MB")
-    end
   end
 end

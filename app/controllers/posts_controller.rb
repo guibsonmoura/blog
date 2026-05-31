@@ -3,13 +3,15 @@ class PostsController < ApplicationController
 
   def index
     @page = [ params.fetch(:page, 1).to_i, 1 ].max
-    posts = Post.visible.includes(:user, cover_image_attachment: :blob)
+    posts = Post.visible.includes(:reactions, :comments)
 
     @total_pages = (posts.count.to_f / POSTS_PER_PAGE).ceil
     @posts = posts.limit(POSTS_PER_PAGE).offset((@page - 1) * POSTS_PER_PAGE)
   end
 
   def show
-    @post = Post.visible.includes(:user, cover_image_attachment: :blob).find_by!(slug: params[:id])
+    @post = Post.visible
+                .includes(:reactions, :comments)
+                .find_by!(slug: params[:id])
   end
 end

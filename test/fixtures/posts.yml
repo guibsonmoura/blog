@@ -4,7 +4,11 @@ published:
   slug: published-post
   excerpt: A public excerpt.
   body_markdown: |
-    # Published
+    # Published Post
+
+    A public excerpt.
+
+    ---
 
     This post is visible.
   status: 1
@@ -16,7 +20,11 @@ draft:
   slug: draft-post
   excerpt: A draft excerpt.
   body_markdown: |
-    # Draft
+    # Draft Post
+
+    A draft excerpt.
+
+    ---
 
     This post is private.
   status: 0

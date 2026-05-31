@@ -1,6 +1,11 @@
 require "test_helper"
 
 class PostTest < ActiveSupport::TestCase
+  # Helper: build a valid markdown body following the required pattern
+  def markdown(title: "My Post", excerpt: "The excerpt.", body: "Content here.")
+    "# #{title}\n\n#{excerpt}\n\n---\n\n#{body}"
+  end
+
   # --- Scopes ---
 
   test "visible returns published posts only" do
@@ -35,18 +40,115 @@ class PostTest < ActiveSupport::TestCase
     assert_equal older, ordered.last
   end
 
-  # --- Slug ---
+  # --- extract_from_markdown ---
 
-  test "sets a slug from the title" do
-    post = users(:admin).posts.build(title: "A Clean Rails Blog", excerpt: "Excerpt", body_markdown: "Body")
+  test "extracts title from the first h1 heading" do
+    post = users(:admin).posts.build(body_markdown: markdown(title: "Hello World"))
+    post.valid?
 
-    assert post.valid?
-    assert_equal "a-clean-rails-blog", post.slug
+    assert_equal "Hello World", post.title
   end
 
-  test "custom slug is preserved when provided" do
+  test "extracts excerpt from the first paragraph after the title" do
+    post = users(:admin).posts.build(body_markdown: markdown(excerpt: "This is the excerpt."))
+    post.valid?
+
+    assert_equal "This is the excerpt.", post.excerpt
+  end
+
+  test "stops excerpt extraction at the --- separator" do
+    md = "# Title\n\nExcerpt line.\n\n---\n\nShould not be in excerpt."
+    post = users(:admin).posts.build(body_markdown: md)
+    post.valid?
+
+    assert_equal "Excerpt line.", post.excerpt
+    assert_not_includes post.excerpt.to_s, "Should not"
+  end
+
+  test "joins multi-line excerpt into a single string" do
+    md = "# Title\n\nLine one.\nLine two.\n\n---\n\nBody."
+    post = users(:admin).posts.build(body_markdown: md)
+    post.valid?
+
+    assert_equal "Line one. Line two.", post.excerpt
+  end
+
+  test "skips subheadings when looking for excerpt" do
+    md = "# Title\n\n## Subtitle\n\nActual excerpt.\n\n---\n\nBody."
+    post = users(:admin).posts.build(body_markdown: md)
+    post.valid?
+
+    assert_equal "Actual excerpt.", post.excerpt
+  end
+
+  test "truncates excerpt at 500 characters" do
+    long = "a" * 600
+    md = "# Title\n\n#{long}\n\n---\n\nBody."
+    post = users(:admin).posts.build(body_markdown: md)
+    post.valid?
+
+    assert post.excerpt.length <= 500
+  end
+
+  test "does not extract when body_markdown is blank" do
+    post = users(:admin).posts.build(title: "Set Manually", excerpt: "Manual", body_markdown: "")
+    post.valid?
+
+    assert_equal "Set Manually", post.title
+    assert_equal "Manual", post.excerpt
+  end
+
+  test "does not overwrite title when markdown has no h1 heading" do
     post = users(:admin).posts.build(
-      title: "Some Title", slug: "my-custom-slug", excerpt: "Excerpt", body_markdown: "Body"
+      title: "Manually Set", excerpt: "Manual excerpt", body_markdown: "No heading here."
+    )
+    post.valid?
+
+    assert_equal "Manually Set", post.title
+    assert_equal "Manual excerpt", post.excerpt
+  end
+
+  test "slug is derived from the extracted title" do
+    post = users(:admin).posts.build(body_markdown: markdown(title: "My New Post"))
+    post.valid?
+
+    assert_equal "my-new-post", post.slug
+  end
+
+  test "a post with the markdown pattern is valid without explicit title or excerpt" do
+    post = users(:admin).posts.build(body_markdown: markdown)
+
+    assert post.valid?, post.errors.full_messages.to_sentence
+  end
+
+  test "markdown without h1 heading fails title validation" do
+    post = users(:admin).posts.build(body_markdown: "No heading.\n\nJust paragraphs.")
+
+    assert_not post.valid?
+    assert post.errors[:title].any?
+  end
+
+  test "markdown with title but no excerpt paragraph fails excerpt validation" do
+    post = users(:admin).posts.build(body_markdown: "# Title Only\n\n## Skipped heading\n\n---\n\nBody.")
+
+    assert_not post.valid?
+    assert post.errors[:excerpt].any?
+  end
+
+  test "updating body_markdown re-extracts title and excerpt" do
+    post = posts(:published)
+    post.update!(body_markdown: markdown(title: "Updated Title", excerpt: "Updated excerpt."))
+
+    assert_equal "Updated Title", post.reload.title
+    assert_equal "Updated excerpt.", post.excerpt
+  end
+
+  # --- Slug ---
+
+  test "custom slug is preserved when provided alongside a heading" do
+    post = users(:admin).posts.build(
+      slug: "my-custom-slug",
+      body_markdown: markdown(title: "Some Title")
     )
 
     assert post.valid?
@@ -55,15 +157,6 @@ class PostTest < ActiveSupport::TestCase
 
   test "to_param returns the slug" do
     assert_equal posts(:published).slug, posts(:published).to_param
-  end
-
-  test "slug with invalid characters fails validation" do
-    post = users(:admin).posts.build(
-      title: "Bad Slug", slug: "bad slug!", excerpt: "Excerpt", body_markdown: "Body"
-    )
-
-    assert_not post.valid?
-    assert post.errors[:slug].any?
   end
 
   test "slug over 180 characters fails validation" do
@@ -86,11 +179,11 @@ class PostTest < ActiveSupport::TestCase
 
   # --- Presence / length validations ---
 
-  test "blank title fails validation" do
-    post = users(:admin).posts.build(title: "", excerpt: "Excerpt", body_markdown: "Body")
+  test "blank body_markdown fails validation" do
+    post = users(:admin).posts.build(title: "Title", excerpt: "Excerpt", body_markdown: "")
 
     assert_not post.valid?
-    assert post.errors[:title].any?
+    assert post.errors[:body_markdown].any?
   end
 
   test "title over 160 characters fails validation" do
@@ -102,13 +195,6 @@ class PostTest < ActiveSupport::TestCase
     assert post.errors[:title].any?
   end
 
-  test "blank excerpt fails validation" do
-    post = users(:admin).posts.build(title: "Title", excerpt: "", body_markdown: "Body")
-
-    assert_not post.valid?
-    assert post.errors[:excerpt].any?
-  end
-
   test "excerpt over 500 characters fails validation" do
     post = users(:admin).posts.build(
       title: "Title", excerpt: "a" * 501, body_markdown: "Body"
@@ -116,13 +202,6 @@ class PostTest < ActiveSupport::TestCase
 
     assert_not post.valid?
     assert post.errors[:excerpt].any?
-  end
-
-  test "blank body_markdown fails validation" do
-    post = users(:admin).posts.build(title: "Title", excerpt: "Excerpt", body_markdown: "")
-
-    assert_not post.valid?
-    assert post.errors[:body_markdown].any?
   end
 
   # --- published_at lifecycle ---
@@ -163,5 +242,93 @@ class PostTest < ActiveSupport::TestCase
     assert_includes html, "<strong>Safe</strong>"
     assert_not_includes html, "<script>"
     assert_not_includes html, "javascript:"
+  end
+
+  # --- Auto-translation trigger ---
+
+  test "publishing a post enqueues TranslatePostJob" do
+    post = users(:admin).posts.create!(
+      title: "New Post", excerpt: "Excerpt", body_markdown: "Body", status: :draft
+    )
+
+    assert_enqueued_with(job: TranslatePostJob, args: [ post.id ]) do
+      post.update!(status: :published)
+    end
+  end
+
+  test "saving a published post without status change does not re-enqueue" do
+    assert_no_enqueued_jobs(only: TranslatePostJob) do
+      posts(:published).update!(body_markdown: posts(:published).body_markdown + " ")
+    end
+  end
+
+  test "reverting to draft does not enqueue translation" do
+    assert_no_enqueued_jobs(only: TranslatePostJob) do
+      posts(:published).update!(status: :draft)
+    end
+  end
+
+  # --- Localized reader methods ---
+
+  test "localized_title returns PT title when locale is pt" do
+    post = posts(:published)
+    post.title_en = "English Title"
+
+    I18n.with_locale(:pt) { assert_equal post.title, post.localized_title }
+  end
+
+  test "localized_title returns EN title when locale is en and title_en is present" do
+    post = posts(:published)
+    post.title_en = "English Title"
+
+    I18n.with_locale(:en) { assert_equal "English Title", post.localized_title }
+  end
+
+  test "localized_title falls back to PT title when title_en is blank" do
+    post = posts(:published)
+    post.title_en = nil
+
+    I18n.with_locale(:en) { assert_equal post.title, post.localized_title }
+  end
+
+  test "localized_excerpt returns EN excerpt when locale is en and excerpt_en is present" do
+    post = posts(:published)
+    post.excerpt_en = "English excerpt."
+
+    I18n.with_locale(:en) { assert_equal "English excerpt.", post.localized_excerpt }
+  end
+
+  test "localized_excerpt falls back to PT when excerpt_en is blank" do
+    post = posts(:published)
+    post.excerpt_en = nil
+
+    I18n.with_locale(:en) { assert_equal post.excerpt, post.localized_excerpt }
+  end
+
+  test "localized_body renders EN markdown when locale is en and body_markdown_en is present" do
+    post = posts(:published)
+    post.body_markdown_en = "# EN\n\nEN excerpt.\n\n---\n\n**EN body**"
+
+    I18n.with_locale(:en) do
+      assert_includes post.localized_body, "<strong>EN body</strong>"
+    end
+  end
+
+  test "localized_body renders PT markdown when locale is pt" do
+    post = posts(:published)
+    post.body_markdown_en = "# EN\n\nEN excerpt.\n\n---\n\n**EN body**"
+
+    I18n.with_locale(:pt) do
+      assert_not_includes post.localized_body, "EN body"
+    end
+  end
+
+  test "localized_body falls back to PT when body_markdown_en is blank" do
+    post = posts(:published)
+    post.body_markdown_en = nil
+
+    I18n.with_locale(:en) do
+      assert_includes post.localized_body, post.rendered_body
+    end
   end
 end

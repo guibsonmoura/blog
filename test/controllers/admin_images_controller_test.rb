@@ -28,8 +28,8 @@ class AdminImagesControllerTest < ActionDispatch::IntegrationTest
     }
 
     markdown = JSON.parse(response.body).fetch("markdown")
-    assert_not_match "minio", markdown
-    assert_not_match "9000", markdown
+    assert_no_match "minio", markdown
+    assert_no_match "9000", markdown
   end
 
   test "admin cannot upload unsupported file types" do
