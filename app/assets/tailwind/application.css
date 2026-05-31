@@ -124,11 +124,16 @@
   }
 
   .markdown img {
-    @apply rounded-md border border-neutral-200 dark:border-neutral-800;
+    @apply max-w-full rounded-md border border-neutral-200 dark:border-neutral-800;
+    height: auto;
   }
 
+  /* Tables scroll horizontally on narrow screens instead of breaking layout */
   .markdown table {
     @apply w-full border-collapse text-left text-sm;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .markdown th,

@@ -3,9 +3,9 @@
 <% word_count = @post.body_content.split.size %>
 <% reading_minutes = [(word_count / 200), 1].max %>
 
-<%# Reading progress bar — fixed at top, under the sticky header %>
+<%# Reading progress bar — fixed under the sticky header %>
 <div id="reading-progress"
-     class="fixed left-0 right-0 top-[57px] z-30 h-0.5 bg-neutral-200 dark:bg-neutral-800"
+     class="fixed left-0 right-0 top-[53px] z-30 h-0.5 bg-neutral-200 sm:top-[61px] dark:bg-neutral-800"
      aria-hidden="true">
   <div id="reading-progress-bar"
        class="h-full w-0 bg-blue-600 transition-all duration-75 dark:bg-blue-400"></div>
@@ -14,34 +14,34 @@
 <div class="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_220px]">
 
   <article class="min-w-0" id="post-article">
-    <header>
-      <div class="flex items-center gap-3 text-xs text-neutral-400 dark:text-neutral-500">
-        <span><%= display_date(@post.published_at) %></span>
-        <span>·</span>
-        <span><%= reading_minutes %> min read</span>
-        <span class="ml-auto">
-          <button type="button"
-                  data-copy-url="<%= post_url(@post) %>"
-                  class="flex items-center gap-1 rounded px-2 py-1 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                  aria-label="Copy link">
-            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-            </svg>
-            <span class="copy-label">Copy link</span>
-          </button>
-        </span>
-      </div>
 
-      <h1 class="reading-title mt-4 text-center text-4xl font-semibold leading-tight">
-        <%= @post.localized_title %>
-      </h1>
+    <%# Meta row — wraps gracefully on mobile %>
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-400 dark:text-neutral-500">
+      <time><%= display_date(@post.published_at) %></time>
+      <span aria-hidden="true">·</span>
+      <span><%= reading_minutes %> min read</span>
+      <button type="button"
+              data-copy-url="<%= post_url(@post) %>"
+              class="ml-auto inline-flex min-h-[44px] items-center gap-1.5 rounded px-2 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              aria-label="Copy link">
+        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        <span class="copy-label">Copy link</span>
+      </button>
+    </div>
 
-      <p class="reading-excerpt mt-6 text-justify">
-        <%= @post.localized_excerpt %>
-      </p>
-    </header>
+    <%# Title — smaller on mobile, larger on desktop %>
+    <h1 class="reading-title mt-4 text-center text-2xl font-semibold leading-tight sm:text-3xl lg:text-4xl">
+      <%= @post.localized_title %>
+    </h1>
 
-    <div class="markdown mt-12">
+    <p class="reading-excerpt mt-5 text-justify text-base sm:text-[18px]">
+      <%= @post.localized_excerpt %>
+    </p>
+
+    <%# Body — constrained to max-w-3xl for comfortable line length %>
+    <div class="markdown mt-10 max-w-3xl">
       <%= @post.localized_body %>
     </div>
   </article>
@@ -49,7 +49,7 @@
   <% if toc.any? %>
     <aside class="hidden lg:block">
       <div class="sticky top-20">
-        <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-neutral-500 dark:text-neutral-400">Contents</p>
+        <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">Contents</p>
         <nav class="space-y-1">
           <% toc.each do |item| %>
             <a href="#<%= item[:anchor] %>"
