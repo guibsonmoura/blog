@@ -13,6 +13,12 @@ Requires Docker and the [Dev Containers](https://marketplace.visualstudio.com/it
    ```
 5. Open [http://localhost:3000](http://localhost:3000).
 
+> **Auto-translation:** The `translator` service (Opus-MT) starts in the background alongside the
+> app — it does **not** block the devcontainer from opening. The model takes ~60 seconds to load
+> after the stack comes up. Publishing a post before then will queue the translation job; it retries
+> automatically until the translator is healthy and then completes. Check status with
+> `docker ps` — look for `blog-translator (healthy)`.
+
 Forwarded ports:
 
 | Port | Service |
