@@ -11,6 +11,11 @@
 @custom-variant xs (@media (width >= 375px));
 
 @layer base {
+  /* box-sizing: border-box prevents padding from adding to element width */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
   :root {
     --reading-bg: #FAFAF7;
     --reading-text: #222222;
@@ -24,15 +29,15 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* overflow: clip — prevents x-scroll without creating a scroll container,
-       so position:sticky still works. overflow:hidden on body alone is ignored
-       by browsers (they propagate it to the viewport instead). */
+    /* hidden = universal fallback; clip = modern (keeps position:sticky working) */
+    overflow-x: hidden;
     overflow-x: clip;
   }
 
   body {
     width: 100%;
-    /* Belt-and-suspenders: clip on body too */
+    max-width: 100%;
+    overflow-x: hidden;
     overflow-x: clip;
   }
 
