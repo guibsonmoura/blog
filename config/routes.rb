@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   root "posts#index"
 
   get "set_locale/:locale", to: "locales#update", as: :set_locale
+  get "about",              to: "pages#about",   as: :about
+  get "feed.xml",           to: "feed#index",    as: :feed, defaults: { format: :xml }
+  get "search",             to: "search#index",  as: :search
 
   resources :posts, only: [ :index, :show ] do
     resources :comments, only: [ :create ]

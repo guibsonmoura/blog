@@ -13,6 +13,7 @@ class Post < ApplicationRecord
 
   scope :recent_first, -> { order(published_at: :desc, created_at: :desc) }
   scope :visible, -> { published.where("published_at <= ?", Time.current).recent_first }
+  scope :search, ->(q) { where("title ILIKE :q OR excerpt ILIKE :q OR body_markdown ILIKE :q", q: "%#{sanitize_sql_like(q)}%") }
 
   validates :title, presence: true, length: { maximum: 160 }
   validates :slug, presence: true,
