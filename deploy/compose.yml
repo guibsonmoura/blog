@@ -1,69 +1,65 @@
-# Production compose — lives on the server at /opt/blog/compose.yml
-# The CD pipeline SSHes in and runs:  docker compose pull app && docker compose up -d app
+# Production stack for Docker Swarm — lives on the VPS at /home/guibson/projetos/blog/compose.yml
 #
-# One-time setup on the server:
-#   mkdir -p /opt/blog && cd /opt/blog
-#   # copy this file as compose.yml and create .env from deploy/.env.example
-#   docker login ghcr.io        # with a PAT that has read:packages (or make the image public)
-#   docker compose up -d
+# The CD pipeline SSHes in (user guibson) and runs:
+#   set -a; . ./.env; set +a
+#   docker stack deploy -c compose.yml blog --resolve-image always
+#
+# One-time VPS setup:
+#   docker swarm init                      # if this node isn't already a swarm manager
+#   mkdir -p /home/guibson/projetos/blog
+#   # copy this file + create .env from deploy/.env.example
+#   docker stack deploy -c compose.yml blog
+#
+# NOTE: `docker stack deploy` ignores `env_file`, so values come from `environment:`
+#       interpolation — the deploy step sources ./.env before deploying.
 
 services:
   app:
-    image: ghcr.io/guibsonmoura/blog:latest
-    restart: unless-stopped
-    env_file: .env
+    image: ghcr.io/guibsonmoura/blog:${IMAGE_TAG:-latest}
+    environment:
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      WORKSPACE_DATABASE_PASSWORD: ${WORKSPACE_DATABASE_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      ACTIVE_STORAGE_SERVICE: ${ACTIVE_STORAGE_SERVICE:-local}
+      RAILS_LOG_LEVEL: ${RAILS_LOG_LEVEL:-info}
     ports:
-      - "80:80"
-    depends_on:
-      db:
-        condition: service_healthy
+      - target: 80
+        published: 3010
+        protocol: tcp
+        mode: ingress
     volumes:
       - storage:/rails/storage
     networks:
       - blog
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any        # retry until the db service is reachable
+        delay: 5s
+      update_config:
+        order: start-first    # zero-downtime rolling update
 
   db:
     image: postgres:17
-    restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: workspace
+      POSTGRES_PASSWORD: ${WORKSPACE_DATABASE_PASSWORD}
+      POSTGRES_DB: workspace_production
     volumes:
-      - postgres-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - pgdata:/var/lib/postgresql/data
     networks:
       - blog
-
-  # Optional — only if uploads are served from this same box.
-  # minio:
-  #   image: minio/minio
-  #   restart: unless-stopped
-  #   command: server /data --console-address ":9001"
-  #   environment:
-  #     MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
-  #     MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
-  #   volumes:
-  #     - minio-data:/data
-  #   networks:
-  #     - blog
-
-  # Optional — PT→EN auto-translation service (see docs/auto-translation.md)
-  # translator:
-  #   build:
-  #     context: https://github.com/guibsonmoura/blog.git#master:translate-service
-  #   restart: unless-stopped
-  #   networks:
-  #     - blog
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
 
 networks:
   blog:
+    driver: overlay
 
 volumes:
-  postgres-data:
+  pgdata:
   storage:
-  # minio-data:

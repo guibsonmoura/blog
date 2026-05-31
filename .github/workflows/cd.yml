@@ -55,21 +55,26 @@ jobs:
           generate_release_notes: true
 
   deploy:
-    name: Deploy to server over SSH
+    name: Deploy to Swarm over SSH
     needs: release
     runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: ${{ needs.release.outputs.version }}
     steps:
-      - name: Pull image and recreate container on the server
+      - name: Roll the swarm stack to the new image
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
+          envs: IMAGE_TAG
           script: |
             set -e
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            cd /opt/blog
-            docker compose pull app
-            docker compose up -d app
+            cd /home/guibson/projetos/blog
+            # Load .env (swarm stack deploy ignores env_file), then override the image tag
+            set -a; . ./.env; set +a
+            export IMAGE_TAG="${IMAGE_TAG}"
+            # Public GHCR image — no docker login needed
+            docker stack deploy -c compose.yml blog --resolve-image always --detach=false
             docker image prune -f

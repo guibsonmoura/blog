@@ -5,88 +5,105 @@
 | Workflow | File | Trigger | What it does |
 |----------|------|---------|--------------|
 | **CI** | `.github/workflows/ci.yml` | PRs + push to `master` | brakeman, bundler-audit, importmap audit, rubocop, full test suite |
-| **CD** | `.github/workflows/cd.yml` | push to `master` + manual (`workflow_dispatch`) | Build → release → push to GHCR → SSH deploy |
+| **CD** | `.github/workflows/cd.yml` | push to `master` + manual (`workflow_dispatch`) | Build → release → push to GHCR → Docker Swarm deploy |
 
 ## CD flow
 
 On every push to `master` (or a manual run), the CD pipeline:
 
-1. **Computes a version** — CalVer `vYYYY.MM.DD-<run_number>` (always unique, ordered, no manual bumping).
-2. **Builds the production image** from `Dockerfile` and tags it `:latest` **and** `:<version>`.
-3. **Pushes both tags to GHCR** → `ghcr.io/guibsonmoura/blog`.
-4. **Creates a GitHub Release + git tag** for the version (auto-generated release notes).
-5. **Deploys over SSH** — connects to the server, logs into GHCR, `docker compose pull app`, `docker compose up -d app`, prunes old images.
+1. **Computes a version** — CalVer `vYYYY.MM.DD-<run_number>` (unique, ordered, no manual bumping).
+2. **Builds the production image** from `Dockerfile`, tagged `:latest` **and** `:<version>`.
+3. **Pushes both tags to GHCR** → `ghcr.io/guibsonmoura/blog` (public image — see below).
+4. **Creates a GitHub Release + git tag** for the version.
+5. **Deploys to the VPS over SSH** — sources `.env`, runs `docker stack deploy` to roll the Swarm service to the new image.
 
 ```
 push to master
-   │
-   ├─ release job ─ build ─ push ghcr.io/guibsonmoura/blog:{latest,vX} ─ create GitHub Release
-   │
-   └─ deploy job (needs release) ─ ssh ─ docker compose pull app ─ up -d app
+   ├─ release ─ build ─ push ghcr.io/guibsonmoura/blog:{latest,vX} ─ GitHub Release
+   └─ deploy (needs release) ─ ssh guibson@148.230.76.215:2222
+        └─ docker stack deploy -c compose.yml blog   (rolling update)
 ```
 
-## Required GitHub secrets
+## Target server
 
-Set under **Settings → Secrets and variables → Actions**:
+| | |
+|---|---|
+| Host / port | `148.230.76.215` : `2222` (SSH) |
+| User | `guibson` |
+| Stack directory | `/home/guibson/projetos/blog/` |
+| Published app port | **3010** → container 80 |
+| App URL | `http://148.230.76.215:3010` |
+| Orchestrator | Docker Swarm (`docker stack deploy`) |
 
-| Secret | Needed by | Purpose |
-|--------|-----------|---------|
-| `SSH_HOST` | deploy | Server IP / hostname |
-| `SSH_USER` | deploy | SSH user (must be in the `docker` group) |
-| `SSH_KEY` | deploy | Private key (PEM) for that user |
-| `SSH_PORT` | deploy | Optional — defaults to 22 |
-| `GHCR_TOKEN` | deploy | PAT with `read:packages` so the **server** can pull the image (only if the package is private — see below) |
+## GitHub secrets (already set)
 
-The **build/push/release** job needs **no extra secrets** — it uses the built-in `GITHUB_TOKEN`. So releases and GHCR images work immediately; only the `deploy` job waits on the SSH secrets.
+| Secret | Purpose |
+|--------|---------|
+| `SSH_HOST` | `148.230.76.215` |
+| `SSH_PORT` | `2222` |
+| `SSH_USER` | `guibson` |
+| `SSH_KEY` | private key (`id_ed25519`) for `guibson` |
 
-> The `deploy` job will **fail until the SSH secrets exist** — that's expected, not a bug. Until then, every push still produces a release + a pushed image you can deploy manually.
+No registry secret is needed — the GHCR image is **public**, and the build/push uses the built-in `GITHUB_TOKEN`.
 
-## GHCR image visibility
+## GHCR image must be public
 
-The server has to pull `ghcr.io/guibsonmoura/blog:latest`. Two options:
-
-- **Public package (simplest):** GitHub → repo → Packages → the `blog` package → Package settings → change visibility to **Public**. Then the server needs no login and you can drop `GHCR_TOKEN`.
-- **Private package:** create a PAT with `read:packages`, store it as `GHCR_TOKEN`; the deploy step runs `docker login ghcr.io` with it on the server.
-
-## One-time server setup
+The VPS pulls `ghcr.io/guibsonmoura/blog` with no auth, so the package has to be public. The package only exists **after the first push to `master`**, so make it public once, right after:
 
 ```bash
-# 1. Install Docker Engine + compose plugin (Ubuntu example)
-curl -fsSL https://get.docker.com | sh
-sudo usermod -aG docker "$USER"   # log out/in after this
-
-# 2. Lay down the deploy files
-sudo mkdir -p /opt/blog && sudo chown "$USER" /opt/blog
-cd /opt/blog
-# copy deploy/compose.yml from this repo to /opt/blog/compose.yml
-# copy deploy/.env.example to /opt/blog/.env and fill in real values
-cp /path/to/repo/deploy/compose.yml ./compose.yml
-cp /path/to/repo/deploy/.env.example ./.env && nano .env
-
-# 3. Auth to GHCR (skip if the package is public)
-echo "<GHCR_PAT>" | docker login ghcr.io -u guibsonmoura --password-stdin
-
-# 4. First boot
-docker compose up -d
+gh api --method PATCH /user/packages/container/blog/visibility -f visibility=public
 ```
 
-After this, every push to `master` auto-deploys.
+Or: GitHub → your profile → Packages → `blog` → Package settings → Change visibility → **Public**.
+
+## One-time VPS setup
+
+As `guibson` on `148.230.76.215`:
+
+```bash
+# 1. Docker + swarm (guibson must be in the docker group)
+docker swarm init                 # skip if this node is already a swarm manager
+
+# 2. Stack directory + files
+mkdir -p /home/guibson/projetos/blog
+cd /home/guibson/projetos/blog
+# copy deploy/compose.yml here as compose.yml
+# copy deploy/.env.example here as .env and fill in real values:
+#   SECRET_KEY_BASE  (docker run --rm ghcr.io/guibsonmoura/blog:latest ./bin/rails secret)
+#   WORKSPACE_DATABASE_PASSWORD, JWT_SECRET
+nano .env
+
+# 3. First deploy
+set -a; . ./.env; set +a
+docker stack deploy -c compose.yml blog --resolve-image always
+```
+
+Verify:
+
+```bash
+docker service ls                 # blog_app 1/1, blog_db 1/1
+curl -sf http://localhost:3010/up # 200
+```
+
+After this, every push to `master` rolls the stack automatically.
+
+## What runs in the stack
+
+- **`blog_app`** — the Rails image on port 3010. `bin/docker-entrypoint` runs `db:prepare` on boot, creating/migrating `workspace_production` + the `_cache` / `_queue` / `_cable` databases (Solid Cache/Queue/Cable). Uploads go to the `storage` volume (`ACTIVE_STORAGE_SERVICE=local`).
+- **`blog_db`** — `postgres:17`, role `workspace`, data on the `pgdata` volume, internal-only (no published port).
 
 ## Rolling back
 
-Deploy a specific previous version instead of `latest`:
-
 ```bash
-cd /opt/blog
-docker pull ghcr.io/guibsonmoura/blog:v2026.05.30-42
-# point compose at that tag (edit image: tag) or:
-docker compose down app
-docker run -d --env-file .env -p 80:80 --network blog_blog \
-  ghcr.io/guibsonmoura/blog:v2026.05.30-42
+cd /home/guibson/projetos/blog
+set -a; . ./.env; set +a
+IMAGE_TAG=v2026.05.30-41 docker stack deploy -c compose.yml blog --resolve-image always
 ```
 
-Available versions are listed under the repo's **Releases** and **Packages** tabs.
+Available versions are under the repo's **Releases** and **Packages** tabs.
 
-## Database migrations
+## Notes
 
-The image's `bin/docker-entrypoint` runs `db:prepare` on boot, so migrations apply automatically when the new container starts. No manual migration step is needed in the pipeline.
+- The `deploy` job fails until the VPS is provisioned (swarm init + stack dir + `.env`) and the image is public — expected, not a bug. The build/release/push half works on the first merge regardless.
+- Env values are interpolated into the service spec, so they're visible via `docker service inspect`. For stronger isolation, migrate `SECRET_KEY_BASE` / `WORKSPACE_DATABASE_PASSWORD` to **Docker Swarm secrets** (`docker secret create` + `secrets:` in the stack + an entrypoint that exports them).
+- `docker stack deploy` ignores `env_file` by design — that's why the deploy step sources `.env` into the shell first.
