@@ -7,7 +7,7 @@ import { Controller } from "@hotwired/stimulus"
 // The server (`POST /posts/:id/reactions`) performs the same toggle; the UI
 // updates optimistically and rolls back on failure. See specs/reactions-card.md.
 export default class extends Controller {
-  static targets = ["card", "input", "tile", "emoji", "count", "total"]
+  static targets = ["input", "tile", "emoji", "count", "total"]
 
   connect() {
     this.reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -31,12 +31,10 @@ export default class extends Controller {
       input.checked = false
       this.bump(type, -1)
       this.selected = null
-      this.spin()
     } else {
       if (this.selected) this.bump(this.selected, -1)
       this.bump(type, +1)
       this.selected = type
-      this.spin()
       this.burst(input, type)
     }
 
@@ -100,19 +98,6 @@ export default class extends Controller {
   }
 
   // --- motion ----------------------------------------------------------------
-
-  // Spin the whole reactions card 360° on the Z axis (in-plane).
-  spin() {
-    if (this.reduceMotion || !this.hasCardTarget) return
-    const card = this.cardTarget
-    card.classList.remove("reaction-spin")
-    // force reflow so the animation can re-trigger on rapid clicks
-    void card.offsetWidth
-    card.classList.add("reaction-spin")
-    card.addEventListener("animationend", () => card.classList.remove("reaction-spin"), {
-      once: true,
-    })
-  }
 
   burst(input, type) {
     if (this.reduceMotion) return

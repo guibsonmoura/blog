@@ -181,16 +181,6 @@
   One-shot spin on the selected tile + a full-viewport emoji burst on react.
 */
 @layer components {
-  /* Spin the whole reactions card 360° around the Z axis (in-plane) once. */
-  @keyframes reaction-spin {
-    from { transform: rotateZ(0deg); }
-    to   { transform: rotateZ(360deg); }
-  }
-
-  .reaction-spin {
-    animation: reaction-spin 0.5s ease-in-out;
-  }
-
   /* Full-viewport burst layer: fixed, click-through, above content. */
   .reaction-burst {
     position: fixed;
@@ -225,9 +215,8 @@
     }
   }
 
-  /* Respect reduced-motion: no spin, no burst movement. */
+  /* Respect reduced-motion: no burst movement. */
   @media (prefers-reduced-motion: reduce) {
-    .reaction-spin { animation: none; }
     .reaction-burst-emoji { animation: none; opacity: 0; }
   }
 }

@@ -1,4 +1,4 @@
-# Spec — Reactions card redesign
+# Spec — Reactions section redesign
 
 Status: ready for implementation
 Branch: `improving-reacts`
@@ -6,9 +6,9 @@ Scope: **frontend + view only** — no database, model, route, or controller-log
 
 ## 1. Goal
 
-Turn the flat row of reaction "pills" into a single, comfortably-sized **card** that presents
-the six reactions as a **radio family** (pick one). Reacting should feel alive: the chosen tile
-**spins 360° and turns blue**, and a celebratory **full-viewport emoji burst** of the chosen
+Turn the flat row of reaction "pills" into a **flat section** that blends with the page (no boxed
+card) and presents the six reactions as a **radio family** (pick one). Reacting should feel alive:
+the chosen tile **turns blue**, and a celebratory **full-viewport emoji burst** of the chosen
 reaction floats up the screen and fades.
 
 The existing backend already models exactly one reaction per visitor (click active = remove,
@@ -38,19 +38,20 @@ the controller toggles server-side on `POST`. The redesigned controller JS must 
 
 ## 4. Visual / layout design
 
-### 4.1 The card
+### 4.1 The section (flat, blends with the page)
 
-A single bordered, rounded, padded container that follows the project's minimalist palette
-(neutral surfaces, blue = interactive; see the `tailwind-ui` skill).
+The reactions live as a **flat section**, not a boxed card — visually consistent with the sibling
+comments section (`app/views/posts/_comments.html.erb`). It sits directly on the page's default
+reading background (no `bg-white`/card fill, no rounded box, no shadow).
 
-- Container: `rounded-xl border` with `p-5 sm:p-6`, surface `bg-white dark:bg-neutral-900`,
-  border `border-neutral-200 dark:border-neutral-800`, subtle `shadow-sm`.
-- Width: flows with the article column (`max-w-3xl` content width) — full width of its parent,
-  not a fixed pixel size. "Good size" = generous internal padding + comfortable tile sizing,
-  not a cramped pill row.
-- Header row inside the card: keep the existing eyebrow label
-  (`t("posts.show.reactions_section")`, `text-sm uppercase tracking-[0.18em]`), and on the right a
-  small muted **total count** of all reactions (`Σ` of the six counts).
+- No container chrome: the `<section>` holds the header row + tile grid directly.
+- Top line: provided by the shared group wrapper in `app/views/posts/show.html.erb`
+  (`border-t border-neutral-200 pt-12 dark:border-neutral-800`), which sits above the reactions
+  section. No extra border is added inside the partial.
+- Width: flows with the article column (`max-w-3xl`).
+- Header row: the eyebrow label (`t("posts.show.reactions_section")`,
+  `text-sm uppercase tracking-[0.18em]`) on the left, and a small muted **total count** of all
+  reactions on the right.
 
 ### 4.2 The reaction tiles (radio family)
 
@@ -72,7 +73,7 @@ The six reactions render as a **radio group**:
 
 | State | Style |
 |---|---|
-| Idle | `border-neutral-200 bg-white text-neutral-700` (+ dark variants); hover lifts border to `neutral-400` and adds `-translate-y-0.5`. |
+| Idle | `border-neutral-200 bg-transparent text-neutral-700` (+ dark variants) — transparent so the page background shows through; hover lifts border to `neutral-400` and adds `-translate-y-0.5`. |
 | Focus-visible | blue focus ring (`ring-2 ring-blue-500 ring-offset-2`) on the label via `peer-focus-visible`. |
 | Selected (checked) | **blue**: `border-blue-500 bg-blue-50 text-blue-700` (`dark:border-blue-600 dark:bg-blue-950/40 dark:text-blue-300`) via `peer-checked:` utilities. |
 
@@ -81,16 +82,13 @@ state is correct even without JS (progressive enhancement).
 
 ## 5. Interactions / motion
 
-### 5.1 Spin + blue on click
+### 5.1 Selection (blue) on click
 
 When a reaction tile is activated (click / Enter / Space / arrow-select):
 
-1. The **whole reactions card spins 360° around the Z axis** (in-plane) once over ~500ms
-   (`transform: rotateZ(360deg)` via a one-shot `reaction-spin` keyframe class added to the card
-   container, then removed on `animationend`).
-2. The clicked tile transitions to the **blue selected** state. With the radio `peer-checked:`
-   approach this is automatic; JS only adds the transient spin class to the card.
-3. If the visitor re-clicks the already-selected tile, it **deselects** (server removes the
+1. The clicked tile transitions to the **blue selected** state. With the radio `peer-checked:`
+   approach this is automatic, even without JS. (No spin — the section stays still.)
+2. If the visitor re-clicks the already-selected tile, it **deselects** (server removes the
    reaction): radio is unchecked, tile returns to idle, count −1. (Radios don't natively toggle off,
    so JS handles the "click the checked one to clear it" case — see §6.)
 
@@ -111,8 +109,8 @@ On a **new selection or switch** (not on deselect), fire a celebratory burst:
 
 If `window.matchMedia("(prefers-reduced-motion: reduce)").matches`:
 
-- **No spin** (tile just changes to blue) and **no burst**. Selection/counts still update.
-- CSS `@media (prefers-reduced-motion: reduce)` also neutralizes the keyframe animations as a
+- **No burst**. Selection/counts still update (the tile just changes to blue).
+- CSS `@media (prefers-reduced-motion: reduce)` also neutralizes the burst animation as a
   belt-and-suspenders.
 
 ## 6. Behavior contract (JS, Stimulus `reactions_controller`)
@@ -126,7 +124,7 @@ Rewrite the controller around the radio inputs.
     (track `lastSelected`).
   - **Optimistic UI**: update the clicked tile count (+1), decrement the previously selected tile
     (−1) when switching, or −1 and uncheck when clicking the same one (deselect). Recompute `total`.
-  - Run spin on the affected tile (unless reduced motion). Fire burst on select/switch only.
+  - Fire the full-viewport burst on select/switch only (unless reduced motion).
   - `fetch(form_or_path, { method: "POST", headers: { X-CSRF-Token, Accept: text/html,
     Content-Type: x-www-form-urlencoded } })` to `post_reactions_path(post, reaction_type: type)`.
     The server toggles (same type → destroy, different → update, none → create). **Never DELETE.**
@@ -163,24 +161,23 @@ reactions:
 
 ## 9. CSS additions (`app/assets/tailwind/application.css`)
 
-- `@keyframes reaction-spin { to { transform: rotate(360deg) } }` + `.reaction-spin { animation:
-  reaction-spin .5s ease-in-out }`.
 - `@keyframes reaction-float` for the burst (translateY up + fade + slight rotate); `.reaction-burst-emoji`
-  base (absolute, will-change transform/opacity). Per-particle x-drift/rotation/scale set via inline
-  CSS custom properties from JS (`--dx`, `--rot`, `--scale`, `--delay`).
-- `@media (prefers-reduced-motion: reduce)` → `animation: none` for both.
+  base (absolute, will-change transform/opacity), `animation: reaction-float 5s ease-out forwards`.
+  Per-particle x-drift/rotation/scale set via inline CSS custom properties from JS (`--dx`, `--rot`,
+  `--scale`, `--delay`).
+- `@media (prefers-reduced-motion: reduce)` → `animation: none` for the burst.
 
 ## 10. Acceptance criteria
 
-1. Reactions render inside one padded, bordered, rounded **card** with the eyebrow label and a live
-   total count.
+1. Reactions render as a **flat section** (no boxed card) that sits on the page's default
+   background, under the existing top line, with the eyebrow label and a live total count.
 2. The six reactions are a **radio family** (`name="reaction"`); exactly one can be selected;
-   keyboard arrows move between them; the selected tile is **blue**.
-3. Clicking a reaction **spins that tile 360°** and turns it blue; clicking it again clears it.
+   keyboard arrows move between them; the selected tile is **blue**. Tiles are transparent/bordered.
+3. Clicking a reaction turns it blue (no spin); clicking it again clears it.
 4. Selecting/switching triggers a **full-viewport emoji burst** of the chosen emoji that floats up
-   and fades, then cleans itself up (no leftover DOM, no scrollbars introduced).
+   and fades over ~5s, then cleans itself up (no leftover DOM, no scrollbars introduced).
 5. Counts and total update optimistically and persist (verified by reload); failures roll back.
-6. With `prefers-reduced-motion: reduce`, no spin and no burst, but selection/counts still work.
+6. With `prefers-reduced-motion: reduce`, no burst, but selection/counts still work.
 7. Works in light and dark mode; no horizontal overflow at mobile widths (≥344px).
 8. `bin/rails test` (reaction model + controller tests) stays green — backend untouched.
 
