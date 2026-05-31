@@ -47,7 +47,7 @@ class Post < ApplicationRecord
     source = I18n.locale == :pt || body_markdown_en.blank? ? body_markdown : body_markdown_en
     strip_header(source).lines.filter_map do |line|
       if (m = line.match(/\A(##|###)\s+(.+)/))
-        { level: m[1].length, text: m[2].strip, anchor: heading_anchor(m[2].strip) }
+        { level: m[1].length, text: m[2].strip, anchor: MarkdownRenderer.heading_anchor(m[2].strip) }
       end
     end
   end
@@ -58,25 +58,14 @@ class Post < ApplicationRecord
 
   private
 
-def heading_anchor(text)
-  # Matches Redcarpet with_toc_data: non-ASCII bytes become "-", then collapse.
-  text.downcase
-      .gsub(/[^a-z0-9_ -]/) { |c| c.ord > 127 ? "-" : "" }
-      .gsub(/ +/, "-")
-      .gsub(/-+/, "-")
-      .strip
-end
-
   def strip_header(markdown)
     return "" if markdown.blank?
 
     lines = markdown.lines
 
-    # If a --- separator exists, everything after it is the body
     separator_index = lines.index { |l| l.strip == "---" }
     return lines.drop(separator_index + 1).join.lstrip if separator_index
 
-    # No separator: skip the leading # heading and the first paragraph (excerpt)
     after_title = lines.drop_while { |l| l.match?(/\A#\s+/) || l.strip.empty? }
     after_excerpt = after_title.drop_while { |l| l.strip.present? }
     after_excerpt.drop_while { |l| l.strip.empty? }.join.lstrip

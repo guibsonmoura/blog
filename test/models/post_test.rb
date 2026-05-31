@@ -335,35 +335,27 @@ class PostTest < ActiveSupport::TestCase
 
   # --- heading_anchor ---
 
-  test "heading_anchor matches redcarpet: accented chars become hyphens" do
-    post = posts(:published)
-    # ç (2 bytes) + ã (2 bytes) each become "-", then collapsed
-    assert_equal "primeira-se-o", post.send(:heading_anchor, "Primeira Seção")
+  test "heading_anchor preserves portuguese accented characters" do
+    assert_equal "primeira-seção", MarkdownRenderer.heading_anchor("Primeira Seção")
   end
 
-  test "heading_anchor: ç ã é each become a single hyphen" do
-    post = posts(:published)
-    assert_equal "a-o-e-rea-o", post.send(:heading_anchor, "Ação e Reação")
+  test "heading_anchor preserves ç ã é ó" do
+    assert_equal "ação-e-reação", MarkdownRenderer.heading_anchor("Ação e Reação")
   end
 
   test "heading_anchor converts spaces to hyphens" do
-    post = posts(:published)
-    assert_equal "hello-world", post.send(:heading_anchor, "Hello World")
+    assert_equal "hello-world", MarkdownRenderer.heading_anchor("Hello World")
   end
 
   test "heading_anchor strips ASCII punctuation" do
-    post = posts(:published)
-    assert_equal "hello-world", post.send(:heading_anchor, "Hello! World?")
+    assert_equal "hello-world", MarkdownRenderer.heading_anchor("Hello! World?")
   end
 
   test "heading_anchor collapses consecutive hyphens" do
-    post = posts(:published)
-    assert_equal "a-b", post.send(:heading_anchor, "A  B")
+    assert_equal "a-b", MarkdownRenderer.heading_anchor("A  B")
   end
 
-  test "toc_items anchor matches what redcarpet renders in the heading id" do
-    # Redcarpet with_toc_data replaces non-ASCII bytes with "-"
-    # heading_anchor must produce the same result
+  test "toc_items anchor preserves accented chars and matches rendered heading id" do
     post = users(:admin).posts.build(
       title: "Test", excerpt: "Excerpt",
       body_markdown: "# Test\n\nExcerpt.\n\n---\n\n## Primeira Seção\n\nContent.\n\n### Uma Subseção\n\nMore."
@@ -372,8 +364,13 @@ class PostTest < ActiveSupport::TestCase
     h2 = items.find { |i| i[:level] == 2 }
     h3 = items.find { |i| i[:level] == 3 }
 
-    assert_equal "primeira-se-o", h2[:anchor]
-    assert_equal "uma-subse-o",   h3[:anchor]
+    assert_equal "primeira-seção", h2[:anchor]
+    assert_equal "uma-subseção",   h3[:anchor]
+
+    # Verify the rendered HTML has matching ids
+    html = post.localized_body
+    assert_match(/id="primeira-seção"/, html)
+    assert_match(/id="uma-subseção"/,   html)
   end
 
   test "toc_items includes h3 items" do
