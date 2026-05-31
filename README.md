@@ -57,6 +57,52 @@ Forwarded ports:
 
 The container pre-creates a private `blog-images` bucket in MinIO. Images are served through Rails' Active Storage proxy — not direct MinIO URLs. See `.devcontainer/README.md` for the full configuration reference.
 
+## Opus-MT translator container
+
+When a post is published the app automatically translates it from Portuguese to English using a
+self-hosted [Helsinki-NLP/opus-mt-ROMANCE-en](https://huggingface.co/Helsinki-NLP/opus-mt-ROMANCE-en)
+model running in its own container.
+
+**First run — build the image** (downloads ~300 MB model, takes 3–5 minutes):
+
+```bash
+docker compose -f .devcontainer/docker-compose.yml build translator
+```
+
+**Start the full stack** (translator included):
+
+```bash
+docker compose -f .devcontainer/docker-compose.yml up -d
+```
+
+The translator starts in the background and does **not** block Rails from opening. The model takes
+~60 seconds to load. Translation jobs retry automatically until it is healthy.
+
+```bash
+# Check status
+docker ps                              # look for devcontainer-translator-1 (healthy)
+curl http://localhost:8000/health      # {"status":"ok"} when ready
+
+# Smoke-test a translation
+curl -X POST http://localhost:8000/translate \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Olá mundo"}'
+# {"translation":"- Hello world."}
+```
+
+**⚠️ Important — `TRANSLATION_SERVICE_URL` when running preview containers**
+
+The translator is reachable at `http://devcontainer-translator-1:8000` **by its Docker service
+name**, not at `localhost:8000`. Inside any container, `localhost` refers to that container itself.
+Always set the env var to the container name:
+
+```bash
+-e TRANSLATION_SERVICE_URL=http://devcontainer-translator-1:8000
+```
+
+Using `http://localhost:8000` will cause every translation job to fail with
+`Errno::ECONNREFUSED` and set `translation_status = "failed"` on the post.
+
 ## Requirements
 
 - Ruby 3.3.11

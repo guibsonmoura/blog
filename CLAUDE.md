@@ -61,13 +61,18 @@ This project runs inside a **VS Code Dev Container** (`.devcontainer/`). The con
 | Rails app | `devcontainer-app-1` | 3000 |
 | PostgreSQL 17 | `devcontainer-db-1` | 5432 (internal) |
 | MinIO (S3) | `devcontainer-minio-1` | 9000 API / 9001 console |
+| Opus-MT translator | `devcontainer-translator-1` | 8000 (internal) |
 
 **Starting the stack:**
 
 ```bash
-# From repo root — starts all three services
+# From repo root — starts all services including the translator
 docker compose -f .devcontainer/docker-compose.yml up -d
 ```
+
+The translator starts in the background — it does not block Rails. See `README.md` for the
+full setup, build commands, and the `TRANSLATION_SERVICE_URL` gotcha when running preview
+containers.
 
 **Running commands inside the container:**
 
