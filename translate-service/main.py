@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from transformers import MarianMTModel, MarianTokenizer
 import logging
+import re
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -24,12 +25,21 @@ class TranslateResponse(BaseModel):
     translation: str
 
 
+# Markdown structural elements that must be passed through untranslated.
+# The model mangles --- into ". . . . ." and similar artifacts.
+PASSTHROUGH = re.compile(r"^(---+|===+|\*\*\*+|```[\s\S]*```|#{1,6}\s*$)$")
+
+
 def translate_text(text: str) -> str:
     """Translate text, splitting on double-newlines to handle long inputs."""
     segments = [s.strip() for s in text.split("\n\n") if s.strip()]
     translated_segments = []
 
     for segment in segments:
+        # Pass structural markdown through unchanged — do not translate
+        if PASSTHROUGH.match(segment):
+            translated_segments.append(segment)
+            continue
         # ROMANCE-en model requires ">>en<< " prefix to specify target language
         prefixed = f">>en<< {segment}"
         inputs = tokenizer([prefixed], return_tensors="pt", padding=True, truncation=True, max_length=512)

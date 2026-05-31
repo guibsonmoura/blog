@@ -52,11 +52,11 @@ class Post < ApplicationRecord
     end
   end
 
-  private
-
   def body_content
     strip_header(body_markdown)
   end
+
+  private
 
   def heading_anchor(text)
     text.downcase.gsub(/[^\w\s-]/, "").gsub(/\s+/, "-").gsub(/-+/, "-").strip

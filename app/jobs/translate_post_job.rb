@@ -12,35 +12,19 @@ class TranslatePostJob < ApplicationJob
 
     title_en   = TranslationService.translate(post.title)
     excerpt_en = TranslationService.translate(post.excerpt)
-    body_en    = TranslationService.translate(post.body_markdown)
+    # Translate only the body content (after title/excerpt/--- separator) so
+    # the --- horizontal rule is never sent to the model — it would be mangled
+    # to ". . . . . . ." by opus-mt-ROMANCE-en.
+    body_content_en = post.body_content.present? ? TranslationService.translate(post.body_content) : ""
 
     post.update_columns(
       title_en:           title_en,
       excerpt_en:         excerpt_en,
-      body_markdown_en:   reconstruct_markdown(title_en, excerpt_en, body_en),
+      body_markdown_en:   "# #{title_en}\n\n#{excerpt_en}\n\n---\n\n#{body_content_en}".rstrip,
       translation_status: "done"
     )
   rescue => e
     post&.update_columns(translation_status: "failed")
     raise
-  end
-
-  private
-
-  def reconstruct_markdown(title, excerpt, translated_body)
-    body_content = strip_header_and_excerpt(translated_body)
-    "# #{title}\n\n#{excerpt}\n\n---\n\n#{body_content}"
-  end
-
-  def strip_header_and_excerpt(markdown)
-    lines = markdown.lines
-    # Skip leading # heading
-    lines = lines.drop_while { |l| l.match?(/\A#\s+/) || l.strip.empty? }
-    # Skip first paragraph (excerpt)
-    lines = lines.drop_while { |l| l.strip.present? }
-    lines = lines.drop_while { |l| l.strip.empty? }
-    # Skip --- separator if present
-    lines = lines.drop(1) if lines.first&.strip == "---"
-    lines.join.lstrip
   end
 end

@@ -103,6 +103,36 @@ class TranslatePostJobTest < ActiveJob::TestCase
     assert_match(/\A# .+\n\n.+\n\n---\n\n/m, @post.body_markdown_en)
   end
 
+  test "body_markdown_en does not contain dots from translated --- separator" do
+    # Regression: opus-mt-ROMANCE-en translates '---' as '. . . . . .'
+    # The job must translate only body_content (after the separator), not the full markdown
+    stub_all_translations
+
+    TranslatePostJob.perform_now(@post.id)
+
+    @post.reload
+    refute_match(/\.\s\.\s\./, @post.body_markdown_en,
+      "body_markdown_en must not contain dot artifacts from a translated --- separator")
+  end
+
+  test "job sends body_content not full body_markdown to the translator" do
+    # Ensures the --- separator is never sent to the model
+    bodies_sent = []
+    stub_request(:post, "#{TranslationService::URL}/translate")
+      .to_return do |req|
+        bodies_sent << JSON.parse(req.body)["text"]
+        { status: 200, body: { translation: "Translated" }.to_json,
+          headers: { "Content-Type" => "application/json" } }
+      end
+
+    TranslatePostJob.perform_now(@post.id)
+
+    bodies_sent.each do |text|
+      assert_no_match(/\A---\z/, text.strip,
+        "The standalone --- separator must not be sent to the translation service")
+    end
+  end
+
   private
 
   def stub_all_translations(&block)
