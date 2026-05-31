@@ -11,6 +11,15 @@ Rails.application.routes.draw do
     resources :reactions, only: [ :create ]
   end
 
+  # Like a comment (anonymous-friendly toggle).
+  post "comments/:comment_id/like", to: "comment_likes#create", as: :comment_like
+
+  # Public reader OAuth (Google + Microsoft). The request-phase POST to
+  # /auth/:provider is handled by the OmniAuth middleware itself.
+  match  "auth/:provider/callback", to: "readers/sessions#create",  via: [ :get, :post ], as: :reader_auth_callback
+  match  "auth/failure",            to: "readers/sessions#failure", via: [ :get, :post ]
+  delete "reader/logout",           to: "readers/sessions#destroy", as: :reader_logout
+
   get    "superadmin/login",  to: "admin/sessions#new",     as: :superadmin_login
   post   "superadmin/login",  to: "admin/sessions#create"
   delete "superadmin/logout", to: "admin/sessions#destroy", as: :superadmin_logout

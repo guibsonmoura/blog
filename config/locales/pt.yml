@@ -54,11 +54,24 @@ pt:
 
   comments:
     created: "Seu comentário foi publicado."
+    reply: "Responder"
+    like: "Curtir este comentário"
+    reply_placeholder: "Escreva uma resposta…"
     form:
-      name_label: "Nome"
-      name_placeholder: "Seu nome"
-      email_label: "E-mail (opcional)"
-      email_placeholder: "seu@email.com"
       body_label: "Comentário"
       body_placeholder: "Escreva seu comentário…"
       submit: "Publicar comentário"
+
+  auth:
+    sign_in_to_comment: "Entre para deixar um comentário."
+    sign_in_google: "Entrar com Google"
+    sign_in_microsoft: "Entrar com Microsoft"
+    sign_in_facebook: "Entrar com Facebook"
+    sign_in_x: "Entrar com X"
+    sign_in_developer: "Login de teste (local)"
+    signed_in_as: "Conectado como %{name}"
+    sign_out: "Sair"
+    sign_in_required: "Entre para comentar."
+    signed_in: "Você entrou com sucesso."
+    signed_out: "Você saiu da sua conta."
+    sign_in_failed: "Falha ao entrar. Tente novamente."

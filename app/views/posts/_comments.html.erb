@@ -3,15 +3,20 @@
     <%= t("posts.show.comments_section") %>
   </h2>
 
-  <% if post.comments.any? %>
-    <div class="mt-6 space-y-6">
-      <% post.comments.order(:created_at).each do |comment| %>
-        <div class="border-b border-neutral-100 pb-6 last:border-0 dark:border-neutral-800">
-          <div class="flex items-baseline gap-3">
-            <span class="text-sm font-medium text-neutral-950 dark:text-neutral-50"><%= h(comment.author_name) %></span>
-            <span class="text-xs text-neutral-400 dark:text-neutral-500"><%= time_ago_in_words(comment.created_at) %> ago</span>
-          </div>
-          <p class="mt-2 leading-7 text-neutral-700 dark:text-neutral-300 whitespace-pre-wrap break-words"><%= h(comment.body) %></p>
+  <% threads = post.comments.top_level.includes(:reader, :comment_likes, replies: [ :reader, :comment_likes ]).order(:created_at) %>
+  <% if threads.any? %>
+    <div class="mt-6 divide-y divide-neutral-100 dark:divide-neutral-800">
+      <% threads.each do |comment| %>
+        <div class="py-2">
+          <%= render "comment", comment: comment, allow_reply: true %>
+
+          <% if comment.replies.any? %>
+            <div class="ml-6 border-l border-neutral-200 pl-4 dark:border-neutral-800">
+              <% comment.replies.sort_by(&:created_at).each do |reply| %>
+                <%= render "comment", comment: reply, allow_reply: false %>
+              <% end %>
+            </div>
+          <% end %>
         </div>
       <% end %>
     </div>
@@ -20,38 +25,40 @@
   <% end %>
 
   <div id="comment-form" class="mt-10">
-    <%= form_with url: post_comments_path(post), class: "space-y-5" do |f| %>
-      <div class="grid gap-4 sm:grid-cols-2">
+    <% if reader_signed_in? %>
+      <p class="mb-4 flex flex-wrap items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+        <%= t("auth.signed_in_as", name: current_reader.name) %>
+        <span aria-hidden="true">·</span>
+        <%= button_to t("auth.sign_out"), reader_logout_path, method: :delete,
+                      class: "text-blue-700 underline-offset-2 hover:underline dark:text-blue-300" %>
+      </p>
+
+      <%= form_with url: post_comments_path(post), class: "space-y-5" do |f| %>
         <div>
-          <%= f.label :author_name, t("comments.form.name_label"),
+          <%= f.label :body, t("comments.form.body_label"),
                       class: "block text-sm font-medium text-neutral-700 dark:text-neutral-300" %>
-          <%= f.text_field :author_name,
-                           required: true,
-                           placeholder: t("comments.form.name_placeholder"),
-                           class: "mt-2 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-950 shadow-sm focus:border-blue-600 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50" %>
+          <%= f.text_area :body,
+                          required: true,
+                          rows: 4,
+                          placeholder: t("comments.form.body_placeholder"),
+                          class: "mt-2 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-950 shadow-sm focus:border-blue-600 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50" %>
         </div>
 
-        <div>
-          <%= f.label :author_email, t("comments.form.email_label"),
-                      class: "block text-sm font-medium text-neutral-700 dark:text-neutral-300" %>
-          <%= f.email_field :author_email,
-                            placeholder: t("comments.form.email_placeholder"),
-                            class: "mt-2 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-950 shadow-sm focus:border-blue-600 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50" %>
-        </div>
+        <%= f.submit t("comments.form.submit"),
+                     class: "rounded-md bg-neutral-950 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 dark:bg-neutral-100 dark:text-neutral-950 dark:hover:bg-blue-200" %>
+      <% end %>
+    <% else %>
+      <p class="text-sm text-neutral-600 dark:text-neutral-400"><%= t("auth.sign_in_to_comment") %></p>
+      <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <%# button_to issues a CSRF-protected POST — required by omniauth-rails_csrf_protection. %>
+        <%# data-turbo=false lets the browser follow the cross-origin redirect to the provider. %>
+        <%# Only configured providers appear (plus a local Dev sign-in in development). %>
+        <% reader_sign_in_buttons.each do |button| %>
+          <%= button_to t(button[:label_key]), button[:path],
+                        data: { turbo: false },
+                        class: "inline-flex items-center justify-center gap-2 rounded-md border border-neutral-300 bg-white px-4 py-2.5 text-sm font-medium text-neutral-800 shadow-sm hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:hover:bg-neutral-800" %>
+        <% end %>
       </div>
-
-      <div>
-        <%= f.label :body, t("comments.form.body_label"),
-                    class: "block text-sm font-medium text-neutral-700 dark:text-neutral-300" %>
-        <%= f.text_area :body,
-                        required: true,
-                        rows: 4,
-                        placeholder: t("comments.form.body_placeholder"),
-                        class: "mt-2 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-950 shadow-sm focus:border-blue-600 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50" %>
-      </div>
-
-      <%= f.submit t("comments.form.submit"),
-                   class: "rounded-md bg-neutral-950 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 dark:bg-neutral-100 dark:text-neutral-950 dark:hover:bg-blue-200" %>
     <% end %>
   </div>
 </section>

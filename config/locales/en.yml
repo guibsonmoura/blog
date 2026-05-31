@@ -54,11 +54,24 @@ en:
 
   comments:
     created: "Your comment was posted."
+    reply: "Reply"
+    like: "Like this comment"
+    reply_placeholder: "Write a reply…"
     form:
-      name_label: "Name"
-      name_placeholder: "Your name"
-      email_label: "Email (optional)"
-      email_placeholder: "your@email.com"
       body_label: "Comment"
       body_placeholder: "Write your comment…"
       submit: "Post comment"
+
+  auth:
+    sign_in_to_comment: "Sign in to leave a comment."
+    sign_in_google: "Sign in with Google"
+    sign_in_microsoft: "Sign in with Microsoft"
+    sign_in_facebook: "Sign in with Facebook"
+    sign_in_x: "Sign in with X"
+    sign_in_developer: "Dev sign-in (local)"
+    signed_in_as: "Signed in as %{name}"
+    sign_out: "Sign out"
+    sign_in_required: "Please sign in to comment."
+    signed_in: "You are now signed in."
+    signed_out: "You have been signed out."
+    sign_in_failed: "Sign in failed. Please try again."

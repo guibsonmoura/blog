@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_30_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_31_110209) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,14 +42,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_30_140000) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "comment_likes", force: :cascade do |t|
+    t.bigint "comment_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "reader_id"
+    t.string "session_id"
+    t.datetime "updated_at", null: false
+    t.index ["comment_id", "reader_id"], name: "index_comment_likes_on_comment_and_reader", unique: true, where: "(reader_id IS NOT NULL)"
+    t.index ["comment_id", "session_id"], name: "index_comment_likes_on_comment_and_session", unique: true, where: "(reader_id IS NULL)"
+    t.index ["comment_id"], name: "index_comment_likes_on_comment_id"
+    t.index ["reader_id"], name: "index_comment_likes_on_reader_id"
+  end
+
   create_table "comments", force: :cascade do |t|
     t.string "author_email"
     t.string "author_name", null: false
     t.text "body", null: false
     t.datetime "created_at", null: false
+    t.bigint "parent_id"
     t.bigint "post_id", null: false
+    t.bigint "reader_id"
     t.datetime "updated_at", null: false
+    t.index ["parent_id"], name: "index_comments_on_parent_id"
     t.index ["post_id"], name: "index_comments_on_post_id"
+    t.index ["reader_id"], name: "index_comments_on_reader_id"
   end
 
   create_table "posts", force: :cascade do |t|
@@ -75,9 +91,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_30_140000) do
     t.datetime "created_at", null: false
     t.bigint "post_id", null: false
     t.integer "reaction_type", null: false
-    t.string "session_id", null: false
-    t.index ["post_id", "session_id", "reaction_type"], name: "index_reactions_on_post_id_and_session_id_and_reaction_type", unique: true
+    t.bigint "reader_id"
+    t.string "session_id"
+    t.index ["post_id", "reader_id"], name: "index_reactions_on_post_and_reader", unique: true, where: "(reader_id IS NOT NULL)"
+    t.index ["post_id", "session_id"], name: "index_reactions_on_post_and_session", unique: true, where: "(reader_id IS NULL)"
     t.index ["post_id"], name: "index_reactions_on_post_id"
+    t.index ["reader_id"], name: "index_reactions_on_reader_id"
+  end
+
+  create_table "readers", force: :cascade do |t|
+    t.string "avatar_url"
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.string "name"
+    t.string "provider", null: false
+    t.string "uid", null: false
+    t.datetime "updated_at", null: false
+    t.index ["provider", "uid"], name: "index_readers_on_provider_and_uid", unique: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -92,7 +122,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_30_140000) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "comment_likes", "comments", on_delete: :cascade
+  add_foreign_key "comment_likes", "readers", on_delete: :cascade
+  add_foreign_key "comments", "comments", column: "parent_id", on_delete: :cascade
   add_foreign_key "comments", "posts", on_delete: :cascade
+  add_foreign_key "comments", "readers", on_delete: :nullify
   add_foreign_key "posts", "users"
   add_foreign_key "reactions", "posts", on_delete: :cascade
+  add_foreign_key "reactions", "readers", on_delete: :cascade
 end

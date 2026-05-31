@@ -3,18 +3,18 @@ class JsonWebToken
   ISSUER = "blog-admin"
 
   class << self
-    def encode(payload = {}, expires_at: 12.hours.from_now, **claims)
-      token_claims = payload.merge(claims).merge(exp: expires_at.to_i, iss: ISSUER)
+    def encode(payload = {}, expires_at: 12.hours.from_now, issuer: ISSUER, **claims)
+      token_claims = payload.merge(claims).merge(exp: expires_at.to_i, iss: issuer)
       JWT.encode(token_claims, secret, ALGORITHM)
     end
 
-    def decode(token)
+    def decode(token, issuer: ISSUER)
       body, = JWT.decode(
         token,
         secret,
         true,
         algorithm: ALGORITHM,
-        iss: ISSUER,
+        iss: issuer,
         verify_iss: true
       )
 
