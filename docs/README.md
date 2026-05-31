@@ -8,3 +8,4 @@
 | [reader-features.md](reader-features.md) | Language toggle, emoji reactions, comments |
 | [git-workflow.md](git-workflow.md) | Branch convention, worktrees, commit messages, PR process, feature preview |
 | [security.md](security.md) | JWT auth, Argon2, Markdown sanitization, strong params, image proxy |
+| [auto-translation.md](auto-translation.md) | How auto PT→EN translation works, why, the technologies, and full implementation walkthrough |
