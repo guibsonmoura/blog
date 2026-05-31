@@ -50,10 +50,31 @@ ADMIN_EMAIL=${ADMIN_EMAIL:-admin@example.com}
 ADMIN_PASSWORD=\$(openssl rand -hex 16)
 EOF"
 
-echo "==> 6/6 Deploy the stack"
+echo "==> 6/7 Deploy the stack"
 remote "cd '$STACK_DIR' && set -a && . ./.env && set +a && \
         docker stack deploy -c compose.yml '$STACK_NAME' --resolve-image always --detach=false && \
         docker image prune -f"
+
+echo "==> 7/7 Restrict app port 3010 to loopback (host nginx proxies in)"
+# Swarm can't bind a published port to one host IP, so we DROP non-loopback traffic
+# to the original dest port 3010 in DOCKER-USER (matched pre-DNAT via conntrack).
+# A systemd oneshot re-applies it after every docker start / reboot (docker resets DOCKER-USER).
+remote 'sudo tee /etc/systemd/system/blog-localhost-firewall.service >/dev/null <<"UNIT"
+[Unit]
+Description=Restrict blog app published port 3010 to loopback only
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/bash -c "iptables -C DOCKER-USER -p tcp -m conntrack --ctorigdstport 3010 ! -s 127.0.0.0/8 -j DROP 2>/dev/null || iptables -I DOCKER-USER -p tcp -m conntrack --ctorigdstport 3010 ! -s 127.0.0.0/8 -j DROP"
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+sudo systemctl daemon-reload
+sudo systemctl enable --now blog-localhost-firewall.service'
 
 echo ""
 echo "Done. Check:  docker service ls   |   curl http://$SSH_HOST:3010/up"

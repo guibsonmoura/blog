@@ -30,10 +30,14 @@ services:
       # PT→EN auto-translation service (reachable by stack service name)
       TRANSLATION_SERVICE_URL: http://translator:8000
     ports:
+      # Published on the node's 3010. Swarm can't bind a published port to a single
+      # host IP (no host_ip field in its port model), so loopback-only access is
+      # enforced by a DOCKER-USER firewall rule installed by deploy/provision.sh.
+      # Host nginx reverse-proxies to 127.0.0.1:3010.
       - target: 80
         published: 3010
         protocol: tcp
-        mode: host            # bind directly on the node (single-node swarm; avoids ingress mesh)
+        mode: host
     volumes:
       - storage:/rails/storage
     networks:

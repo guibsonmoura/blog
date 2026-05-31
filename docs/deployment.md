@@ -133,6 +133,24 @@ sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapf
 healthy complete once it's up. If RAM is too tight, run the translator on a separate host and point
 `TRANSLATION_SERVICE_URL` at it — no app changes needed.
 
+## Loopback-only app port (host nginx in front)
+
+The app publishes on the node's `3010`, but it must be reachable **only via `127.0.0.1`** so the
+host's nginx can reverse-proxy to it. Docker Swarm has no `host_ip` field in its port model, so the
+binding can't be set in `compose.yml` — instead `provision.sh` installs a `DOCKER-USER` firewall
+rule that drops non-loopback traffic to the original destination port 3010 (matched pre-DNAT via
+conntrack):
+
+```bash
+iptables -I DOCKER-USER -p tcp -m conntrack --ctorigdstport 3010 ! -s 127.0.0.0/8 -j DROP
+```
+
+Docker resets the `DOCKER-USER` chain on every daemon start, so a systemd oneshot
+(`blog-localhost-firewall.service`, `After=docker.service`) re-applies it on boot/restart. Net
+effect: `curl 127.0.0.1:3010/up` → 200 on the box; `curl <public-ip>:3010` → refused.
+
+Point nginx at `http://127.0.0.1:3010` (nginx config is managed on the host, outside this repo).
+
 ## Make the GHCR packages public
 
 Both `blog` and `blog-translator` are private by default (the VPS pulls them via `guibson`'s cached
