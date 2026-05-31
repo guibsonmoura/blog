@@ -37,13 +37,14 @@ class MarkdownRenderer
 
     def inject_heading_ids(html)
       # Replace Redcarpet/sanitizer-mangled IDs with our own accent-preserving slugs.
+      # Must call html_safe — gsub returns a plain String, losing the SafeBuffer mark.
       html.gsub(/<(h[1-6])(?:\s[^>]*)?>(.+?)<\/\1>/m) do
         tag   = Regexp.last_match(1)
         inner = Regexp.last_match(2)
         text  = inner.gsub(/<[^>]+>/, "").strip
         id    = MarkdownRenderer.heading_anchor(text)
         "<#{tag} id=\"#{id}\">#{inner}</#{tag}>"
-      end
+      end.html_safe
     end
 
     def renderer
