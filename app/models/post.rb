@@ -27,7 +27,7 @@ class Post < ApplicationRecord
   end
 
   def rendered_body
-    MarkdownRenderer.render(body_markdown)
+    MarkdownRenderer.render(body_content)
   end
 
   def localized_title
@@ -40,10 +40,29 @@ class Post < ApplicationRecord
 
   def localized_body
     source = I18n.locale == :pt || body_markdown_en.blank? ? body_markdown : body_markdown_en
-    MarkdownRenderer.render(source)
+    MarkdownRenderer.render(strip_header(source))
   end
 
   private
+
+  def body_content
+    strip_header(body_markdown)
+  end
+
+  def strip_header(markdown)
+    return "" if markdown.blank?
+
+    lines = markdown.lines
+
+    # If a --- separator exists, everything after it is the body
+    separator_index = lines.index { |l| l.strip == "---" }
+    return lines.drop(separator_index + 1).join.lstrip if separator_index
+
+    # No separator: skip the leading # heading and the first paragraph (excerpt)
+    after_title = lines.drop_while { |l| l.match?(/\A#\s+/) || l.strip.empty? }
+    after_excerpt = after_title.drop_while { |l| l.strip.present? }
+    after_excerpt.drop_while { |l| l.strip.empty? }.join.lstrip
+  end
 
   def enqueue_translation
     TranslatePostJob.perform_later(id) if published?
