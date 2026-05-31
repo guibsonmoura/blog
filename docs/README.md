@@ -9,3 +9,4 @@
 | [git-workflow.md](git-workflow.md) | Branch convention, worktrees, commit messages, PR process, feature preview |
 | [security.md](security.md) | JWT auth, Argon2, Markdown sanitization, strong params, image proxy |
 | [auto-translation.md](auto-translation.md) | How auto PT→EN translation works, why, the technologies, and full implementation walkthrough |
+| [typography.md](typography.md) | Reading-comfort palette, heading hierarchy, TOC anchor algorithm, translator heading fix, body duplication fix |
