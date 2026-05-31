@@ -7,6 +7,9 @@
   Light: #FAFAF7 background / #222222 text (paper-like, reduces eye strain)
   Dark:  #1a1a1a background / #e8e6e1 text (soft dark, not pure black/white)
 */
+/* Custom breakpoint for 375px — sits between 0 and Tailwind's sm (640px) */
+@custom-variant xs (@media (width >= 375px));
+
 @layer base {
   :root {
     --reading-bg: #FAFAF7;
@@ -21,6 +24,13 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Prevent the viewport from growing wider than the screen on any device */
+  body {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 }
 

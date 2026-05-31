@@ -10,15 +10,20 @@ no elements that require pinching to interact with.
 
 ## Breakpoints
 
-Following Tailwind's default scale:
-
 | Name | Min width | Typical device |
 |------|-----------|----------------|
-| (base) | 0px | Small phones |
+| (base) | 0px | Ultra-small phones (Galaxy Fold: 344px) |
+| `xs` *(custom)* | 375px | Standard small phones (iPhone SE) |
 | `sm` | 640px | Large phones / small tablets |
 | `md` | 768px | Tablets, landscape phones |
 | `lg` | 1024px | Laptops, desktops |
 | `xl` | 1280px | Wide desktops |
+
+`xs` is a custom Tailwind v4 variant defined in `application.css`:
+
+```css
+@custom-variant xs (@media (width >= 375px));
+```
 
 ---
 
@@ -26,9 +31,12 @@ Following Tailwind's default scale:
 
 ### All pages — Header
 
-- **Mobile:** blog name on the left, all icon buttons on the right in a single row. If icons overflow, they wrap to a second line — they must never clip or hide.
-- **Desktop:** same row, more breathing room between items.
+- **344px (Galaxy Fold):** blog name (`text-xs truncate`) + GitHub + RSS + locale + theme — exactly 4 items in the icon row. LinkedIn hidden below `xs`. Blog name truncates if needed rather than pushing nav off-screen. `overflow-hidden` on the header container prevents any bleed.
+- **375px (`xs`):** LinkedIn icon visible.
+- **640px (`sm`):** "Sobre" text link visible. Blog name grows to `text-sm`.
+- **Desktop (`lg`):** full size, `text-base` blog name.
 - Header is sticky on all screen sizes.
+- `body { overflow-x: hidden; max-width: 100vw }` acts as a safety net against any stray fixed-width child.
 
 ### Homepage (`/`)
 
@@ -75,9 +83,10 @@ On mobile, the sidebar ("Recent posts" and "Archive") is hidden. The feed is the
 
 ## Touch targets
 
-All interactive elements (links, buttons, icon buttons) must have a minimum tap area of **44×44 px**
-on mobile. Icon buttons in the header already use `px-2 py-1.5` — add `min-w-[44px] min-h-[44px]`
-or increase padding on small screens if needed.
+All interactive elements must have a minimum tap area of **44px height** on mobile.
+Icon buttons use `min-h-[44px] p-2` — height guaranteed by `min-h`, width kept compact
+(no `min-w`) so the header fits on 344px screens. Do **not** use `min-w-[44px]` on header
+icons: 4 icons × 44px = 176px plus blog name and locale text exceeds 344px usable width.
 
 ---
 
@@ -110,7 +119,7 @@ menu — but for now the current 5-icon set fits on a 375px screen without overf
 
 ## Acceptance criteria
 
-- No horizontal scrollbar on any page at 320px, 375px, 414px, 768px, 1024px, or 1280px viewport widths.
+- No horizontal scrollbar on any page at **344px (Galaxy Fold)**, 375px, 414px, 768px, 1024px, or 1280px viewport widths.
 - Sidebar is hidden on mobile (`hidden lg:block`) and never leaks into the mobile layout.
 - All text is legible without zooming (minimum 14px rendered size).
 - All links and buttons are tappable without precision (44px minimum touch target).
