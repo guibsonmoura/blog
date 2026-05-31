@@ -2,9 +2,69 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+  Reading-comfort palette — based on specs/comfortable-reading.md
+  Light: #FAFAF7 background / #222222 text (paper-like, reduces eye strain)
+  Dark:  #1a1a1a background / #e8e6e1 text (soft dark, not pure black/white)
+*/
+@layer base {
+  :root {
+    --reading-bg: #FAFAF7;
+    --reading-text: #222222;
+    --reading-bg-dark: #1a1a1a;
+    --reading-text-dark: #e8e6e1;
+  }
+}
+
 @layer components {
+  /* Page surface — paper-like reading background */
+  .reading-surface {
+    background-color: var(--reading-bg);
+    color: var(--reading-text);
+  }
+
+  .dark .reading-surface {
+    background-color: var(--reading-bg-dark);
+    color: var(--reading-text-dark);
+  }
+
+  .reading-header {
+    background-color: color-mix(in srgb, var(--reading-bg) 90%, transparent);
+  }
+
+  .dark .reading-header {
+    background-color: color-mix(in srgb, var(--reading-bg-dark) 90%, transparent);
+  }
+
+  /* Post title */
+  .reading-title {
+    color: var(--reading-text);
+  }
+
+  .dark .reading-title {
+    color: var(--reading-text-dark);
+  }
+
+  /* Post excerpt */
+  .reading-excerpt {
+    font-size: 18px;
+    line-height: 1.7;
+    color: #444444;
+  }
+
+  .dark .reading-excerpt {
+    color: #b0ada6;
+  }
+
   .markdown {
-    @apply text-base leading-7 text-neutral-800 dark:text-neutral-200;
+    /* 18px / line-height 1.7 as recommended in comfortable-reading spec */
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--reading-text);
+  }
+
+  .dark .markdown {
+    color: var(--reading-text-dark);
   }
 
   .markdown > * + * {

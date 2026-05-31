@@ -15863,3 +15863,192 @@ Completed 201 Created in 352ms (Views: 0.4ms | ActiveRecord: 10.0ms (2 queries, 
 Completed 201 Created in 211ms (Views: 0.4ms | ActiveRecord: 11.5ms (2 queries, 1 cached) | GC: 2.8ms)
   [1m[36mActiveStorage::Blob Count (0.8ms)[0m  [1m[34mSELECT COUNT(*) FROM "active_storage_blobs"[0m
   [1m[36mTRANSACTION (0.6ms)[0m  [1m[31mROLLBACK[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(5395552441248416790)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (1.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (2.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_advisory_unlock(5395552441248416790)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.8ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[35mSET search_path TO "$user", public[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[35mSET search_path TO public[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO "$user", public[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (3.3ms)[0m  [1m[35mALTER TABLE "active_storage_variant_records" DISABLE TRIGGER ALL;ALTER TABLE "posts" DISABLE TRIGGER ALL;ALTER TABLE "comments" DISABLE TRIGGER ALL;ALTER TABLE "reactions" DISABLE TRIGGER ALL;ALTER TABLE "active_storage_blobs" DISABLE TRIGGER ALL;ALTER TABLE "active_storage_attachments" DISABLE TRIGGER ALL;ALTER TABLE "users" DISABLE TRIGGER ALL;ALTER TABLE "schema_migrations" DISABLE TRIGGER ALL;ALTER TABLE "ar_internal_metadata" DISABLE TRIGGER ALL[0m
+  [1m[36mFixtures Load (4.1ms)[0m  [1m[31mDELETE FROM "posts";
+DELETE FROM "users";
+INSERT INTO "posts" ("id", "body_markdown", "body_markdown_en", "created_at", "excerpt", "excerpt_en", "published_at", "slug", "status", "title", "title_en", "translation_status", "updated_at", "user_id") VALUES (675045400, '# Published Post
+
+A public excerpt.
+
+---
+
+This post is visible.
+', DEFAULT, '2026-05-31 02:35:04.685212', 'A public excerpt.', DEFAULT, '2026-05-30 02:35:04', 'published-post', 1, 'Published Post', DEFAULT, DEFAULT, '2026-05-31 02:35:04.685212', 135138680), (108828309, '# Draft Post
+
+A draft excerpt.
+
+---
+
+This post is private.
+', DEFAULT, '2026-05-31 02:35:04.685212', 'A draft excerpt.', DEFAULT, NULL, 'draft-post', 0, 'Draft Post', DEFAULT, DEFAULT, '2026-05-31 02:35:04.685212', 135138680);
+INSERT INTO "users" ("id", "admin", "created_at", "email", "name", "password_digest", "updated_at") VALUES (135138680, TRUE, '2026-05-31 02:35:04.691018', 'admin@example.com', 'Admin', '$argon2id$v=19$m=65536,t=3,p=4$ELzg3z1zC+pptKaCzNuhlQ$w1WOmX0dB4ld7UKnxx8yEtx+dkcWI8RWpcVysOM1IB0', '2026-05-31 02:35:04.691018'), (396417156, FALSE, '2026-05-31 02:35:04.691018', 'writer@example.com', 'Writer', '$argon2id$v=19$m=65536,t=3,p=4$KsgO0aqVovo+er17HzAElw$rgo7ADOFRDMYMEvsKVEgWG3wvjxZlIan330m/SU4q7s', '2026-05-31 02:35:04.691018')[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[35m (2.0ms)[0m  [1m[35mALTER TABLE "active_storage_variant_records" ENABLE TRIGGER ALL;ALTER TABLE "posts" ENABLE TRIGGER ALL;ALTER TABLE "comments" ENABLE TRIGGER ALL;ALTER TABLE "reactions" ENABLE TRIGGER ALL;ALTER TABLE "active_storage_blobs" ENABLE TRIGGER ALL;ALTER TABLE "active_storage_attachments" ENABLE TRIGGER ALL;ALTER TABLE "users" ENABLE TRIGGER ALL;ALTER TABLE "schema_migrations" ENABLE TRIGGER ALL;ALTER TABLE "ar_internal_metadata" ENABLE TRIGGER ALL[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (3.7ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (18.8ms)[0m  [1m[35mdo $$
+  declare r record;
+BEGIN
+FOR r IN (
+  SELECT FORMAT(
+    'UPDATE pg_catalog.pg_constraint SET convalidated=false WHERE conname = ''%1$I'' AND connamespace::regnamespace = ''%2$I''::regnamespace; ALTER TABLE %2$I.%3$I VALIDATE CONSTRAINT %1$I;',
+    constraint_name,
+    table_schema,
+    table_name
+  ) AS constraint_check
+  FROM information_schema.table_constraints WHERE constraint_type = 'FOREIGN KEY'
+)
+  LOOP
+    EXECUTE (r.constraint_check);
+  END LOOP;
+END;
+$$;
+[0m
+  [1m[36mTRANSACTION (2.2ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------------------------------------------
+TranslatePostJobTest: test_sets_status_to_failed_when_translation_service_returns_error
+---------------------------------------------------------------------------------------
+  [1m[36mPost Load (0.7ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [e1f4eeb4-4540-4b8c-9e62-19f2e4a3b902] Performing TranslatePostJob (Job ID: e1f4eeb4-4540-4b8c-9e62-19f2e4a3b902) from Test(default) with arguments: 675045400
+[ActiveJob] [TranslatePostJob] [e1f4eeb4-4540-4b8c-9e62-19f2e4a3b902]   [1m[36mCACHE Post Load (0.0ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [e1f4eeb4-4540-4b8c-9e62-19f2e4a3b902]   [1m[36mPost Update (0.7ms)[0m  [1m[33mUPDATE "posts" SET "translation_status" = $1 WHERE "posts"."id" = $2[0m  [["translation_status", "translating"], ["id", 675045400]]
+[ActiveJob] [TranslatePostJob] [e1f4eeb4-4540-4b8c-9e62-19f2e4a3b902]   [1m[36mPost Update (0.7ms)[0m  [1m[33mUPDATE "posts" SET "translation_status" = $1 WHERE "posts"."id" = $2[0m  [["translation_status", "failed"], ["id", 675045400]]
+[ActiveJob] [TranslatePostJob] [e1f4eeb4-4540-4b8c-9e62-19f2e4a3b902] Enqueued TranslatePostJob (Job ID: e1f4eeb4-4540-4b8c-9e62-19f2e4a3b902) to Test(default) at 2026-05-31 02:35:07 UTC with arguments: 675045400
+[ActiveJob] [TranslatePostJob] [e1f4eeb4-4540-4b8c-9e62-19f2e4a3b902] Retrying TranslatePostJob (Job ID: e1f4eeb4-4540-4b8c-9e62-19f2e4a3b902) after 1 attempts in 3 seconds, due to a TranslationService::UnavailableError (Translation service returned 500).
+[ActiveJob] [TranslatePostJob] [e1f4eeb4-4540-4b8c-9e62-19f2e4a3b902] Performed TranslatePostJob (Job ID: e1f4eeb4-4540-4b8c-9e62-19f2e4a3b902) from Test(default) in 9.23ms
+  [1m[36mPost Load (0.4ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+------------------------------------------------------------------------------------------------------
+TranslatePostJobTest: test_job_raises_UnavailableError_when_translator_URL_is_wrong_or_service_missing
+------------------------------------------------------------------------------------------------------
+  [1m[36mPost Load (0.4ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [ad8e5af3-ab44-45ac-a9e3-8137416ad951] Performing TranslatePostJob (Job ID: ad8e5af3-ab44-45ac-a9e3-8137416ad951) from Test(default) with arguments: 675045400
+[ActiveJob] [TranslatePostJob] [ad8e5af3-ab44-45ac-a9e3-8137416ad951]   [1m[36mCACHE Post Load (0.0ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [ad8e5af3-ab44-45ac-a9e3-8137416ad951]   [1m[36mPost Update (0.4ms)[0m  [1m[33mUPDATE "posts" SET "translation_status" = $1 WHERE "posts"."id" = $2[0m  [["translation_status", "translating"], ["id", 675045400]]
+[ActiveJob] [TranslatePostJob] [ad8e5af3-ab44-45ac-a9e3-8137416ad951]   [1m[36mPost Update (0.4ms)[0m  [1m[33mUPDATE "posts" SET "translation_status" = $1 WHERE "posts"."id" = $2[0m  [["translation_status", "failed"], ["id", 675045400]]
+[ActiveJob] [TranslatePostJob] [ad8e5af3-ab44-45ac-a9e3-8137416ad951] Enqueued TranslatePostJob (Job ID: ad8e5af3-ab44-45ac-a9e3-8137416ad951) to Test(default) at 2026-05-31 02:35:08 UTC with arguments: 675045400
+[ActiveJob] [TranslatePostJob] [ad8e5af3-ab44-45ac-a9e3-8137416ad951] Retrying TranslatePostJob (Job ID: ad8e5af3-ab44-45ac-a9e3-8137416ad951) after 1 attempts in 3 seconds, due to a TranslationService::UnavailableError (Translation service unreachable: Failed to open TCP connection).
+[ActiveJob] [TranslatePostJob] [ad8e5af3-ab44-45ac-a9e3-8137416ad951] Performed TranslatePostJob (Job ID: ad8e5af3-ab44-45ac-a9e3-8137416ad951) from Test(default) in 6.32ms
+  [1m[36mPost Load (0.4ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------------------------------------
+TranslatePostJobTest: test_body_markdown_en_follows_the_standard_markdown_pattern
+---------------------------------------------------------------------------------
+  [1m[36mPost Load (0.3ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [12234985-49d2-41ab-b7d6-e89f528dd4e0] Performing TranslatePostJob (Job ID: 12234985-49d2-41ab-b7d6-e89f528dd4e0) from Test(default) with arguments: 675045400
+[ActiveJob] [TranslatePostJob] [12234985-49d2-41ab-b7d6-e89f528dd4e0]   [1m[36mCACHE Post Load (0.0ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [12234985-49d2-41ab-b7d6-e89f528dd4e0]   [1m[36mPost Update (0.5ms)[0m  [1m[33mUPDATE "posts" SET "translation_status" = $1 WHERE "posts"."id" = $2[0m  [["translation_status", "translating"], ["id", 675045400]]
+[ActiveJob] [TranslatePostJob] [12234985-49d2-41ab-b7d6-e89f528dd4e0]   [1m[36mPost Update (0.5ms)[0m  [1m[33mUPDATE "posts" SET "title_en" = $1, "excerpt_en" = $2, "body_markdown_en" = $3, "translation_status" = $4 WHERE "posts"."id" = $5[0m  [["title_en", "Translated text"], ["excerpt_en", "Translated text"], ["body_markdown_en", "# Translated text\n\nTranslated text\n\n---\n\n"], ["translation_status", "done"], ["id", 675045400]]
+[ActiveJob] [TranslatePostJob] [12234985-49d2-41ab-b7d6-e89f528dd4e0] Performed TranslatePostJob (Job ID: 12234985-49d2-41ab-b7d6-e89f528dd4e0) from Test(default) in 5.5ms
+  [1m[36mPost Load (0.3ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+------------------------------------------------------------------------------------------
+TranslatePostJobTest: test_job_raises_UnavailableError_when_translator_host_is_unreachable
+------------------------------------------------------------------------------------------
+  [1m[36mPost Load (0.3ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [c39b509b-cd17-4cac-859e-36501060dc5c] Performing TranslatePostJob (Job ID: c39b509b-cd17-4cac-859e-36501060dc5c) from Test(default) with arguments: 675045400
+[ActiveJob] [TranslatePostJob] [c39b509b-cd17-4cac-859e-36501060dc5c]   [1m[36mCACHE Post Load (0.0ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [c39b509b-cd17-4cac-859e-36501060dc5c]   [1m[36mPost Update (0.4ms)[0m  [1m[33mUPDATE "posts" SET "translation_status" = $1 WHERE "posts"."id" = $2[0m  [["translation_status", "translating"], ["id", 675045400]]
+[ActiveJob] [TranslatePostJob] [c39b509b-cd17-4cac-859e-36501060dc5c]   [1m[36mPost Update (0.4ms)[0m  [1m[33mUPDATE "posts" SET "translation_status" = $1 WHERE "posts"."id" = $2[0m  [["translation_status", "failed"], ["id", 675045400]]
+[ActiveJob] [TranslatePostJob] [c39b509b-cd17-4cac-859e-36501060dc5c] Enqueued TranslatePostJob (Job ID: c39b509b-cd17-4cac-859e-36501060dc5c) to Test(default) at 2026-05-31 02:35:08 UTC with arguments: 675045400
+[ActiveJob] [TranslatePostJob] [c39b509b-cd17-4cac-859e-36501060dc5c] Retrying TranslatePostJob (Job ID: c39b509b-cd17-4cac-859e-36501060dc5c) after 1 attempts in 3 seconds, due to a TranslationService::UnavailableError (Translation service unreachable: Connection refused - Exception from WebMock).
+[ActiveJob] [TranslatePostJob] [c39b509b-cd17-4cac-859e-36501060dc5c] Performed TranslatePostJob (Job ID: c39b509b-cd17-4cac-859e-36501060dc5c) from Test(default) in 5.57ms
+  [1m[36mPost Load (0.3ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+----------------------------------------------------------------
+TranslatePostJobTest: test_does_nothing_when_post_does_not_exist
+----------------------------------------------------------------
+  [1m[36mPost Load (0.4ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [11ed6f36-f282-4de7-b82a-cb7440ecedbe] Performing TranslatePostJob (Job ID: 11ed6f36-f282-4de7-b82a-cb7440ecedbe) from Test(default) with arguments: -1
+[ActiveJob] [TranslatePostJob] [11ed6f36-f282-4de7-b82a-cb7440ecedbe]   [1m[36mPost Load (0.3ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", -1], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [11ed6f36-f282-4de7-b82a-cb7440ecedbe] Performed TranslatePostJob (Job ID: 11ed6f36-f282-4de7-b82a-cb7440ecedbe) from Test(default) in 1.61ms
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+--------------------------------------------------------------------------------
+TranslatePostJobTest: test_sets_status_to_translating_before_calling_the_service
+--------------------------------------------------------------------------------
+  [1m[36mPost Load (0.4ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [211d74a4-bfd7-4a70-a2ab-e2b5368a7686] Performing TranslatePostJob (Job ID: 211d74a4-bfd7-4a70-a2ab-e2b5368a7686) from Test(default) with arguments: 675045400
+[ActiveJob] [TranslatePostJob] [211d74a4-bfd7-4a70-a2ab-e2b5368a7686]   [1m[36mCACHE Post Load (0.0ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [211d74a4-bfd7-4a70-a2ab-e2b5368a7686]   [1m[36mPost Update (0.5ms)[0m  [1m[33mUPDATE "posts" SET "translation_status" = $1 WHERE "posts"."id" = $2[0m  [["translation_status", "translating"], ["id", 675045400]]
+[ActiveJob] [TranslatePostJob] [211d74a4-bfd7-4a70-a2ab-e2b5368a7686]   [1m[36mPost Load (0.3ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [211d74a4-bfd7-4a70-a2ab-e2b5368a7686]   [1m[36mPost Load (0.4ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [211d74a4-bfd7-4a70-a2ab-e2b5368a7686]   [1m[36mPost Load (0.3ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [211d74a4-bfd7-4a70-a2ab-e2b5368a7686]   [1m[36mPost Update (0.4ms)[0m  [1m[33mUPDATE "posts" SET "title_en" = $1, "excerpt_en" = $2, "body_markdown_en" = $3, "translation_status" = $4 WHERE "posts"."id" = $5[0m  [["title_en", "Translated text"], ["excerpt_en", "Translated text"], ["body_markdown_en", "# Translated text\n\nTranslated text\n\n---\n\n"], ["translation_status", "done"], ["id", 675045400]]
+[ActiveJob] [TranslatePostJob] [211d74a4-bfd7-4a70-a2ab-e2b5368a7686] Performed TranslatePostJob (Job ID: 211d74a4-bfd7-4a70-a2ab-e2b5368a7686) from Test(default) in 11.62ms
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+-----------------------------------------------------------------------
+TranslatePostJobTest: test_populates_EN_columns_and_sets_status_to_done
+-----------------------------------------------------------------------
+  [1m[36mPost Load (0.3ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [c1474ebf-1179-486f-909b-675946df47bb] Performing TranslatePostJob (Job ID: c1474ebf-1179-486f-909b-675946df47bb) from Test(default) with arguments: 675045400
+[ActiveJob] [TranslatePostJob] [c1474ebf-1179-486f-909b-675946df47bb]   [1m[36mCACHE Post Load (0.0ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [c1474ebf-1179-486f-909b-675946df47bb]   [1m[36mPost Update (0.4ms)[0m  [1m[33mUPDATE "posts" SET "translation_status" = $1 WHERE "posts"."id" = $2[0m  [["translation_status", "translating"], ["id", 675045400]]
+[ActiveJob] [TranslatePostJob] [c1474ebf-1179-486f-909b-675946df47bb]   [1m[36mPost Update (0.5ms)[0m  [1m[33mUPDATE "posts" SET "title_en" = $1, "excerpt_en" = $2, "body_markdown_en" = $3, "translation_status" = $4 WHERE "posts"."id" = $5[0m  [["title_en", "Translated text"], ["excerpt_en", "Translated text"], ["body_markdown_en", "# Translated text\n\nTranslated text\n\n---\n\n"], ["translation_status", "done"], ["id", 675045400]]
+[ActiveJob] [TranslatePostJob] [c1474ebf-1179-486f-909b-675946df47bb] Performed TranslatePostJob (Job ID: c1474ebf-1179-486f-909b-675946df47bb) from Test(default) in 5.37ms
+  [1m[36mPost Load (0.2ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+------------------------------------------------------------
+TranslatePostJobTest: test_does_nothing_when_post_is_a_draft
+------------------------------------------------------------
+  [1m[36mPost Load (0.3ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+  [1m[36mPost Load (0.2ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 108828309], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [75d36b54-6e93-40ed-aa4a-e27ad7778bfe] Performing TranslatePostJob (Job ID: 75d36b54-6e93-40ed-aa4a-e27ad7778bfe) from Test(default) with arguments: 108828309
+[ActiveJob] [TranslatePostJob] [75d36b54-6e93-40ed-aa4a-e27ad7778bfe]   [1m[36mCACHE Post Load (0.0ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 108828309], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [75d36b54-6e93-40ed-aa4a-e27ad7778bfe] Performed TranslatePostJob (Job ID: 75d36b54-6e93-40ed-aa4a-e27ad7778bfe) from Test(default) in 1.24ms
+  [1m[36mPost Load (0.3ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 108828309], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+-----------------------------------------------------------------------------------------------------------
+TranslatePostJobTest: test_failed_post_can_be_retried_by_resetting_status_to_pending_and_re-running_the_job
+-----------------------------------------------------------------------------------------------------------
+  [1m[36mPost Load (0.3ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+  [1m[36mPost Update (0.4ms)[0m  [1m[33mUPDATE "posts" SET "translation_status" = $1, "title_en" = $2, "excerpt_en" = $3, "body_markdown_en" = $4 WHERE "posts"."id" = $5[0m  [["translation_status", "failed"], ["title_en", nil], ["excerpt_en", nil], ["body_markdown_en", nil], ["id", 675045400]]
+  [1m[36mPost Update (0.3ms)[0m  [1m[33mUPDATE "posts" SET "translation_status" = $1 WHERE "posts"."id" = $2[0m  [["translation_status", "pending"], ["id", 675045400]]
+[ActiveJob] [TranslatePostJob] [e1e874d3-9738-4bed-a455-2b3ba562e474] Performing TranslatePostJob (Job ID: e1e874d3-9738-4bed-a455-2b3ba562e474) from Test(default) with arguments: 675045400
+[ActiveJob] [TranslatePostJob] [e1e874d3-9738-4bed-a455-2b3ba562e474]   [1m[36mPost Load (0.2ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+[ActiveJob] [TranslatePostJob] [e1e874d3-9738-4bed-a455-2b3ba562e474]   [1m[36mPost Update (0.3ms)[0m  [1m[33mUPDATE "posts" SET "translation_status" = $1 WHERE "posts"."id" = $2[0m  [["translation_status", "translating"], ["id", 675045400]]
+[ActiveJob] [TranslatePostJob] [e1e874d3-9738-4bed-a455-2b3ba562e474]   [1m[36mPost Update (0.4ms)[0m  [1m[33mUPDATE "posts" SET "title_en" = $1, "excerpt_en" = $2, "body_markdown_en" = $3, "translation_status" = $4 WHERE "posts"."id" = $5[0m  [["title_en", "Translated text"], ["excerpt_en", "Translated text"], ["body_markdown_en", "# Translated text\n\nTranslated text\n\n---\n\n"], ["translation_status", "done"], ["id", 675045400]]
+[ActiveJob] [TranslatePostJob] [e1e874d3-9738-4bed-a455-2b3ba562e474] Performed TranslatePostJob (Job ID: e1e874d3-9738-4bed-a455-2b3ba562e474) from Test(default) in 5.89ms
+  [1m[36mPost Load (0.3ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."id" = $1 LIMIT $2[0m  [["id", 675045400], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+--------------------------------------------------------------------------
+TranslationServiceTest: test_raises_UnavailableError_on_connection_failure
+--------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+--------------------------------------------------------
+TranslationServiceTest: test_posts_to_the_configured_URL
+--------------------------------------------------------
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+------------------------------------------------------------------------
+TranslationServiceTest: test_raises_UnavailableError_on_non-200_response
+------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+---------------------------------------------------------------
+TranslationServiceTest: test_returns_translated_text_on_success
+---------------------------------------------------------------
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
