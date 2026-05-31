@@ -41,10 +41,11 @@ export default class extends Controller {
     btn.dataset.active = isActive.toString()
     if (countEl) countEl.textContent = count
 
-    const activeClasses = ["border-blue-400", "bg-blue-50", "text-blue-700",
-      "dark:border-blue-700", "dark:bg-blue-950/40", "dark:text-blue-300"]
-    const inactiveClasses = ["border-neutral-200", "bg-white", "text-neutral-700",
-      "hover:border-neutral-400", "dark:border-neutral-800", "dark:bg-neutral-900",
+    // Kept in sync with the active/inactive token sets in _reactions.html.erb.
+    const activeClasses = ["border-blue-600", "bg-blue-600", "text-white", "shadow-sm",
+      "dark:border-blue-500", "dark:bg-blue-600", "dark:text-white"]
+    const inactiveClasses = ["border-neutral-200", "bg-white", "text-neutral-600",
+      "hover:border-neutral-300", "dark:border-neutral-800", "dark:bg-neutral-900",
       "dark:text-neutral-300", "dark:hover:border-neutral-600"]
 
     if (isActive) {

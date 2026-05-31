@@ -174,4 +174,19 @@
   .markdown td {
     @apply border border-neutral-200 px-3 py-2 dark:border-neutral-800;
   }
+
+  /* Comment reply form: hidden until its sibling <details class="reply"> is open.
+     Lets the Reply pill sit inline with Like while the form drops to a full row. */
+  .reply-panel {
+    display: none;
+  }
+
+  details.reply[open] ~ .reply-panel {
+    display: block;
+  }
+
+  /* Hide the native disclosure triangle on the Reply summary. */
+  details.reply > summary::-webkit-details-marker {
+    display: none;
+  }
 }

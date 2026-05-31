@@ -32,19 +32,11 @@ available = []
 available << :google_oauth2 if configured.call("GOOGLE_CLIENT_ID", :google, :client_id)
 available << :entra_id      if configured.call("MICROSOFT_CLIENT_ID", :microsoft, :client_id)
 available << :facebook      if configured.call("FACEBOOK_CLIENT_ID", :facebook, :app_id)
-available << :twitter       if configured.call("TWITTER_API_KEY", :twitter, :api_key)
-# Local password-free sign-in for development only — never enable in production.
-available << :developer if Rails.env.development?
+available << :twitter       if configured.call("TWITTER_CLIENT_ID", :twitter, :client_id)
 
 Rails.application.config.x.reader_oauth_providers = available
 
 Rails.application.config.middleware.use OmniAuth::Builder do
-  # Development-only: a simple local form (name + email) that signs you in
-  # without any external provider, so the comment flow is testable immediately.
-  if Rails.env.development?
-    provider :developer, fields: [ :name, :email ], uid_field: :email
-  end
-
   provider :google_oauth2,
            secret.call("GOOGLE_CLIENT_ID", :google, :client_id, "google-client-id-not-set"),
            secret.call("GOOGLE_CLIENT_SECRET", :google, :client_secret, "google-client-secret-not-set"),
@@ -67,11 +59,12 @@ Rails.application.config.middleware.use OmniAuth::Builder do
            info_fields: "name,email,picture",
            auth_type: "reauthenticate"
 
-  # "Sign in with X" via OAuth 1.0a. X does not return an email — Reader treats
-  # email as optional and falls back to the profile name. force_login shows the
-  # account/login screen instead of silently reusing the X session.
-  provider :twitter,
-           secret.call("TWITTER_API_KEY", :twitter, :api_key, "twitter-api-key-not-set"),
-           secret.call("TWITTER_API_SECRET", :twitter, :api_secret, "twitter-api-secret-not-set"),
-           { authorize_params: { force_login: "true" } }
+  # "Sign in with X" via OAuth 2.0 (PKCE). name: "twitter" keeps the existing
+  # /auth/twitter and /auth/twitter/callback URLs and the "twitter" provider key.
+  # X returns no email — Reader treats it as optional and uses the profile name.
+  provider :twitter2,
+           secret.call("TWITTER_CLIENT_ID", :twitter, :client_id, "twitter-client-id-not-set"),
+           secret.call("TWITTER_CLIENT_SECRET", :twitter, :client_secret, "twitter-client-secret-not-set"),
+           name: "twitter",
+           scope: "tweet.read users.read"
 end

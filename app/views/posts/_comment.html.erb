@@ -1,54 +1,75 @@
 <%# Renders one comment. Locals: comment, allow_reply (top-level only). %>
 <% author_name = comment.reader&.name.presence || comment.author_name %>
 <% avatar_url = comment.reader&.avatar_url %>
+<% initial = author_name.to_s.strip.first&.upcase.presence || "?" %>
 <% like_count = comment.comment_likes.size %>
 <% liked = reader_signed_in? ? comment.comment_likes.any? { |l| l.reader_id == current_reader.id } :
                                comment.comment_likes.any? { |l| l.reader_id.nil? && l.session_id == reader_id } %>
 
-<div id="comment-<%= comment.id %>" class="py-4">
-  <div class="flex items-center gap-3">
-    <% if avatar_url.present? %>
-      <%= image_tag avatar_url, alt: "", loading: "lazy", referrerpolicy: "no-referrer",
-                    class: "h-6 w-6 shrink-0 rounded-full object-cover" %>
-    <% end %>
-    <span class="text-sm font-medium text-neutral-950 dark:text-neutral-50"><%= h(author_name) %></span>
-    <span class="text-xs text-neutral-400 dark:text-neutral-500"><%= time_ago_in_words(comment.created_at) %> ago</span>
-  </div>
+<article id="comment-<%= comment.id %>" class="flex gap-3 py-4 scroll-mt-24">
+  <%# Avatar (image, or initial fallback) %>
+  <% if avatar_url.present? %>
+    <%= image_tag avatar_url, alt: "", loading: "lazy", referrerpolicy: "no-referrer",
+                  class: "h-9 w-9 shrink-0 rounded-full object-cover ring-1 ring-neutral-200 dark:ring-neutral-800" %>
+  <% else %>
+    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-sm font-semibold text-neutral-500 ring-1 ring-neutral-200 dark:bg-neutral-800 dark:text-neutral-400 dark:ring-neutral-700">
+      <%= initial %>
+    </span>
+  <% end %>
 
-  <p class="mt-2 leading-7 text-neutral-700 dark:text-neutral-300 whitespace-pre-wrap break-words"><%= h(comment.body) %></p>
+  <div class="min-w-0 flex-1">
+    <div class="flex items-center gap-2">
+      <span class="text-sm font-semibold text-neutral-950 dark:text-neutral-50"><%= h(author_name) %></span>
+      <span class="text-neutral-300 dark:text-neutral-600" aria-hidden="true">·</span>
+      <span class="text-xs text-neutral-400 dark:text-neutral-500"><%= time_ago_in_words(comment.created_at) %> ago</span>
+    </div>
 
-  <div class="mt-2 flex items-center gap-4">
-    <%# Like is open to everyone (anonymous-friendly). %>
-    <% like_active = liked ? "text-blue-700 dark:text-blue-300" : "text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200" %>
-    <%= button_to comment_like_path(comment),
-                  class: "inline-flex items-center gap-1.5 text-sm #{like_active}",
-                  aria: { label: t("comments.like") } do %>
-      <span aria-hidden="true">👍</span>
-      <span class="tabular-nums"><%= like_count %></span>
-    <% end %>
+    <p class="mt-1 text-[15px] leading-7 text-neutral-700 dark:text-neutral-300 whitespace-pre-wrap break-words"><%= h(comment.body) %></p>
 
-    <% if allow_reply %>
-      <details class="group">
-        <summary class="cursor-pointer list-none text-sm text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200">
-          <%= t("comments.reply") %>
-        </summary>
-        <div class="mt-3">
+    <%# Like — open to everyone (anonymous-friendly). %>
+    <% like_active = liked ?
+         "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900 dark:bg-blue-950/50 dark:text-blue-300" :
+         "border-neutral-200 text-neutral-500 hover:border-neutral-300 hover:text-neutral-800 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:text-neutral-200" %>
+    <div class="mt-2.5 flex flex-wrap items-center gap-2">
+      <%= button_to comment_like_path(comment),
+                    class: "group inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors #{like_active}",
+                    aria: { label: t("comments.like") } do %>
+        <svg class="h-3.5 w-3.5 transition-transform group-hover:scale-110" viewBox="0 0 24 24"
+             fill="<%= liked ? "currentColor" : "none" %>" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+        <span class="tabular-nums"><%= like_count %></span>
+      <% end %>
+
+      <% if allow_reply %>
+        <%# details + panel are siblings so the open-state CSS reveal works (see application.css). %>
+        <details class="reply group/reply">
+          <summary class="inline-flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-neutral-200 px-3 py-1 text-xs font-medium text-neutral-500 transition-colors hover:border-neutral-300 hover:text-neutral-800 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:text-neutral-200">
+            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/>
+            </svg>
+            <%= t("comments.reply") %>
+          </summary>
+        </details>
+
+        <div class="reply-panel mt-3 basis-full">
           <% if reader_signed_in? %>
-            <%= form_with url: post_comments_path(comment.post), class: "space-y-3" do |f| %>
+            <%= form_with url: post_comments_path(comment.post), class: "space-y-2.5" do |f| %>
               <%= hidden_field_tag "comment[parent_id]", comment.id %>
               <%= f.text_area :body,
                               required: true,
                               rows: 3,
                               placeholder: t("comments.reply_placeholder"),
-                              class: "w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-950 shadow-sm focus:border-blue-600 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50" %>
+                              class: "w-full rounded-lg border border-neutral-300 bg-white px-3.5 py-2.5 text-sm text-neutral-950 shadow-sm transition focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50" %>
               <%= f.submit t("comments.reply"),
-                           class: "rounded-md bg-neutral-950 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 dark:bg-neutral-100 dark:text-neutral-950 dark:hover:bg-blue-200" %>
+                           class: "rounded-full bg-neutral-950 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 dark:bg-neutral-100 dark:text-neutral-950 dark:hover:bg-blue-200" %>
             <% end %>
           <% else %>
             <p class="text-sm text-neutral-500 dark:text-neutral-400"><%= t("auth.sign_in_to_comment") %></p>
           <% end %>
         </div>
-      </details>
-    <% end %>
+      <% end %>
+    </div>
   </div>
-</div>
+</article>

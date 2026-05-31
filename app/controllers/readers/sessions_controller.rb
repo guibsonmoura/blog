@@ -2,11 +2,6 @@ module Readers
   class SessionsController < ApplicationController
     TOKEN_TTL = 30.days
 
-    # The dev-only OmniAuth "developer" strategy posts its form back to the
-    # callback without a Rails CSRF token. Allow that in development only;
-    # real providers redirect back via GET and are unaffected.
-    skip_before_action :verify_authenticity_token, only: :create, raise: false if Rails.env.development?
-
     # OAuth provider callback (Google / Microsoft). OmniAuth has already
     # validated the response and populated request.env["omniauth.auth"].
     def create

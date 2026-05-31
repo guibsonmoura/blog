@@ -40,6 +40,9 @@ pt:
     show:
       by: "por %{author}"
       reactions_section: "Reações"
+      reaction_total:
+        one: "%{count} reação"
+        other: "%{count} reações"
       comments_section: "Comentários"
       no_comments: "Seja o primeiro a comentar."
       activity: "%{reactions} reações · %{comments} comentários"
@@ -68,7 +71,6 @@ pt:
     sign_in_microsoft: "Entrar com Microsoft"
     sign_in_facebook: "Entrar com Facebook"
     sign_in_x: "Entrar com X"
-    sign_in_developer: "Login de teste (local)"
     signed_in_as: "Conectado como %{name}"
     sign_out: "Sair"
     sign_in_required: "Entre para comentar."
