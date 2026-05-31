@@ -108,9 +108,25 @@ After this, every push to `master` rolls the stack automatically.
 
 ## What runs in the stack
 
-- **`blog_app`** — the Rails image on port 3010. `bin/docker-entrypoint` runs `db:prepare` on boot, creating/migrating `workspace_production` + the `_cache` / `_queue` / `_cable` databases (Solid Cache/Queue/Cable). Uploads go to the `storage` volume (`ACTIVE_STORAGE_SERVICE=local`). Reaches the translator at `http://translator:8000`.
+- **`blog_app`** — the Rails image on port 3010. `bin/docker-entrypoint` runs `db:prepare` on boot, creating/migrating `workspace_production` + the `_cache` / `_queue` / `_cable` databases (Solid Cache/Queue/Cable). Uploads go to **MinIO** (`ACTIVE_STORAGE_SERVICE=minio`, see below). Reaches the translator at `http://translator:8000`.
 - **`blog_db`** — `postgres:17`, role `workspace`, data on the `pgdata` volume, internal-only (no published port).
 - **`blog_translator`** — Opus-MT PT→EN service (`ghcr.io/guibsonmoura/blog-translator:latest`), internal-only. Memory: 1 GB reserved / 2.5 GB limit.
+- **`blog_minio`** — S3-compatible object storage for Active Storage (cover images). Internal-only (no published port); the app reaches it at `http://minio:9000` and serves files **proxied through Rails** (`config.active_storage.resolve_model_to_route`), so the browser never talks to MinIO directly. Data on the `minio` volume. Memory limit 512 MB.
+- **`blog_createbuckets`** — one-shot `minio/mc` task (`restart_policy: none`); waits for MinIO, creates the `blog-production` bucket (private), then exits — so it shows `0/1` in `docker service ls`, which is normal. Idempotent (`mb --ignore-existing`), so re-running `stack deploy` is safe.
+
+### Object storage (MinIO)
+
+Production stores uploads in the in-stack MinIO service rather than on a local disk volume, so storage isn't coupled to a single node's filesystem. Config lives in `config/storage.yml` (`minio:`), driven by env:
+
+| Var | Purpose |
+|-----|---------|
+| `ACTIVE_STORAGE_SERVICE` | `minio` (default in compose) — selects the `minio:` storage service |
+| `MINIO_ACCESS_KEY` / `MINIO_SECRET_KEY` | credentials — **also** the MinIO root user/password |
+| `MINIO_BUCKET` | `blog-production` |
+| `MINIO_REGION` | `us-east-1` |
+| `MINIO_ENDPOINT` | `http://minio:9000` (set directly in compose; internal service name) |
+
+`provision.sh` generates `MINIO_ACCESS_KEY`/`MINIO_SECRET_KEY` on the server with `openssl`. To switch back to local-disk storage, set `ACTIVE_STORAGE_SERVICE=local` (uploads then use the `storage` volume). Back up the `minio` Docker volume — it holds all uploaded images.
 
 ### Translator image
 

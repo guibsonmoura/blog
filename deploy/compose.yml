@@ -22,7 +22,16 @@ services:
       POSTGRES_PORT: "5432"
       WORKSPACE_DATABASE_PASSWORD: ${WORKSPACE_DATABASE_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
-      ACTIVE_STORAGE_SERVICE: ${ACTIVE_STORAGE_SERVICE:-local}
+      ACTIVE_STORAGE_SERVICE: ${ACTIVE_STORAGE_SERVICE:-minio}
+      # S3-compatible object storage (config/storage.yml `minio:`). Reachable by
+      # the stack service name; MinIO has no published port — images are served
+      # proxied through Rails (config.active_storage.resolve_model_to_route), so
+      # the browser never talks to MinIO directly.
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_REGION: ${MINIO_REGION:-us-east-1}
+      MINIO_BUCKET: ${MINIO_BUCKET:-blog-production}
       RAILS_LOG_LEVEL: ${RAILS_LOG_LEVEL:-info}
       # Seed admin (db:prepare needs these to create the first admin user)
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
@@ -79,6 +88,60 @@ services:
         limits:
           memory: 2500M
 
+  # S3-compatible object storage for Active Storage uploads (cover images).
+  # Internal only — no published port; the app reaches it at http://minio:9000
+  # and serves files proxied through Rails. Pinned to the same release used in
+  # the devcontainer (its image ships `curl`, needed by the healthcheck).
+  minio:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z-cpuv1
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+      MINIO_REGION_NAME: ${MINIO_REGION:-us-east-1}
+    volumes:
+      - minio:/data
+    networks:
+      - blog
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+      resources:
+        limits:
+          memory: 512M
+
+  # One-shot: create the bucket (private) once MinIO is reachable, then exit.
+  # `restart_policy: none` makes it a run-once task; re-running stack deploy
+  # re-runs it, but `mb --ignore-existing` keeps it idempotent.
+  createbuckets:
+    image: minio/mc:RELEASE.2025-08-13T08-35-41Z-cpuv1
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_BUCKET: ${MINIO_BUCKET:-blog-production}
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        until mc alias set local http://minio:9000 "$$MINIO_ACCESS_KEY" "$$MINIO_SECRET_KEY" >/dev/null 2>&1 && mc ls local >/dev/null 2>&1; do
+          echo "waiting for minio..."; sleep 3;
+        done;
+        mc mb --ignore-existing "local/$$MINIO_BUCKET";
+        mc anonymous set none "local/$$MINIO_BUCKET";
+        echo "bucket $$MINIO_BUCKET ready";
+    networks:
+      - blog
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: none
+
 networks:
   blog:
     driver: overlay
@@ -86,3 +149,4 @@ networks:
 volumes:
   pgdata:
   storage:
+  minio:
