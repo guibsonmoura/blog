@@ -165,7 +165,7 @@ GEM
       reline (>= 0.4.2)
     jmespath (1.6.2)
     json (2.19.7)
-    jwt (2.10.3)
+    jwt (3.2.0)
       base64
     kamal (2.11.0)
       activesupport (>= 7.0)
@@ -428,7 +428,7 @@ DEPENDENCIES
   debug
   image_processing (~> 1.2)
   importmap-rails
-  jwt (~> 2.10)
+  jwt (~> 3.2)
   kamal
   pg (~> 1.1)
   propshaft
