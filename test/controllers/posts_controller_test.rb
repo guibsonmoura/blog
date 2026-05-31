@@ -76,7 +76,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     get post_path(posts(:published))
 
     assert_response :success
-    assert_select "h1", text: "Published"
+    assert_select "h1", text: "Published Post"
   end
 
   test "does not show draft posts" do

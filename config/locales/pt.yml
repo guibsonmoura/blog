@@ -1,0 +1,60 @@
+pt:
+  dates:
+    unpublished: "Não publicado"
+
+  date:
+    formats:
+      long: "%-d de %B de %Y"
+    month_names:
+      - ~
+      - janeiro
+      - fevereiro
+      - março
+      - abril
+      - maio
+      - junho
+      - julho
+      - agosto
+      - setembro
+      - outubro
+      - novembro
+      - dezembro
+
+  nav:
+    home: "Blog"
+    locale_toggle: "EN"
+
+  posts:
+    index:
+      section_label: "Diário"
+      title: "Últimas publicações"
+      empty: "Nenhuma publicação ainda."
+      pagination:
+        previous: "Anterior"
+        next: "Próxima"
+        page_of: "Página %{page} de %{total}"
+    show:
+      by: "por %{author}"
+      reactions_section: "Reações"
+      comments_section: "Comentários"
+      no_comments: "Seja o primeiro a comentar."
+      activity: "%{reactions} reações · %{comments} comentários"
+
+  reactions:
+    like: "👍"
+    heart: "❤️"
+    haha: "😂"
+    wow: "😮"
+    sad: "😢"
+    fire: "🔥"
+
+  comments:
+    created: "Seu comentário foi publicado."
+    form:
+      name_label: "Nome"
+      name_placeholder: "Seu nome"
+      email_label: "E-mail (opcional)"
+      email_placeholder: "seu@email.com"
+      body_label: "Comentário"
+      body_placeholder: "Escreva seu comentário…"
+      submit: "Publicar comentário"

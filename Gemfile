@@ -61,6 +61,9 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # HTTP stubbing for translation service tests.
+  gem "webmock"
 end
 
 group :development do

@@ -39,6 +39,9 @@ module Workspace
     # Serve Active Storage files through Rails so MinIO buckets can stay private.
     config.active_storage.resolve_model_to_route = :rails_storage_proxy
 
+    config.i18n.available_locales = [ :en, :pt ]
+    config.i18n.default_locale = :en
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end
