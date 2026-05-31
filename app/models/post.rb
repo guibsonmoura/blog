@@ -58,15 +58,14 @@ class Post < ApplicationRecord
 
   private
 
-  def heading_anchor(text)
-    # Replicates Redcarpet's with_toc_data ID algorithm:
-    # spaces → hyphens, keep [a-z0-9_-] and all Unicode above U+007F as-is.
-    text.downcase
-        .gsub(" ", "-")
-        .gsub(/[^a-z0-9_-￿-]/, "")
-        .gsub(/-+/, "-")
-        .strip
-  end
+def heading_anchor(text)
+  # Matches Redcarpet with_toc_data: non-ASCII bytes become "-", then collapse.
+  text.downcase
+      .gsub(/[^a-z0-9_ -]/) { |c| c.ord > 127 ? "-" : "" }
+      .gsub(/ +/, "-")
+      .gsub(/-+/, "-")
+      .strip
+end
 
   def strip_header(markdown)
     return "" if markdown.blank?

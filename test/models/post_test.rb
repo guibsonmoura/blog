@@ -335,14 +335,15 @@ class PostTest < ActiveSupport::TestCase
 
   # --- heading_anchor ---
 
-  test "heading_anchor preserves portuguese accented characters" do
+  test "heading_anchor matches redcarpet: accented chars become hyphens" do
     post = posts(:published)
-    assert_equal "primeira-seção", post.send(:heading_anchor, "Primeira Seção")
+    # ç (2 bytes) + ã (2 bytes) each become "-", then collapsed
+    assert_equal "primeira-se-o", post.send(:heading_anchor, "Primeira Seção")
   end
 
-  test "heading_anchor preserves ç ã é ó characters" do
+  test "heading_anchor: ç ã é each become a single hyphen" do
     post = posts(:published)
-    assert_equal "ação-e-reação", post.send(:heading_anchor, "Ação e Reação")
+    assert_equal "a-o-e-rea-o", post.send(:heading_anchor, "Ação e Reação")
   end
 
   test "heading_anchor converts spaces to hyphens" do
@@ -350,7 +351,7 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "hello-world", post.send(:heading_anchor, "Hello World")
   end
 
-  test "heading_anchor strips ASCII punctuation but not unicode" do
+  test "heading_anchor strips ASCII punctuation" do
     post = posts(:published)
     assert_equal "hello-world", post.send(:heading_anchor, "Hello! World?")
   end
@@ -360,7 +361,9 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "a-b", post.send(:heading_anchor, "A  B")
   end
 
-  test "toc_items anchor preserves accented heading text" do
+  test "toc_items anchor matches what redcarpet renders in the heading id" do
+    # Redcarpet with_toc_data replaces non-ASCII bytes with "-"
+    # heading_anchor must produce the same result
     post = users(:admin).posts.build(
       title: "Test", excerpt: "Excerpt",
       body_markdown: "# Test\n\nExcerpt.\n\n---\n\n## Primeira Seção\n\nContent.\n\n### Uma Subseção\n\nMore."
@@ -369,7 +372,18 @@ class PostTest < ActiveSupport::TestCase
     h2 = items.find { |i| i[:level] == 2 }
     h3 = items.find { |i| i[:level] == 3 }
 
-    assert_equal "primeira-seção", h2[:anchor]
-    assert_equal "uma-subseção",   h3[:anchor]
+    assert_equal "primeira-se-o", h2[:anchor]
+    assert_equal "uma-subse-o",   h3[:anchor]
+  end
+
+  test "toc_items includes h3 items" do
+    post = users(:admin).posts.build(
+      title: "Test", excerpt: "Excerpt",
+      body_markdown: "# Test\n\nExcerpt.\n\n---\n\n## Section\n\nContent.\n\n### Subsection\n\nMore."
+    )
+    items = post.toc_items
+    assert_equal 2, items.size
+    assert_equal 2, items[0][:level]
+    assert_equal 3, items[1][:level]
   end
 end
