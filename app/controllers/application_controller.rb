@@ -17,8 +17,7 @@ class ApplicationController < ActionController::Base
     google_oauth2: { path: "/auth/google_oauth2", label_key: "auth.sign_in_google" },
     entra_id:      { path: "/auth/entra_id",      label_key: "auth.sign_in_microsoft" },
     facebook:      { path: "/auth/facebook",      label_key: "auth.sign_in_facebook" },
-    twitter:       { path: "/auth/twitter",       label_key: "auth.sign_in_x" },
-    developer:     { path: "/auth/developer",     label_key: "auth.sign_in_developer" }
+    twitter:       { path: "/auth/twitter",       label_key: "auth.sign_in_x" }
   }.freeze
 
   private

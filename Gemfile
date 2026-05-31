@@ -29,7 +29,7 @@ gem "omniauth-rails_csrf_protection", "~> 1.0"   # forces CSRF-protected POST to
 gem "omniauth-google-oauth2", "~> 1.1"
 gem "omniauth-entra-id", "~> 3.0"                # Microsoft Entra / Azure AD
 gem "omniauth-facebook", "~> 10.0"
-gem "omniauth-twitter", "~> 1.4"                 # "Sign in with X" (OAuth 1.0a)
+gem "omniauth-twitter2"                          # "Sign in with X" (OAuth 2.0 + PKCE)
 
 # Markdown rendering for post bodies.
 gem "redcarpet", "~> 3.6"
