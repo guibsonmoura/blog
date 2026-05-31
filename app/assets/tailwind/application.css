@@ -24,13 +24,33 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* overflow: clip — prevents x-scroll without creating a scroll container,
+       so position:sticky still works. overflow:hidden on body alone is ignored
+       by browsers (they propagate it to the viewport instead). */
+    overflow-x: clip;
   }
 
-  /* Prevent the viewport from growing wider than the screen on any device */
   body {
     width: 100%;
-    max-width: 100vw;
-    overflow-x: hidden;
+    /* Belt-and-suspenders: clip on body too */
+    overflow-x: clip;
+  }
+
+  /* Long unbreakable words (URLs, hashes) must wrap, not overflow */
+  p, li, td, th, blockquote, figcaption {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /* All images and media are fluid by default */
+  img, video, iframe, embed, object {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Inputs and textareas never exceed their container */
+  input, textarea, select {
+    max-width: 100%;
   }
 }
 

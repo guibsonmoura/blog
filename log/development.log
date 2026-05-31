@@ -9658,3 +9658,131 @@ Processing by PostsController#index as */*
   ↳ app/views/posts/index.html.erb:85
   Rendered posts/index.html.erb within layouts/application (Duration: 8.2ms | GC: 0.0ms)
   Rendered layout layouts/application.html.erb (Duration: 10.2ms | GC: 0.0ms)
+Completed 200 OK in 70ms (Views: 11.3ms | ActiveRecord: 2.2ms (6 queries, 2 cached) | GC: 0.3ms)
+
+
+Started GET "/" for 172.30.0.1 at 2026-05-31 04:00:43 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by PostsController#index as HTML
+  [1m[36mPost Load (0.8ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 04:00:43.380279') ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:6:in `group_by'
+  [1m[36mReaction Load (0.5ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" IN (675045406, 675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:6:in `group_by'
+  [1m[36mComment Load (0.5ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" IN (675045406, 675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:6:in `group_by'
+  Rendering layout layouts/application.html.erb
+  Rendering posts/index.html.erb within layouts/application
+  [1m[36mPost Load (0.7ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 04:00:43.380279') ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT 5 /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:85
+  [1m[36mCACHE Reaction Load (0.0ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" IN (675045406, 675045405, 675045404, 675045402)[0m
+  ↳ app/views/posts/index.html.erb:85
+  [1m[36mCACHE Comment Load (0.0ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" IN (675045406, 675045405, 675045404, 675045402)[0m
+  ↳ app/views/posts/index.html.erb:85
+  Rendered posts/index.html.erb within layouts/application (Duration: 8.8ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 10.9ms | GC: 0.0ms)
+Completed 200 OK in 67ms (Views: 11.7ms | ActiveRecord: 2.4ms (6 queries, 2 cached) | GC: 1.3ms)
+
+
+Started GET "/.well-known/appspecific/com.chrome.devtools.json" for 172.30.0.1 at 2026-05-31 04:00:43 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/.well-known/appspecific/com.chrome.devtools.json"):
+  
+Started GET "/" for 127.0.0.1 at 2026-05-31 04:02:05 +0000
+Processing by PostsController#index as */*
+  [1m[36mPost Load (1.0ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 04:02:06.037621') ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:6:in `group_by'
+  [1m[36mReaction Load (0.4ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" IN (675045406, 675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:6:in `group_by'
+  [1m[36mComment Load (0.4ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" IN (675045406, 675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:6:in `group_by'
+  Rendering layout layouts/application.html.erb
+  Rendering posts/index.html.erb within layouts/application
+  [1m[36mPost Load (0.7ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 04:02:06.037621') ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT 5 /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:85
+  [1m[36mCACHE Reaction Load (0.0ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" IN (675045406, 675045405, 675045404, 675045402)[0m
+  ↳ app/views/posts/index.html.erb:85
+  [1m[36mCACHE Comment Load (0.0ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" IN (675045406, 675045405, 675045404, 675045402)[0m
+  ↳ app/views/posts/index.html.erb:85
+  Rendered posts/index.html.erb within layouts/application (Duration: 12.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 14.6ms | GC: 0.0ms)
+Completed 200 OK in 88ms (Views: 15.8ms | ActiveRecord: 2.4ms (6 queries, 2 cached) | GC: 10.8ms)
+
+
+Started GET "/posts/meu-titulo-do-artigo" for 127.0.0.1 at 2026-05-31 04:02:11 +0000
+Processing by PostsController#show as */*
+  Parameters: {"id"=>"meu-titulo-do-artigo"}
+  [1m[36mPost Load (1.1ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 04:02:11.884904') AND "posts"."slug" = 'meu-titulo-do-artigo' ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT 1 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:18:in `show'
+  [1m[36mReaction Load (0.5ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" = 675045406 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:18:in `show'
+  [1m[36mComment Load (0.5ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" = 675045406 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:18:in `show'
+  Rendering layout layouts/application.html.erb
+  Rendering posts/show.html.erb within layouts/application
+  Rendered posts/_reactions.html.erb (Duration: 9.0ms | GC: 0.5ms)
+  Rendered posts/_comments.html.erb (Duration: 6.7ms | GC: 0.7ms)
+  Rendered posts/show.html.erb within layouts/application (Duration: 52.0ms | GC: 1.2ms)
+  Rendered layout layouts/application.html.erb (Duration: 54.9ms | GC: 1.2ms)
+Completed 200 OK in 136ms (Views: 57.7ms | ActiveRecord: 2.0ms (3 queries, 0 cached) | GC: 1.8ms)
+
+
+Started GET "/" for 172.30.0.1 at 2026-05-31 04:02:47 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by PostsController#index as HTML
+  [1m[36mPost Load (0.9ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 04:02:48.000452') ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:6:in `group_by'
+  [1m[36mReaction Load (0.5ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" IN (675045406, 675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:6:in `group_by'
+  [1m[36mComment Load (0.4ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" IN (675045406, 675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:6:in `group_by'
+  Rendering layout layouts/application.html.erb
+  Rendering posts/index.html.erb within layouts/application
+  [1m[36mPost Load (0.6ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 04:02:48.000452') ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT 5 /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:85
+  [1m[36mCACHE Reaction Load (0.0ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" IN (675045406, 675045405, 675045404, 675045402)[0m
+  ↳ app/views/posts/index.html.erb:85
+  [1m[36mCACHE Comment Load (0.0ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" IN (675045406, 675045405, 675045404, 675045402)[0m
+  ↳ app/views/posts/index.html.erb:85
+  Rendered posts/index.html.erb within layouts/application (Duration: 10.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 13.6ms | GC: 1.1ms)
+Completed 200 OK in 69ms (Views: 14.3ms | ActiveRecord: 2.4ms (6 queries, 2 cached) | GC: 1.4ms)
+
+
+Started GET "/.well-known/appspecific/com.chrome.devtools.json" for 172.30.0.1 at 2026-05-31 04:02:48 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/.well-known/appspecific/com.chrome.devtools.json"):
+  
+Started GET "/up" for 172.30.0.1 at 2026-05-31 04:04:35 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by Rails::HealthController#show as */*
+  Rendering html template
+  Rendered html template (Duration: 0.0ms | GC: 0.0ms)
+Completed 200 OK in 54ms (Views: 1.7ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 172.30.0.1 at 2026-05-31 04:04:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by PostsController#index as HTML
+  [1m[36mPost Load (0.7ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 04:04:38.030150') ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:6:in `group_by'
+  [1m[36mReaction Load (0.7ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" IN (675045406, 675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:6:in `group_by'
+  [1m[36mComment Load (0.5ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" IN (675045406, 675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:6:in `group_by'
+  Rendering layout layouts/application.html.erb
+  Rendering posts/index.html.erb within layouts/application
+  [1m[36mPost Load (1.3ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 04:04:38.030150') ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT 5 /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:85
+  [1m[36mCACHE Reaction Load (0.0ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" IN (675045406, 675045405, 675045404, 675045402)[0m
+  ↳ app/views/posts/index.html.erb:85
+  [1m[36mCACHE Comment Load (0.0ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" IN (675045406, 675045405, 675045404, 675045402)[0m
+  ↳ app/views/posts/index.html.erb:85
+  Rendered posts/index.html.erb within layouts/application (Duration: 36.7ms | GC: 8.4ms)
+  Rendered layout layouts/application.html.erb (Duration: 156.1ms | GC: 9.4ms)
+Completed 200 OK in 325ms (Views: 174.2ms | ActiveRecord: 9.0ms (6 queries, 2 cached) | GC: 10.5ms)
+
+
+Started GET "/.well-known/appspecific/com.chrome.devtools.json" for 172.30.0.1 at 2026-05-31 04:04:38 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
