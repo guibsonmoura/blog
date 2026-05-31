@@ -2,9 +2,111 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+  Reading-comfort palette — based on specs/comfortable-reading.md
+  Light: #FAFAF7 background / #222222 text (paper-like, reduces eye strain)
+  Dark:  #1a1a1a background / #e8e6e1 text (soft dark, not pure black/white)
+*/
+/* Custom breakpoint for 375px — sits between 0 and Tailwind's sm (640px) */
+@custom-variant xs (@media (width >= 375px));
+
+@layer base {
+  /* box-sizing: border-box prevents padding from adding to element width */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  :root {
+    --reading-bg: #FAFAF7;
+    --reading-text: #222222;
+    --reading-bg-dark: #1a1a1a;
+    --reading-text-dark: #e8e6e1;
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  body {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Long unbreakable words (URLs, hashes) must wrap, not overflow */
+  p, li, td, th, blockquote, figcaption, h1, h2, h3, h4, a, span {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* All images and media are fluid by default */
+  img, video, iframe, embed, object {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Inputs and textareas never exceed their container */
+  input, textarea, select {
+    max-width: 100%;
+  }
+}
+
 @layer components {
+  /* Page surface — paper-like reading background */
+  .reading-surface {
+    background-color: var(--reading-bg);
+    color: var(--reading-text);
+  }
+
+  .dark .reading-surface {
+    background-color: var(--reading-bg-dark);
+    color: var(--reading-text-dark);
+  }
+
+  .reading-header {
+    background-color: color-mix(in srgb, var(--reading-bg) 90%, transparent);
+  }
+
+  .dark .reading-header {
+    background-color: color-mix(in srgb, var(--reading-bg-dark) 90%, transparent);
+  }
+
+  /* Post title */
+  .reading-title {
+    color: var(--reading-text);
+  }
+
+  .dark .reading-title {
+    color: var(--reading-text-dark);
+  }
+
+  /* Post excerpt */
+  .reading-excerpt {
+    font-size: 18px;
+    line-height: 1.7;
+    color: #444444;
+  }
+
+  .dark .reading-excerpt {
+    color: #b0ada6;
+  }
+
   .markdown {
-    @apply text-base leading-7 text-neutral-800 dark:text-neutral-200;
+    /* 18px / line-height 1.7 as recommended in comfortable-reading spec */
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--reading-text);
+  }
+
+  .dark .markdown {
+    color: var(--reading-text-dark);
   }
 
   .markdown > * + * {
@@ -12,7 +114,7 @@
   }
 
   .markdown h1 {
-    @apply mt-10 text-3xl font-semibold leading-tight text-neutral-950 dark:text-neutral-50;
+    @apply mt-10 text-center text-3xl font-semibold leading-tight text-neutral-950 dark:text-neutral-50;
   }
 
   .markdown h2 {
@@ -21,6 +123,10 @@
 
   .markdown h3 {
     @apply mt-8 text-xl font-semibold leading-snug text-neutral-950 dark:text-neutral-50;
+  }
+
+  .markdown p {
+    @apply text-justify;
   }
 
   .markdown a {
@@ -52,11 +158,16 @@
   }
 
   .markdown img {
-    @apply rounded-md border border-neutral-200 dark:border-neutral-800;
+    @apply max-w-full rounded-md border border-neutral-200 dark:border-neutral-800;
+    height: auto;
   }
 
+  /* Tables scroll horizontally on narrow screens instead of breaking layout */
   .markdown table {
     @apply w-full border-collapse text-left text-sm;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .markdown th,

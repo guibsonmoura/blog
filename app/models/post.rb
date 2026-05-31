@@ -13,6 +13,7 @@ class Post < ApplicationRecord
 
   scope :recent_first, -> { order(published_at: :desc, created_at: :desc) }
   scope :visible, -> { published.where("published_at <= ?", Time.current).recent_first }
+  scope :search, ->(q) { where("title ILIKE :q OR excerpt ILIKE :q OR body_markdown ILIKE :q", q: "%#{sanitize_sql_like(q)}%") }
 
   validates :title, presence: true, length: { maximum: 160 }
   validates :slug, presence: true,
@@ -40,10 +41,36 @@ class Post < ApplicationRecord
 
   def localized_body
     source = I18n.locale == :pt || body_markdown_en.blank? ? body_markdown : body_markdown_en
-    MarkdownRenderer.render(source)
+    MarkdownRenderer.render(strip_header(source))
+  end
+
+  def toc_items
+    source = I18n.locale == :pt || body_markdown_en.blank? ? body_markdown : body_markdown_en
+    strip_header(source).lines.filter_map do |line|
+      if (m = line.match(/\A(##|###)\s+(.+)/))
+        { level: m[1].length, text: m[2].strip, anchor: MarkdownRenderer.heading_anchor(m[2].strip) }
+      end
+    end
+  end
+
+  def body_content
+    strip_header(body_markdown)
   end
 
   private
+
+  def strip_header(markdown)
+    return "" if markdown.blank?
+
+    lines = markdown.lines
+
+    separator_index = lines.index { |l| l.strip == "---" }
+    return lines.drop(separator_index + 1).join.lstrip if separator_index
+
+    after_title = lines.drop_while { |l| l.match?(/\A#\s+/) || l.strip.empty? }
+    after_excerpt = after_title.drop_while { |l| l.strip.present? }
+    after_excerpt.drop_while { |l| l.strip.empty? }.join.lstrip
+  end
 
   def enqueue_translation
     TranslatePostJob.perform_later(id) if published?

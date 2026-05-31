@@ -1,6 +1,6 @@
 module Admin
   class PostsController < BaseController
-    before_action :set_post, only: [ :show, :edit, :update, :destroy ]
+    before_action :set_post, only: [ :show, :edit, :update, :destroy, :retranslate ]
 
     def index
       @posts = Post.includes(:user).order(created_at: :desc)
@@ -37,6 +37,16 @@ module Admin
     def destroy
       @post.destroy
       redirect_to admin_posts_path, notice: "Post deleted."
+    end
+
+    def retranslate
+      unless @post.published?
+        return redirect_to admin_post_path(@post), alert: "Only published posts can be translated."
+      end
+
+      @post.update_column(:translation_status, "pending")
+      TranslatePostJob.perform_later(@post.id)
+      redirect_to admin_post_path(@post), notice: "Translation re-queued."
     end
 
     private

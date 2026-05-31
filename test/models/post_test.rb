@@ -328,7 +328,59 @@ class PostTest < ActiveSupport::TestCase
     post.body_markdown_en = nil
 
     I18n.with_locale(:en) do
-      assert_includes post.localized_body, post.rendered_body
+      # Falls back to PT source — body content (after strip_header) should be present
+      assert_includes post.localized_body, "This post is visible."
     end
+  end
+
+  # --- heading_anchor ---
+
+  test "heading_anchor preserves portuguese accented characters" do
+    assert_equal "primeira-seção", MarkdownRenderer.heading_anchor("Primeira Seção")
+  end
+
+  test "heading_anchor preserves ç ã é ó" do
+    assert_equal "ação-e-reação", MarkdownRenderer.heading_anchor("Ação e Reação")
+  end
+
+  test "heading_anchor converts spaces to hyphens" do
+    assert_equal "hello-world", MarkdownRenderer.heading_anchor("Hello World")
+  end
+
+  test "heading_anchor strips ASCII punctuation" do
+    assert_equal "hello-world", MarkdownRenderer.heading_anchor("Hello! World?")
+  end
+
+  test "heading_anchor collapses consecutive hyphens" do
+    assert_equal "a-b", MarkdownRenderer.heading_anchor("A  B")
+  end
+
+  test "toc_items anchor preserves accented chars and matches rendered heading id" do
+    post = users(:admin).posts.build(
+      title: "Test", excerpt: "Excerpt",
+      body_markdown: "# Test\n\nExcerpt.\n\n---\n\n## Primeira Seção\n\nContent.\n\n### Uma Subseção\n\nMore."
+    )
+    items = post.toc_items
+    h2 = items.find { |i| i[:level] == 2 }
+    h3 = items.find { |i| i[:level] == 3 }
+
+    assert_equal "primeira-seção", h2[:anchor]
+    assert_equal "uma-subseção",   h3[:anchor]
+
+    # Verify the rendered HTML has matching ids
+    html = post.localized_body
+    assert_match(/id="primeira-seção"/, html)
+    assert_match(/id="uma-subseção"/,   html)
+  end
+
+  test "toc_items includes h3 items" do
+    post = users(:admin).posts.build(
+      title: "Test", excerpt: "Excerpt",
+      body_markdown: "# Test\n\nExcerpt.\n\n---\n\n## Section\n\nContent.\n\n### Subsection\n\nMore."
+    )
+    items = post.toc_items
+    assert_equal 2, items.size
+    assert_equal 2, items[0][:level]
+    assert_equal 3, items[1][:level]
   end
 end

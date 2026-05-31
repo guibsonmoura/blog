@@ -11,7 +11,7 @@
             <span class="text-sm font-medium text-neutral-950 dark:text-neutral-50"><%= h(comment.author_name) %></span>
             <span class="text-xs text-neutral-400 dark:text-neutral-500"><%= time_ago_in_words(comment.created_at) %> ago</span>
           </div>
-          <p class="mt-2 leading-7 text-neutral-700 dark:text-neutral-300 whitespace-pre-wrap"><%= h(comment.body) %></p>
+          <p class="mt-2 leading-7 text-neutral-700 dark:text-neutral-300 whitespace-pre-wrap break-words"><%= h(comment.body) %></p>
         </div>
       <% end %>
     </div>
