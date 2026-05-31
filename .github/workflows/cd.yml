@@ -89,6 +89,22 @@ jobs:
             # Load .env (swarm stack deploy ignores env_file), then override the image tag
             set -a; . ./.env; set +a
             export IMAGE_TAG="${IMAGE_TAG}"
-            # Public GHCR image — no docker login needed
-            docker stack deploy -c compose.yml blog --resolve-image always --detach=false
+            # Public GHCR image — no docker login needed.
+            # --detach=true: don't block on convergence. The stack has a run-once
+            # `createbuckets` task (restart_policy: none) that exits to 0/1, so
+            # --detach=false would hang until the SSH step times out. We verify
+            # the rollout explicitly with a /up readiness poll instead.
+            docker stack deploy -c compose.yml blog --resolve-image always --detach=true
+            echo "Waiting for app to become healthy on 127.0.0.1:3010 ..."
+            for i in $(seq 1 36); do
+              code="$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3010/up || true)"
+              if [ "$code" = "200" ]; then echo "app healthy (200)"; break; fi
+              echo "  attempt $i: /up -> ${code:-no-response}; retrying in 5s"
+              sleep 5
+            done
+            if [ "$code" != "200" ]; then
+              echo "::error::app did not return 200 on /up after rollout"
+              docker service ps blog_app --no-trunc | tail -n 20
+              exit 1
+            fi
             docker image prune -f
