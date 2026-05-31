@@ -85,10 +85,11 @@ state is correct even without JS (progressive enhancement).
 
 When a reaction tile is activated (click / Enter / Space / arrow-select):
 
-1. The tile's inner content **spins 360°** once over ~500ms (`transform: rotate(360deg)` via a
-   one-shot `reaction-spin` keyframe class added then removed on `animationend`).
-2. The tile transitions to the **blue selected** state. With the radio `peer-checked:` approach this
-   is automatic; JS only adds the transient spin class.
+1. The **whole reactions card spins 360° around the Z axis** (in-plane) once over ~500ms
+   (`transform: rotateZ(360deg)` via a one-shot `reaction-spin` keyframe class added to the card
+   container, then removed on `animationend`).
+2. The clicked tile transitions to the **blue selected** state. With the radio `peer-checked:`
+   approach this is automatic; JS only adds the transient spin class to the card.
 3. If the visitor re-clicks the already-selected tile, it **deselects** (server removes the
    reaction): radio is unchecked, tile returns to idle, count −1. (Radios don't natively toggle off,
    so JS handles the "click the checked one to clear it" case — see §6.)
