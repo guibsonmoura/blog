@@ -1,4 +1,4 @@
-<section id="comments">
+<section id="comments" class="border-t border-neutral-200 pt-12 dark:border-neutral-800">
   <h2 class="text-sm font-medium uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
     <%= t("posts.show.comments_section") %>
   </h2>
@@ -24,7 +24,7 @@
     <p class="mt-4 text-sm text-neutral-500 dark:text-neutral-400"><%= t("posts.show.no_comments") %></p>
   <% end %>
 
-  <div id="comment-form" class="mt-10">
+  <div id="comment-form" class="mt-10 border-t border-neutral-200 pt-10 dark:border-neutral-800">
     <% if reader_signed_in? %>
       <p class="mb-4 flex flex-wrap items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
         <%= t("auth.signed_in_as", name: current_reader.name) %>

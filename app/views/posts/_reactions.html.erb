@@ -1,5 +1,6 @@
 <%# Reactions section — flat, blends with the page. Radio family (single choice). See specs/reactions-card.md %>
-<section id="reactions" data-controller="reactions">
+<section id="reactions" data-controller="reactions"
+         class="border-t border-neutral-200 pt-12 dark:border-neutral-800">
   <%# The visitor's single current reaction (by account when signed in, else by durable cookie). %>
   <% mine = reader_signed_in? ? post.reactions.find { |r| r.reader_id == current_reader.id } :
                                 post.reactions.find { |r| r.reader_id.nil? && r.session_id == reader_id } %>
