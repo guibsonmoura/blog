@@ -85,7 +85,7 @@ state is correct even without JS (progressive enhancement).
 
 When a reaction tile is activated (click / Enter / Space / arrow-select):
 
-1. The tile's inner content **spins 360°** once over ~3s (`transform: rotate(360deg)` via a
+1. The tile's inner content **spins 360°** once over ~500ms (`transform: rotate(360deg)` via a
    one-shot `reaction-spin` keyframe class added then removed on `animationend`).
 2. The tile transitions to the **blue selected** state. With the radio `peer-checked:` approach this
    is automatic; JS only adds the transient spin class.
@@ -102,7 +102,7 @@ On a **new selection or switch** (not on deselect), fire a celebratory burst:
   `document.body`.
 - Each emoji starts near the clicked tile's horizontal position at the bottom third, then **floats
   up and outward** with slight random x-drift, rotation, and scale, fading to 0 opacity over
-  ~900–1200ms. Stagger start by a few ms each.
+  ~5s. Stagger start by a few ms each.
 - Remove the overlay layer on the last `animationend` (and a safety `setTimeout`).
 - Emoji glyph comes from the tile (read its rendered emoji), so EN/PT both work.
 

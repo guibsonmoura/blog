@@ -149,7 +149,8 @@ export default class extends Controller {
     }
 
     document.body.appendChild(layer)
-    // Safety net in case animationend doesn't fire (e.g. tab hidden)
-    setTimeout(() => layer.remove(), 2000)
+    // Safety net in case animationend doesn't fire (e.g. tab hidden).
+    // Must outlast the 5s float + max stagger delay.
+    setTimeout(() => layer.remove(), 6000)
   }
 }
