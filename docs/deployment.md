@@ -56,24 +56,43 @@ gh api --method PATCH /user/packages/container/blog/visibility -f visibility=pub
 
 Or: GitHub → your profile → Packages → `blog` → Package settings → Change visibility → **Public**.
 
-## One-time VPS setup
+## One-time VPS setup — as code
 
-As `guibson` on `148.230.76.215`:
+The bootstrap is captured in **`deploy/provision.sh`** (idempotent). Run it once from the repo root:
 
 ```bash
-# 1. Docker + swarm (guibson must be in the docker group)
-docker swarm init                 # skip if this node is already a swarm manager
+SSH_KEY=~/.ssh/id_ed25519 bash deploy/provision.sh
+```
 
-# 2. Stack directory + files
-mkdir -p /home/guibson/projetos/blog
-cd /home/guibson/projetos/blog
-# copy deploy/compose.yml here as compose.yml
-# copy deploy/.env.example here as .env and fill in real values:
-#   SECRET_KEY_BASE  (docker run --rm ghcr.io/guibsonmoura/blog:latest ./bin/rails secret)
-#   WORKSPACE_DATABASE_PASSWORD, JWT_SECRET
-nano .env
+It connects to the VPS and, idempotently:
+1. installs Docker if missing, 2. `docker swarm init` if not already a manager,
+3. creates `/home/guibson/projetos/blog`, 4. uploads `compose.yml`,
+5. generates `.env` **only if absent** — secrets (`SECRET_KEY_BASE`, `WORKSPACE_DATABASE_PASSWORD`,
+`JWT_SECRET`) are created **on the server** with `openssl`, never printed or stored locally,
+6. runs the first `docker stack deploy`.
 
-# 3. First deploy
+Re-running is safe: it won't overwrite an existing `.env`, and it just re-rolls the stack.
+
+### Why a script and not Terraform
+
+The VPS already exists and isn't managed through a cloud provider API, so Terraform here would
+reduce to `null_resource` + `remote-exec` provisioners — an anti-pattern (Terraform isn't a
+config-management tool). `provision.sh` is the right "setup as code": versioned, idempotent,
+reviewable. If the host is ever recreated via a provider with an API (Hetzner/DO/AWS…), add a
+Terraform module for the VM lifecycle and keep `provision.sh` as the in-VM bootstrap.
+
+### Bootstrap vs ongoing deploys
+
+`provision.sh` is the **one-time** bootstrap. After that the **CD pipeline** owns every deploy: it
+`scp`s the current `deploy/compose.yml` to the server (repo = source of truth) and rolls the stack
+to the new image. You don't run `provision.sh` again unless rebuilding the box.
+
+### Manual equivalent (if not using the script)
+
+```bash
+docker swarm init
+mkdir -p /home/guibson/projetos/blog && cd /home/guibson/projetos/blog
+# copy deploy/compose.yml → compose.yml ; deploy/.env.example → .env (fill secrets)
 set -a; . ./.env; set +a
 docker stack deploy -c compose.yml blog --resolve-image always
 ```

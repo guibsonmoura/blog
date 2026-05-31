@@ -61,6 +61,20 @@ jobs:
     env:
       IMAGE_TAG: ${{ needs.release.outputs.version }}
     steps:
+      - name: Checkout (need the stack file)
+        uses: actions/checkout@v6
+
+      - name: Sync compose.yml to the server
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          source: deploy/compose.yml
+          target: /home/guibson/projetos/blog
+          strip_components: 1
+
       - name: Roll the swarm stack to the new image
         uses: appleboy/ssh-action@v1
         with:
