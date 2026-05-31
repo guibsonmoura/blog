@@ -28,7 +28,11 @@ en:
     index:
       section_label: "Journal"
       title: "Latest posts"
+      tagline: "Thoughts about software, architecture and technology"
       empty: "No published posts yet."
+      sidebar:
+        recent: "Recent posts"
+        archive: "Archive"
       pagination:
         previous: "Previous"
         next: "Next"

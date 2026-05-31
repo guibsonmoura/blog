@@ -28,7 +28,11 @@ pt:
     index:
       section_label: "Diário"
       title: "Últimas publicações"
+      tagline: "Pensamentos sobre software, arquitetura e tecnologia"
       empty: "Nenhuma publicação ainda."
+      sidebar:
+        recent: "Publicações recentes"
+        archive: "Arquivo"
       pagination:
         previous: "Anterior"
         next: "Próxima"
