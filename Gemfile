@@ -21,7 +21,7 @@ gem "tailwindcss-rails"
 gem "argon2", "~> 2.3"
 
 # Admin authentication token signing.
-gem "jwt", "~> 2.10"
+gem "jwt", "~> 3.2"
 
 # Public reader authentication via OAuth2 (Google + Microsoft).
 gem "omniauth", "~> 2.1"
