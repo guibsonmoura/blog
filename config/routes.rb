@@ -21,7 +21,9 @@ Rails.application.routes.draw do
     post "markdown_preview", to: "markdown_previews#create"
 
     resources :images, only: [ :create ]
-    resources :posts
+    resources :posts do
+      member { post :retranslate }
+    end
     resources :comments, only: [ :destroy ]
   end
 

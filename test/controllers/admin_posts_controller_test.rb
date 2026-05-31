@@ -254,4 +254,53 @@ class AdminPostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to admin_posts_path
   end
+
+  # --- Retranslate ---
+
+  test "retranslate re-queues the job for a published post" do
+    sign_in_as users(:admin)
+    posts(:published).update_column(:translation_status, "failed")
+
+    assert_enqueued_with(job: TranslatePostJob, args: [ posts(:published).id ]) do
+      post retranslate_admin_post_path(posts(:published))
+    end
+
+    assert_equal "pending", posts(:published).reload.translation_status
+    assert_redirected_to admin_post_path(posts(:published))
+  end
+
+  test "retranslate is rejected for a draft post" do
+    sign_in_as users(:admin)
+
+    assert_no_enqueued_jobs(only: TranslatePostJob) do
+      post retranslate_admin_post_path(posts(:draft))
+    end
+
+    assert_redirected_to admin_post_path(posts(:draft))
+  end
+
+  test "retranslate requires admin authentication" do
+    post retranslate_admin_post_path(posts(:published))
+
+    assert_redirected_to superadmin_login_path
+  end
+
+  test "retry button shows on show page for a failed published post" do
+    sign_in_as users(:admin)
+    posts(:published).update_column(:translation_status, "failed")
+
+    get admin_post_path(posts(:published))
+
+    assert_response :success
+    assert_select "form[action=?]", retranslate_admin_post_path(posts(:published))
+  end
+
+  test "retry button hidden when translation is done" do
+    sign_in_as users(:admin)
+    posts(:published).update_column(:translation_status, "done")
+
+    get admin_post_path(posts(:published))
+
+    assert_select "form[action=?]", retranslate_admin_post_path(posts(:published)), count: 0
+  end
 end

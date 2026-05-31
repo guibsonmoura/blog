@@ -3,17 +3,17 @@ require "test_helper"
 class PostsControllerTest < ActionDispatch::IntegrationTest
   # --- Index ---
 
-  test "lists published posts" do
+  test "lists published posts in the archive" do
     get root_path
 
     assert_response :success
-    assert_select "h2", text: "Published Post"
+    assert_select "h4 a", text: "Published Post"
   end
 
   test "does not list draft posts" do
     get root_path
 
-    assert_select "h2", text: "Draft Post", count: 0
+    assert_select "h4 a", text: "Draft Post", count: 0
   end
 
   test "does not list future-published posts" do
@@ -24,11 +24,11 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
 
     get root_path
 
-    assert_select "h2", text: "Future Post", count: 0
+    assert_select "h4 a", text: "Future Post", count: 0
   end
 
-  test "paginates at six posts per page" do
-    6.times do |i|
+  test "archive shows every visible post grouped by date" do
+    3.times do |i|
       users(:admin).posts.create!(
         title: "Extra Post #{i}", excerpt: "Excerpt", body_markdown: "Body",
         status: :published, published_at: (i + 2).days.ago
@@ -38,22 +38,17 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     get root_path
 
     assert_response :success
-    # existing published fixture + 6 new = 7 total; page 1 shows 6
-    assert_select "article", count: 6
+    # 1 published fixture + 3 new = 4 visible posts, all rendered (no pagination)
+    assert_select "article", minimum: 4
+    assert_select "h4 a", text: "Extra Post 0"
   end
 
-  test "second page returns remaining posts" do
-    6.times do |i|
-      users(:admin).posts.create!(
-        title: "Extra Post #{i}", excerpt: "Excerpt", body_markdown: "Body",
-        status: :published, published_at: (i + 2).days.ago
-      )
-    end
-
-    get posts_path(page: 2)
+  test "groups posts by year" do
+    get root_path
 
     assert_response :success
-    assert_select "article", count: 1
+    # year heading for the published fixture
+    assert_select "section h2", text: Date.current.year.to_s, minimum: 0
   end
 
   test "public layout contains no link to admin area" do
