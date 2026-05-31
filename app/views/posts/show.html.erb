@@ -1,26 +1,49 @@
 <% page_title @post.localized_title %>
+<% toc = @post.toc_items %>
 
-<article class="mx-auto max-w-3xl">
-  <header>
-    <p class="text-sm text-neutral-500 dark:text-neutral-400">
-      <%= display_date(@post.published_at) %>
-    </p>
+<div class="mx-auto max-w-6xl px-5">
+  <div class="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_220px]">
 
-    <h1 class="mt-4 text-center text-4xl font-semibold leading-tight text-neutral-950 dark:text-neutral-50">
-      <%= @post.localized_title %>
-    </h1>
+    <article class="min-w-0">
+      <header>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+          <%= display_date(@post.published_at) %>
+        </p>
 
-    <p class="mt-6 text-justify text-lg leading-8 text-neutral-700 dark:text-neutral-300">
-      <%= @post.localized_excerpt %>
-    </p>
-  </header>
+        <h1 class="mt-4 text-center text-4xl font-semibold leading-tight text-neutral-950 dark:text-neutral-50">
+          <%= @post.localized_title %>
+        </h1>
 
-  <div class="markdown mt-12">
-    <%= @post.localized_body %>
+        <p class="mt-6 text-justify text-lg leading-8 text-neutral-700 dark:text-neutral-300">
+          <%= @post.localized_excerpt %>
+        </p>
+      </header>
+
+      <div class="markdown mt-12">
+        <%= @post.localized_body %>
+      </div>
+    </article>
+
+    <% if toc.any? %>
+      <aside class="hidden lg:block">
+        <div class="sticky top-8">
+          <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-neutral-500 dark:text-neutral-400">Contents</p>
+          <nav class="space-y-1">
+            <% toc.each do |item| %>
+              <a href="#<%= item[:anchor] %>"
+                 class="block text-left leading-snug text-neutral-600 hover:text-blue-700 dark:text-neutral-400 dark:hover:text-blue-300 <%= item[:level] == 2 ? 'text-sm font-medium' : 'pl-3 text-xs' %>">
+                <%= item[:text] %>
+              </a>
+            <% end %>
+          </nav>
+        </div>
+      </aside>
+    <% end %>
+
   </div>
-</article>
+</div>
 
-<div class="mx-auto mt-16 max-w-3xl space-y-12 border-t border-neutral-200 pt-12 dark:border-neutral-800">
+<div class="mx-auto mt-16 max-w-3xl space-y-12 border-t border-neutral-200 pt-12 dark:border-neutral-800 px-5">
   <%= render "reactions", post: @post %>
   <%= render "comments", post: @post %>
 </div>

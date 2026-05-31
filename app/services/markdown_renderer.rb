@@ -5,7 +5,7 @@ class MarkdownRenderer
   ].freeze
 
   ALLOWED_ATTRIBUTES = %w[
-    alt href rel src target title
+    alt href id rel src target title
   ].freeze
 
   class << self
@@ -26,6 +26,7 @@ class MarkdownRenderer
         html_renderer = Redcarpet::Render::HTML.new(
           filter_html: false,
           hard_wrap: true,
+          with_toc_data: true,
           link_attributes: { rel: "nofollow noopener", target: "_blank" }
         )
 

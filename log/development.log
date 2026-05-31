@@ -1958,3 +1958,511 @@ Migrating to AddEnglishTranslationToPosts (20260530140000)
   [1m[35mSQL (0.4ms)[0m  [1m[35mSET search_path TO "$user", public /*application='Workspace'*/[0m
   [1m[35mSQL (0.3ms)[0m  [1m[35mSET search_path TO public /*application='Workspace'*/[0m
   [1m[35mSQL (0.2ms)[0m  [1m[35mSET search_path TO "$user", public /*application='Workspace'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(892336952976185220) /*application='Workspace'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (1.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='Workspace'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='Workspace'*/[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT pg_advisory_unlock(892336952976185220) /*application='Workspace'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='Workspace'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='Workspace'*/[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[35mSET search_path TO "$user", public /*application='Workspace'*/[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[35mSET search_path TO public /*application='Workspace'*/[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[35mSET search_path TO "$user", public /*application='Workspace'*/[0m
+Started GET "/up" for 172.30.0.1 at 2026-05-31 02:06:46 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  [1m[36mActiveRecord::SchemaMigration Load (0.8ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='Workspace'*/[0m
+Processing by Rails::HealthController#show as */*
+  Rendering html template
+  Rendered html template (Duration: 0.0ms | GC: 0.0ms)
+Completed 200 OK in 152ms (Views: 79.8ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 172.30.0.1 at 2026-05-31 02:07:33 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by PostsController#index as HTML
+  [1m[36mPost Count (2.1ms)[0m  [1m[34mSELECT COUNT(*) FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:07:34.741581') /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:8:in `index'
+  Rendering layout layouts/application.html.erb
+  Rendering posts/index.html.erb within layouts/application
+  [1m[36mPost Exists? (0.7ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:07:34.741581') LIMIT 1 OFFSET 0 /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:10
+  [1m[36mPost Load (0.9ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:07:34.741581') ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT 6 OFFSET 0 /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:11
+  [1m[36mReaction Load (2.1ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" IN (675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:11
+  [1m[36mComment Load (0.5ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" IN (675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:11
+  Rendered collection of posts/_post.html.erb [3 times] (Duration: 4.3ms | GC: 0.0ms)
+  Rendered posts/index.html.erb within layouts/application (Duration: 458.3ms | GC: 1.6ms)
+  Rendered layout layouts/application.html.erb (Duration: 575.0ms | GC: 1.6ms)
+Completed 200 OK in 1561ms (Views: 577.2ms | ActiveRecord: 18.0ms (5 queries, 0 cached) | GC: 20.8ms)
+
+
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:07:35 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:07:35 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:07:35 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/set_locale/en" for 172.30.0.1 at 2026-05-31 02:07:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by LocalesController#update as HTML
+  Parameters: {"locale"=>"en"}
+Redirected to http://localhost:3001/
+↳ app/controllers/locales_controller.rb:7:in `update'
+Completed 302 Found in 43ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 172.30.0.1 at 2026-05-31 02:07:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by PostsController#index as HTML
+  [1m[36mPost Count (0.7ms)[0m  [1m[34mSELECT COUNT(*) FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:07:37.498525') /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:8:in `index'
+  Rendering layout layouts/application.html.erb
+  Rendering posts/index.html.erb within layouts/application
+  [1m[36mPost Exists? (0.4ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:07:37.498525') LIMIT 1 OFFSET 0 /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:10
+  [1m[36mPost Load (0.4ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:07:37.498525') ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT 6 OFFSET 0 /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:11
+  [1m[36mReaction Load (0.3ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" IN (675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:11
+  [1m[36mComment Load (0.4ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" IN (675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:11
+  Rendered collection of posts/_post.html.erb [3 times] (Duration: 1.0ms | GC: 0.0ms)
+  Rendered posts/index.html.erb within layouts/application (Duration: 11.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 13.0ms | GC: 0.0ms)
+Completed 200 OK in 61ms (Views: 12.6ms | ActiveRecord: 2.2ms (5 queries, 0 cached) | GC: 0.5ms)
+
+
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:07:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:07:37 +0000
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:07:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:07:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Started GET "/set_locale/pt" for 172.30.0.1 at 2026-05-31 02:07:38 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Processing by LocalesController#update as HTML
+  Parameters: {"locale"=>"pt"}
+Redirected to http://localhost:3001/
+↳ app/controllers/locales_controller.rb:7:in `update'
+Completed 302 Found in 43ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 172.30.0.1 at 2026-05-31 02:07:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by PostsController#index as HTML
+  [1m[36mPost Count (0.5ms)[0m  [1m[34mSELECT COUNT(*) FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:07:37.534729') /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:8:in `index'
+  Rendering layout layouts/application.html.erb
+  Rendering posts/index.html.erb within layouts/application
+  [1m[36mPost Exists? (0.4ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:07:37.534729') LIMIT 1 OFFSET 0 /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:10
+  [1m[36mPost Load (0.5ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:07:37.534729') ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT 6 OFFSET 0 /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:11
+  [1m[36mReaction Load (0.4ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" IN (675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:11
+  [1m[36mComment Load (0.3ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" IN (675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:11
+  Rendered collection of posts/_post.html.erb [3 times] (Duration: 0.8ms | GC: 0.0ms)
+  Rendered posts/index.html.erb within layouts/application (Duration: 10.7ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 12.4ms | GC: 0.0ms)
+Completed 200 OK in 57ms (Views: 12.6ms | ActiveRecord: 2.1ms (5 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:07:36 +0000
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:07:36 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:07:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:07:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/set_locale/en" for 172.30.0.1 at 2026-05-31 02:07:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Processing by LocalesController#update as HTML
+  Parameters: {"locale"=>"en"}
+Redirected to http://localhost:3001/
+↳ app/controllers/locales_controller.rb:7:in `update'
+Completed 302 Found in 91ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.8ms)
+
+
+Started GET "/" for 172.30.0.1 at 2026-05-31 02:07:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by PostsController#index as HTML
+  [1m[36mPost Count (0.6ms)[0m  [1m[34mSELECT COUNT(*) FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:07:37.657747') /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:8:in `index'
+  Rendering layout layouts/application.html.erb
+  Rendering posts/index.html.erb within layouts/application
+  [1m[36mPost Exists? (0.5ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:07:37.657747') LIMIT 1 OFFSET 0 /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:10
+  [1m[36mPost Load (0.5ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:07:37.657747') ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT 6 OFFSET 0 /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:11
+  [1m[36mReaction Load (0.5ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" IN (675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:11
+  [1m[36mComment Load (0.5ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" IN (675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:11
+  Rendered collection of posts/_post.html.erb [3 times] (Duration: 1.0ms | GC: 0.0ms)
+  Rendered posts/index.html.erb within layouts/application (Duration: 12.4ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 14.3ms | GC: 0.0ms)
+Completed 200 OK in 66ms (Views: 13.7ms | ActiveRecord: 2.4ms (5 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/posts/meu-novo-post" for 172.30.0.1 at 2026-05-31 02:08:01 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by PostsController#show as HTML
+  Parameters: {"id"=>"meu-novo-post"}
+  [1m[36mPost Load (1.1ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:08:01.965892') AND "posts"."slug" = 'meu-novo-post' ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT 1 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:15:in `show'
+  [1m[36mReaction Load (0.5ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" = 675045405 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:15:in `show'
+  [1m[36mComment Load (0.5ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" = 675045405 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:15:in `show'
+  Rendering layout layouts/application.html.erb
+  Rendering posts/show.html.erb within layouts/application
+  Rendered posts/_reactions.html.erb (Duration: 7.0ms | GC: 0.7ms)
+  Rendered posts/_comments.html.erb (Duration: 48.5ms | GC: 0.7ms)
+  Rendered posts/show.html.erb within layouts/application (Duration: 105.8ms | GC: 1.5ms)
+  Rendered layout layouts/application.html.erb (Duration: 108.1ms | GC: 1.5ms)
+Completed 200 OK in 187ms (Views: 109.8ms | ActiveRecord: 2.1ms (3 queries, 0 cached) | GC: 4.2ms)
+
+
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:08:02 +0000
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:08:02 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/superadmin/login" for 172.30.0.1 at 2026-05-31 02:08:16 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by Admin::SessionsController#new as HTML
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 135138680 LIMIT 1 /*action='new',application='Workspace',controller='sessions'*/[0m
+  ↳ app/controllers/admin/sessions_controller.rb:30:in `current_admin'
+Redirected to http://localhost:3001/admin
+↳ app/controllers/admin/sessions_controller.rb:6:in `new'
+Completed 302 Found in 101ms (ActiveRecord: 2.4ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/admin" for 172.30.0.1 at 2026-05-31 02:08:17 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by Admin::PostsController#index as HTML
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 135138680 LIMIT 1 /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/admin/base_controller.rb:12:in `current_admin'
+  Rendering layout layouts/application.html.erb
+  Rendering admin/posts/index.html.erb within layouts/application
+  [1m[36mPost Load (0.6ms)[0m  [1m[34mSELECT "posts".* FROM "posts" ORDER BY "posts"."created_at" DESC /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/admin/posts/index.html.erb:32
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 135138680 /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/admin/posts/index.html.erb:32
+  Rendered admin/posts/index.html.erb within layouts/application (Duration: 17.0ms | GC: 3.9ms)
+  Rendered layout layouts/application.html.erb (Duration: 19.0ms | GC: 3.9ms)
+Completed 200 OK in 79ms (Views: 22.2ms | ActiveRecord: 1.5ms (3 queries, 0 cached) | GC: 3.9ms)
+
+
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:08:17 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:08:17 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:08:17 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:08:17 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/admin/posts/meu-novo-post" for 172.30.0.1 at 2026-05-31 02:08:21 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by Admin::PostsController#show as HTML
+  Parameters: {"id"=>"meu-novo-post"}
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 135138680 LIMIT 1 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/admin/base_controller.rb:12:in `current_admin'
+  [1m[36mPost Load (0.4ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."slug" = 'meu-novo-post' LIMIT 1 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/admin/posts_controller.rb:45:in `set_post'
+  Rendering layout layouts/application.html.erb
+  Rendering admin/posts/show.html.erb within layouts/application
+  [1m[36mComment Count (0.5ms)[0m  [1m[34mSELECT COUNT(*) FROM "comments" WHERE "comments"."post_id" = 675045405 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/admin/posts/show.html.erb:35
+  Rendered admin/posts/show.html.erb within layouts/application (Duration: 35.7ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 37.5ms | GC: 0.0ms)
+Completed 200 OK in 93ms (Views: 38.4ms | ActiveRecord: 1.7ms (3 queries, 0 cached) | GC: 0.3ms)
+
+
+Started GET "/admin/posts/meu-novo-post/edit" for 172.30.0.1 at 2026-05-31 02:08:23 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by Admin::PostsController#edit as HTML
+  Parameters: {"id"=>"meu-novo-post"}
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 135138680 LIMIT 1 /*action='edit',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/admin/base_controller.rb:12:in `current_admin'
+  [1m[36mPost Load (0.4ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."slug" = 'meu-novo-post' LIMIT 1 /*action='edit',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/admin/posts_controller.rb:45:in `set_post'
+  Rendering layout layouts/application.html.erb
+  Rendering admin/posts/edit.html.erb within layouts/application
+  Rendered admin/posts/_form.html.erb (Duration: 93.7ms | GC: 0.2ms)
+  Rendered admin/posts/edit.html.erb within layouts/application (Duration: 105.9ms | GC: 0.2ms)
+  Rendered layout layouts/application.html.erb (Duration: 107.7ms | GC: 0.2ms)
+Completed 200 OK in 163ms (Views: 109.1ms | ActiveRecord: 0.9ms (2 queries, 0 cached) | GC: 0.2ms)
+
+
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:08:24 +0000
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:08:24 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:08:31 +0000
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:08:31 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/" for 172.30.0.1 at 2026-05-31 02:08:34 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by PostsController#index as HTML
+  [1m[36mPost Count (0.8ms)[0m  [1m[34mSELECT COUNT(*) FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:08:34.775537') /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:8:in `index'
+  Rendering layout layouts/application.html.erb
+  Rendering posts/index.html.erb within layouts/application
+  [1m[36mPost Exists? (0.5ms)[0m  [1m[34mSELECT 1 AS one FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:08:34.775537') LIMIT 1 OFFSET 0 /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:10
+  [1m[36mPost Load (0.5ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:08:34.775537') ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT 6 OFFSET 0 /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:11
+  [1m[36mReaction Load (0.4ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" IN (675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:11
+  [1m[36mComment Load (0.3ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" IN (675045405, 675045404, 675045402) /*action='index',application='Workspace',controller='posts'*/[0m
+  ↳ app/views/posts/index.html.erb:11
+  Rendered collection of posts/_post.html.erb [3 times] (Duration: 0.9ms | GC: 0.0ms)
+  Rendered posts/index.html.erb within layouts/application (Duration: 11.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 13.1ms | GC: 0.0ms)
+Completed 200 OK in 61ms (Views: 12.8ms | ActiveRecord: 2.5ms (5 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:08:34 +0000
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:08:34 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:08:34 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:08:35 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/posts/meu-novo-post" for 172.30.0.1 at 2026-05-31 02:08:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by PostsController#show as HTML
+  Parameters: {"id"=>"meu-novo-post"}
+  [1m[36mPost Load (0.8ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:08:37.493807') AND "posts"."slug" = 'meu-novo-post' ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT 1 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:15:in `show'
+  [1m[36mReaction Load (0.4ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" = 675045405 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:15:in `show'
+  [1m[36mComment Load (0.4ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" = 675045405 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:15:in `show'
+  Rendering layout layouts/application.html.erb
+  Rendering posts/show.html.erb within layouts/application
+  Rendered posts/_reactions.html.erb (Duration: 2.2ms | GC: 0.0ms)
+  Rendered posts/_comments.html.erb (Duration: 1.7ms | GC: 0.2ms)
+  Rendered posts/show.html.erb within layouts/application (Duration: 6.2ms | GC: 0.2ms)
+  Rendered layout layouts/application.html.erb (Duration: 8.3ms | GC: 0.2ms)
+Completed 200 OK in 68ms (Views: 9.9ms | ActiveRecord: 1.7ms (3 queries, 0 cached) | GC: 0.4ms)
+
+
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:08:37 +0000
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:08:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  [1m[36mPost Load (0.7ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 ORDER BY "posts"."id" ASC LIMIT 1 /*application='Workspace'*/[0m
+  [1m[36mPost Load (0.8ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 ORDER BY "posts"."id" ASC LIMIT 1 /*application='Workspace'*/[0m
+  [1m[36mPost Load (33.9ms)[0m  [1m[34mSELECT "posts".* FROM "posts" /*application='Workspace'*/[0m
+  [1m[36mPost Load (36.0ms)[0m  [1m[34mSELECT "posts".* FROM "posts" /*application='Workspace'*/[0m
+Started GET "/up" for 172.30.0.1 at 2026-05-31 02:13:05 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by Rails::HealthController#show as */*
+  Rendering html template
+  Rendered html template (Duration: 0.0ms | GC: 0.0ms)
+Completed 200 OK in 40ms (Views: 2.0ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/posts/meu-novo-post" for 172.30.0.1 at 2026-05-31 02:13:36 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by PostsController#show as HTML
+  Parameters: {"id"=>"meu-novo-post"}
+  [1m[36mPost Load (0.5ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:13:37.139050') AND "posts"."slug" = 'meu-novo-post' ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT 1 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:15:in `show'
+  [1m[36mReaction Load (1.0ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" = 675045405 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:15:in `show'
+  [1m[36mComment Load (0.3ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" = 675045405 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:15:in `show'
+  Rendering layout layouts/application.html.erb
+  Rendering posts/show.html.erb within layouts/application
+  Rendered posts/_reactions.html.erb (Duration: 6.8ms | GC: 0.0ms)
+  Rendered posts/_comments.html.erb (Duration: 5.1ms | GC: 0.0ms)
+  Rendered posts/show.html.erb within layouts/application (Duration: 40.7ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 71.7ms | GC: 0.0ms)
+Completed 200 OK in 206ms (Views: 82.5ms | ActiveRecord: 7.6ms (3 queries, 0 cached) | GC: 0.8ms)
+
+
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:13:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:13:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:13:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:13:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:13:37 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/up" for 172.30.0.1 at 2026-05-31 02:16:38 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by Rails::HealthController#show as */*
+  Rendering html template
+  Rendered html template (Duration: 0.0ms | GC: 0.0ms)
+Completed 200 OK in 36ms (Views: 1.6ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/posts/meu-novo-post" for 172.30.0.1 at 2026-05-31 02:17:17 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by PostsController#show as HTML
+  Parameters: {"id"=>"meu-novo-post"}
+  [1m[36mPost Load (0.5ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."status" = 1 AND (published_at <= '2026-05-31 02:17:17.832686') AND "posts"."slug" = 'meu-novo-post' ORDER BY "posts"."published_at" DESC, "posts"."created_at" DESC LIMIT 1 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:15:in `show'
+  [1m[36mReaction Load (0.3ms)[0m  [1m[34mSELECT "reactions".* FROM "reactions" WHERE "reactions"."post_id" = 675045405 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:15:in `show'
+  [1m[36mComment Load (0.2ms)[0m  [1m[34mSELECT "comments".* FROM "comments" WHERE "comments"."post_id" = 675045405 /*action='show',application='Workspace',controller='posts'*/[0m
+  ↳ app/controllers/posts_controller.rb:15:in `show'
+  Rendering layout layouts/application.html.erb
+  Rendering posts/show.html.erb within layouts/application
+  Rendered posts/_reactions.html.erb (Duration: 5.7ms | GC: 0.0ms)
+  Rendered posts/_comments.html.erb (Duration: 4.5ms | GC: 0.0ms)
+  Rendered posts/show.html.erb within layouts/application (Duration: 37.9ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 106.8ms | GC: 0.0ms)
+Completed 200 OK in 240ms (Views: 118.0ms | ActiveRecord: 6.1ms (3 queries, 0 cached) | GC: 1.2ms)
+
+
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:17:18 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:17:18 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:17:18 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:17:18 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Started GET "/favicon.ico" for 172.30.0.1 at 2026-05-31 02:17:18 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/up" for 172.30.0.1 at 2026-05-31 02:25:46 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by Rails::HealthController#show as */*
+  Rendering html template
+  Rendered html template (Duration: 0.0ms | GC: 0.0ms)
+Completed 200 OK in 47ms (Views: 2.2ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+  [1m[36mPost Load (1.0ms)[0m  [1m[34mSELECT "posts".* FROM "posts" WHERE "posts"."slug" = 'my-new-post' LIMIT 1 /*application='Workspace'*/[0m
+  [1m[36mPost Load (33.6ms)[0m  [1m[34mSELECT "posts".* FROM "posts" /*application='Workspace'*/[0m
+Started GET "/up" for 172.30.0.1 at 2026-05-31 02:27:01 +0000
+Cannot render console from 172.30.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1, ::ffff:127.0.0.0/::ffff:127.255.255.255
+Processing by Rails::HealthController#show as */*
+  Rendering html template
+  Rendered html template (Duration: 0.0ms | GC: 0.0ms)
+Completed 200 OK in 48ms (Views: 2.2ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+

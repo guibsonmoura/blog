@@ -47,6 +47,19 @@ It does **not** apply to:
 The post title displayed in the view `<header>` (outside `.markdown`) is also centered via
 `text-center` directly on the element. The excerpt paragraph in the header is justified.
 
+### Table of contents (TOC)
+
+A sticky sidebar on the right of the post body lists all `##` (h2) and `###` (h3) section
+headings. Clicking an entry scrolls the page to that heading.
+
+- Visible only on large screens (`lg:` breakpoint and above); hidden on mobile
+- Hidden entirely if the post body has no `##` or `###` headings
+- H2 entries: `text-sm font-medium` — larger, heavier
+- H3 entries: `text-xs` indented with `pl-3` — smaller, subordinate
+- Both left-aligned
+- Headings in the body gain `id` attributes via Redcarpet's `with_toc_data: true` option
+- Anchor slug format: lowercase, spaces → hyphens, non-alphanumeric removed
+
 ---
 
 ## Scope
@@ -69,4 +82,8 @@ this spec is purely about how those elements are styled.
 - All `<p>` inside `.markdown` have `text-align: justify`
 - Code blocks remain left-aligned and unaffected by justification
 - Dark mode parity: heading colours and paragraph justification work in both themes
+- TOC sidebar appears on the right when the post has `##` or `###` headings
+- TOC h2 entries are visually larger than h3 entries
+- Clicking a TOC entry navigates to that heading in the body
+- TOC is hidden on mobile and when no headings exist
 - Existing test suite passes without changes

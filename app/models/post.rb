@@ -43,10 +43,23 @@ class Post < ApplicationRecord
     MarkdownRenderer.render(strip_header(source))
   end
 
+  def toc_items
+    source = I18n.locale == :pt || body_markdown_en.blank? ? body_markdown : body_markdown_en
+    strip_header(source).lines.filter_map do |line|
+      if (m = line.match(/\A(##|###)\s+(.+)/))
+        { level: m[1].length, text: m[2].strip, anchor: heading_anchor(m[2].strip) }
+      end
+    end
+  end
+
   private
 
   def body_content
     strip_header(body_markdown)
+  end
+
+  def heading_anchor(text)
+    text.downcase.gsub(/[^\w\s-]/, "").gsub(/\s+/, "-").gsub(/-+/, "-").strip
   end
 
   def strip_header(markdown)
