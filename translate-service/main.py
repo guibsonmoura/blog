@@ -6,7 +6,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-MODEL_NAME = "Helsinki-NLP/opus-mt-pt-en"
+MODEL_NAME = "Helsinki-NLP/opus-mt-ROMANCE-en"
 
 logger.info(f"Loading model {MODEL_NAME}...")
 tokenizer = MarianTokenizer.from_pretrained(MODEL_NAME)
@@ -30,7 +30,9 @@ def translate_text(text: str) -> str:
     translated_segments = []
 
     for segment in segments:
-        inputs = tokenizer([segment], return_tensors="pt", padding=True, truncation=True, max_length=512)
+        # ROMANCE-en model requires ">>en<< " prefix to specify target language
+        prefixed = f">>en<< {segment}"
+        inputs = tokenizer([prefixed], return_tensors="pt", padding=True, truncation=True, max_length=512)
         outputs = model.generate(**inputs, num_beams=4, max_length=512)
         translated = tokenizer.decode(outputs[0], skip_special_tokens=True)
         translated_segments.append(translated)
