@@ -24,11 +24,16 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       ACTIVE_STORAGE_SERVICE: ${ACTIVE_STORAGE_SERVICE:-local}
       RAILS_LOG_LEVEL: ${RAILS_LOG_LEVEL:-info}
+      # Seed admin (db:prepare needs these to create the first admin user)
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      # PT→EN auto-translation service (reachable by stack service name)
+      TRANSLATION_SERVICE_URL: http://translator:8000
     ports:
       - target: 80
         published: 3010
         protocol: tcp
-        mode: ingress
+        mode: host            # bind directly on the node (single-node swarm; avoids ingress mesh)
     volumes:
       - storage:/rails/storage
     networks:
@@ -39,7 +44,7 @@ services:
         condition: any        # retry until the db service is reachable
         delay: 5s
       update_config:
-        order: start-first    # zero-downtime rolling update
+        order: stop-first     # free the host port before the new task binds it
 
   db:
     image: postgres:17
@@ -55,6 +60,20 @@ services:
       replicas: 1
       restart_policy:
         condition: any
+
+  translator:
+    image: ghcr.io/guibsonmoura/blog-translator:latest
+    networks:
+      - blog
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+      resources:
+        reservations:
+          memory: 1G
+        limits:
+          memory: 2500M
 
 networks:
   blog:
