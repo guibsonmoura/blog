@@ -16,7 +16,7 @@
   }
 
   .markdown h2 {
-    @apply mt-10 text-center text-2xl font-semibold leading-tight text-neutral-950 dark:text-neutral-50;
+    @apply mt-10 text-2xl font-semibold leading-tight text-neutral-950 dark:text-neutral-50;
   }
 
   .markdown h3 {

@@ -40,9 +40,12 @@ It does **not** apply to:
 
 ### Heading alignment
 
-`<h1>` and `<h2>` are **centered** (`text-align: center`). These are the title and
-subtitle of the post — centering gives them a clean, editorial look above the justified
-prose body. `<h3>` and below remain left-aligned to blend with the surrounding text flow.
+- `<h1>` — **centered** (`text-align: center`). The post title stands alone, above everything.
+- `<h2>` — **left-aligned**. Section subtitles anchor the start of a new block of content.
+- `<h3>` and below — **left-aligned**. Blend with surrounding text flow.
+
+The post title displayed in the view `<header>` (outside `.markdown`) is also centered via
+`text-center` directly on the element. The excerpt paragraph in the header is justified.
 
 ---
 
@@ -59,7 +62,9 @@ this spec is purely about how those elements are styled.
 
 - A post containing `# Title`, `## Section`, and prose renders with visually
   distinct `<h1>` and `<h2>` elements inside `.markdown`
-- `<h1>` and `<h2>` inside `.markdown` are centered
+- Post header `<h1>` (view title) is centered
+- `<h1>` inside `.markdown` is centered
+- `<h2>` inside `.markdown` is left-aligned
 - `<h3>` and below remain left-aligned
 - All `<p>` inside `.markdown` have `text-align: justify`
 - Code blocks remain left-aligned and unaffected by justification
