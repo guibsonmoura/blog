@@ -36,7 +36,13 @@ paragraph are flush with the container. This applies to:
 It does **not** apply to:
 - Code blocks (`<pre>`, `<code>`) — left-aligned, monospace
 - Table cells — left-aligned by default
-- Headings — left-aligned
+- Headings — centered (see below)
+
+### Heading alignment
+
+`<h1>` and `<h2>` are **centered** (`text-align: center`). These are the title and
+subtitle of the post — centering gives them a clean, editorial look above the justified
+prose body. `<h3>` and below remain left-aligned to blend with the surrounding text flow.
 
 ---
 
@@ -53,6 +59,8 @@ this spec is purely about how those elements are styled.
 
 - A post containing `# Title`, `## Section`, and prose renders with visually
   distinct `<h1>` and `<h2>` elements inside `.markdown`
+- `<h1>` and `<h2>` inside `.markdown` are centered
+- `<h3>` and below remain left-aligned
 - All `<p>` inside `.markdown` have `text-align: justify`
 - Code blocks remain left-aligned and unaffected by justification
 - Dark mode parity: heading colours and paragraph justification work in both themes
