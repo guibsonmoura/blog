@@ -85,7 +85,7 @@ state is correct even without JS (progressive enhancement).
 
 When a reaction tile is activated (click / Enter / Space / arrow-select):
 
-1. The tile's inner content **spins 360°** once over ~500ms (`transform: rotate(360deg)` via a
+1. The tile's inner content **spins 360°** once over ~3s (`transform: rotate(360deg)` via a
    one-shot `reaction-spin` keyframe class added then removed on `animationend`).
 2. The tile transitions to the **blue selected** state. With the radio `peer-checked:` approach this
    is automatic; JS only adds the transient spin class.

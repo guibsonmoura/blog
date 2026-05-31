@@ -188,7 +188,7 @@
   }
 
   .reaction-spin {
-    animation: reaction-spin 0.5s ease-in-out;
+    animation: reaction-spin 3s ease-in-out;
   }
 
   /* Full-viewport burst layer: fixed, click-through, above content. */
