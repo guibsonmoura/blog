@@ -14,6 +14,9 @@
 /config/credentials/*.key
 /config/master.key
 
+# Local OAuth secrets (never commit real client ids/secrets)
+/.env.oauth
+
 # Node
 /node_modules
 

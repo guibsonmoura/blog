@@ -49,6 +49,28 @@ module AdminAuthenticationHelper
   end
 end
 
+# Drives the OmniAuth flow with a mocked provider response (no live OAuth call).
+module ReaderAuthenticationHelper
+  def sign_in_reader(provider: "google_oauth2", uid: "google-oauth-uid", email: "reader@example.com", name: "Reader One", image: "https://example.test/avatar.png")
+    OmniAuth.config.test_mode = true
+    OmniAuth.config.mock_auth[provider.to_sym] = OmniAuth::AuthHash.new(
+      provider: provider,
+      uid: uid,
+      info: { email: email, name: name, image: image }
+    )
+    post "/auth/#{provider}"   # request phase -> redirects to the callback
+    follow_redirect!           # callback -> Readers::SessionsController#create
+  end
+
+  def reset_reader_oauth_mocks
+    OmniAuth.config.mock_auth.clear
+    OmniAuth.config.test_mode = false
+  end
+end
+
 class ActionDispatch::IntegrationTest
   include AdminAuthenticationHelper
+  include ReaderAuthenticationHelper
+
+  teardown { reset_reader_oauth_mocks }
 end

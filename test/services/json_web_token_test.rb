@@ -38,4 +38,17 @@ class JsonWebTokenTest < ActiveSupport::TestCase
 
     assert_nil JsonWebToken.decode(token)
   end
+
+  test "a token issued for one audience is rejected by the other" do
+    reader_token = JsonWebToken.encode({ sub: 7 }, issuer: "blog-reader")
+
+    # The admin decoder (default issuer) must not accept a reader token.
+    assert_nil JsonWebToken.decode(reader_token)
+    # But the reader decoder does.
+    assert_equal 7, JsonWebToken.decode(reader_token, issuer: "blog-reader")[:sub]
+
+    # And the reverse: an admin token is rejected by the reader decoder.
+    admin_token = JsonWebToken.encode(sub: 9)
+    assert_nil JsonWebToken.decode(admin_token, issuer: "blog-reader")
+  end
 end

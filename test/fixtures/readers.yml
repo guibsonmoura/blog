@@ -1,0 +1,6 @@
+existing_google:
+  provider: google_oauth2
+  uid: "existing-google-uid"
+  email: existing@example.com
+  name: Existing Reader
+  avatar_url: https://example.test/existing.png
