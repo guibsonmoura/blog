@@ -11,3 +11,4 @@
 | [auto-translation.md](auto-translation.md) | How auto PT→EN translation works, why, the technologies, and full implementation walkthrough |
 | [typography.md](typography.md) | Reading-comfort palette, heading hierarchy, TOC anchor algorithm, translator heading fix, body duplication fix |
 | [responsive.md](responsive.md) | Breakpoints, per-page mobile layout, the Galaxy Fold overflow bug (root cause + fix), and how to debug horizontal overflow correctly |
+| [deployment.md](deployment.md) | CI/CD pipelines, the release → GHCR → SSH deploy flow, required secrets, server setup, and rollback |

@@ -1,0 +1,65 @@
+# Production stack for Docker Swarm — lives on the VPS at /home/guibson/projetos/blog/compose.yml
+#
+# The CD pipeline SSHes in (user guibson) and runs:
+#   set -a; . ./.env; set +a
+#   docker stack deploy -c compose.yml blog --resolve-image always
+#
+# One-time VPS setup:
+#   docker swarm init                      # if this node isn't already a swarm manager
+#   mkdir -p /home/guibson/projetos/blog
+#   # copy this file + create .env from deploy/.env.example
+#   docker stack deploy -c compose.yml blog
+#
+# NOTE: `docker stack deploy` ignores `env_file`, so values come from `environment:`
+#       interpolation — the deploy step sources ./.env before deploying.
+
+services:
+  app:
+    image: ghcr.io/guibsonmoura/blog:${IMAGE_TAG:-latest}
+    environment:
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      WORKSPACE_DATABASE_PASSWORD: ${WORKSPACE_DATABASE_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      ACTIVE_STORAGE_SERVICE: ${ACTIVE_STORAGE_SERVICE:-local}
+      RAILS_LOG_LEVEL: ${RAILS_LOG_LEVEL:-info}
+    ports:
+      - target: 80
+        published: 3010
+        protocol: tcp
+        mode: ingress
+    volumes:
+      - storage:/rails/storage
+    networks:
+      - blog
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any        # retry until the db service is reachable
+        delay: 5s
+      update_config:
+        order: start-first    # zero-downtime rolling update
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: workspace
+      POSTGRES_PASSWORD: ${WORKSPACE_DATABASE_PASSWORD}
+      POSTGRES_DB: workspace_production
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - blog
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+
+networks:
+  blog:
+    driver: overlay
+
+volumes:
+  pgdata:
+  storage:
