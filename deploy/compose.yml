@@ -1,0 +1,69 @@
+# Production compose — lives on the server at /opt/blog/compose.yml
+# The CD pipeline SSHes in and runs:  docker compose pull app && docker compose up -d app
+#
+# One-time setup on the server:
+#   mkdir -p /opt/blog && cd /opt/blog
+#   # copy this file as compose.yml and create .env from deploy/.env.example
+#   docker login ghcr.io        # with a PAT that has read:packages (or make the image public)
+#   docker compose up -d
+
+services:
+  app:
+    image: ghcr.io/guibsonmoura/blog:latest
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "80:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - storage:/rails/storage
+    networks:
+      - blog
+
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - blog
+
+  # Optional — only if uploads are served from this same box.
+  # minio:
+  #   image: minio/minio
+  #   restart: unless-stopped
+  #   command: server /data --console-address ":9001"
+  #   environment:
+  #     MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+  #     MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+  #   volumes:
+  #     - minio-data:/data
+  #   networks:
+  #     - blog
+
+  # Optional — PT→EN auto-translation service (see docs/auto-translation.md)
+  # translator:
+  #   build:
+  #     context: https://github.com/guibsonmoura/blog.git#master:translate-service
+  #   restart: unless-stopped
+  #   networks:
+  #     - blog
+
+networks:
+  blog:
+
+volumes:
+  postgres-data:
+  storage:
+  # minio-data:
