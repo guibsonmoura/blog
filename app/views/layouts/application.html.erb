@@ -91,23 +91,6 @@
       </div>
     </header>
 
-    <%# Search modal (hidden, kept for future use) %>
-    <div id="search-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
-      <div class="fixed inset-0 bg-black/40" data-search-backdrop></div>
-      <div class="fixed left-1/2 top-[15vh] w-full max-w-xl -translate-x-1/2 px-4">
-        <div class="rounded-xl border border-neutral-200 bg-white shadow-2xl dark:border-neutral-700 dark:bg-neutral-900">
-          <div class="flex items-center gap-3 border-b border-neutral-200 px-4 py-3 dark:border-neutral-700">
-            <input id="search-input" type="search" placeholder="Search posts…"
-                   class="flex-1 bg-transparent text-sm text-neutral-950 outline-none placeholder:text-neutral-400 dark:text-neutral-50"
-                   autocomplete="off">
-          </div>
-          <ul id="search-results" class="max-h-80 overflow-y-auto py-2">
-            <li class="px-4 py-3 text-sm text-neutral-400" id="search-empty">Type to search…</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
     <main class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-5 sm:py-10">
       <% flash.each do |type, message| %>
         <div class="mb-8 rounded-md border px-4 py-3 text-sm <%= type.to_s == "alert" ? "border-red-300 bg-red-50 text-red-800 dark:border-red-900/80 dark:bg-red-950/40 dark:text-red-200" : "border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-900/80 dark:bg-emerald-950/40 dark:text-emerald-200" %>">

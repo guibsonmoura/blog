@@ -29,21 +29,20 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* hidden = universal fallback; clip = modern (keeps position:sticky working) */
     overflow-x: hidden;
-    overflow-x: clip;
+    width: 100%;
   }
 
   body {
+    position: relative;
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
-    overflow-x: clip;
   }
 
   /* Long unbreakable words (URLs, hashes) must wrap, not overflow */
-  p, li, td, th, blockquote, figcaption {
-    overflow-wrap: break-word;
+  p, li, td, th, blockquote, figcaption, h1, h2, h3, h4, a, span {
+    overflow-wrap: anywhere;
     word-break: break-word;
   }
 
