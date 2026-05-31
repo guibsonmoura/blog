@@ -108,8 +108,43 @@ After this, every push to `master` rolls the stack automatically.
 
 ## What runs in the stack
 
-- **`blog_app`** — the Rails image on port 3010. `bin/docker-entrypoint` runs `db:prepare` on boot, creating/migrating `workspace_production` + the `_cache` / `_queue` / `_cable` databases (Solid Cache/Queue/Cable). Uploads go to the `storage` volume (`ACTIVE_STORAGE_SERVICE=local`).
+- **`blog_app`** — the Rails image on port 3010. `bin/docker-entrypoint` runs `db:prepare` on boot, creating/migrating `workspace_production` + the `_cache` / `_queue` / `_cable` databases (Solid Cache/Queue/Cable). Uploads go to the `storage` volume (`ACTIVE_STORAGE_SERVICE=local`). Reaches the translator at `http://translator:8000`.
 - **`blog_db`** — `postgres:17`, role `workspace`, data on the `pgdata` volume, internal-only (no published port).
+- **`blog_translator`** — Opus-MT PT→EN service (`ghcr.io/guibsonmoura/blog-translator:latest`), internal-only. Memory: 1 GB reserved / 2.5 GB limit.
+
+### Translator image
+
+Built by a separate workflow, `.github/workflows/translator.yml` — triggers on pushes that touch
+`translate-service/**` (or manually via **Run workflow**), and pushes
+`ghcr.io/guibsonmoura/blog-translator:latest`. Kept out of the per-push CD because the PyTorch+model
+image is heavy and rarely changes. Build it once with `gh workflow run translator.yml`.
+
+### Memory / swap
+
+The translator loads the model (~1.5 GB RAM) and spikes CPU on inference. The VPS has no swap by
+default — add a 2 GB swapfile so a spike can't OOM-kill:
+
+```bash
+sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && \
+  sudo swapon /swapfile && echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+```
+
+`TranslatePostJob` retries on `UnavailableError`, so translations queued before the translator is
+healthy complete once it's up. If RAM is too tight, run the translator on a separate host and point
+`TRANSLATION_SERVICE_URL` at it — no app changes needed.
+
+## Make the GHCR packages public
+
+Both `blog` and `blog-translator` are private by default (the VPS pulls them via `guibson`'s cached
+GHCR creds). To make them public:
+
+```bash
+gh api --method PATCH user/packages/container/blog/visibility -f visibility=public
+gh api --method PATCH user/packages/container/blog-translator/visibility -f visibility=public
+```
+
+Requires a token with `write:packages` (`gh auth refresh -s read:packages,write:packages`), or flip
+each in the web UI: profile → Packages → package → Package settings → Change visibility → Public.
 
 ## Rolling back
 

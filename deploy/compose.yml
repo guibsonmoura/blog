@@ -27,6 +27,8 @@ services:
       # Seed admin (db:prepare needs these to create the first admin user)
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      # PT→EN auto-translation service (reachable by stack service name)
+      TRANSLATION_SERVICE_URL: http://translator:8000
     ports:
       - target: 80
         published: 3010
@@ -58,6 +60,20 @@ services:
       replicas: 1
       restart_policy:
         condition: any
+
+  translator:
+    image: ghcr.io/guibsonmoura/blog-translator:latest
+    networks:
+      - blog
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+      resources:
+        reservations:
+          memory: 1G
+        limits:
+          memory: 2500M
 
 networks:
   blog:
