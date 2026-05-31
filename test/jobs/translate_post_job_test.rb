@@ -46,6 +46,46 @@ class TranslatePostJobTest < ActiveJob::TestCase
     assert_nothing_raised { TranslatePostJob.perform_now(-1) }
   end
 
+  test "failed post can be retried by resetting status to pending and re-running the job" do
+    stub_all_translations
+
+    # Simulate a previously failed translation
+    @post.update_columns(translation_status: "failed", title_en: nil, excerpt_en: nil, body_markdown_en: nil)
+
+    @post.update_columns(translation_status: "pending")
+    TranslatePostJob.perform_now(@post.id)
+
+    @post.reload
+    assert_equal "done", @post.translation_status
+    assert_present @post.title_en
+  end
+
+  test "job raises UnavailableError when translator host is unreachable" do
+    stub_request(:post, "#{TranslationService::URL}/translate")
+      .to_raise(Errno::ECONNREFUSED)
+
+    begin
+      TranslatePostJob.perform_now(@post.id)
+    rescue TranslationService::UnavailableError
+      # expected
+    end
+
+    assert_equal "failed", @post.reload.translation_status
+  end
+
+  test "job raises UnavailableError when translator URL is wrong or service missing" do
+    stub_request(:post, "#{TranslationService::URL}/translate")
+      .to_raise(SocketError.new("Failed to open TCP connection"))
+
+    begin
+      TranslatePostJob.perform_now(@post.id)
+    rescue TranslationService::UnavailableError
+      # expected
+    end
+
+    assert_equal "failed", @post.reload.translation_status
+  end
+
   test "does nothing when post is a draft" do
     draft = posts(:draft)
 
