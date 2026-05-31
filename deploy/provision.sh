@@ -46,6 +46,8 @@ WORKSPACE_DATABASE_PASSWORD=\$(openssl rand -hex 16)
 JWT_SECRET=\$(openssl rand -hex 32)
 ACTIVE_STORAGE_SERVICE=local
 RAILS_LOG_LEVEL=info
+ADMIN_EMAIL=${ADMIN_EMAIL:-admin@example.com}
+ADMIN_PASSWORD=\$(openssl rand -hex 16)
 EOF"
 
 echo "==> 6/6 Deploy the stack"
