@@ -192,7 +192,9 @@ Reader switches to EN → localized_title / localized_body return EN columns
 ## Running the translator locally
 
 The translator image is built once and reused. It is included in the dev container stack
-automatically when you run `docker compose up`.
+automatically when you run `docker compose up`. It starts **in the background** — it does not block
+the devcontainer or the Rails app from opening. The model takes ~60 seconds to load; until then,
+translation jobs are queued and retry automatically once the service is healthy.
 
 To build and test it manually:
 
