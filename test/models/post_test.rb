@@ -328,7 +328,48 @@ class PostTest < ActiveSupport::TestCase
     post.body_markdown_en = nil
 
     I18n.with_locale(:en) do
-      assert_includes post.localized_body, post.rendered_body
+      # Falls back to PT source — body content (after strip_header) should be present
+      assert_includes post.localized_body, "This post is visible."
     end
+  end
+
+  # --- heading_anchor ---
+
+  test "heading_anchor preserves portuguese accented characters" do
+    post = posts(:published)
+    assert_equal "primeira-seção", post.send(:heading_anchor, "Primeira Seção")
+  end
+
+  test "heading_anchor preserves ç ã é ó characters" do
+    post = posts(:published)
+    assert_equal "ação-e-reação", post.send(:heading_anchor, "Ação e Reação")
+  end
+
+  test "heading_anchor converts spaces to hyphens" do
+    post = posts(:published)
+    assert_equal "hello-world", post.send(:heading_anchor, "Hello World")
+  end
+
+  test "heading_anchor strips ASCII punctuation but not unicode" do
+    post = posts(:published)
+    assert_equal "hello-world", post.send(:heading_anchor, "Hello! World?")
+  end
+
+  test "heading_anchor collapses consecutive hyphens" do
+    post = posts(:published)
+    assert_equal "a-b", post.send(:heading_anchor, "A  B")
+  end
+
+  test "toc_items anchor preserves accented heading text" do
+    post = users(:admin).posts.build(
+      title: "Test", excerpt: "Excerpt",
+      body_markdown: "# Test\n\nExcerpt.\n\n---\n\n## Primeira Seção\n\nContent.\n\n### Uma Subseção\n\nMore."
+    )
+    items = post.toc_items
+    h2 = items.find { |i| i[:level] == 2 }
+    h3 = items.find { |i| i[:level] == 3 }
+
+    assert_equal "primeira-seção", h2[:anchor]
+    assert_equal "uma-subseção",   h3[:anchor]
   end
 end

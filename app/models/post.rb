@@ -27,7 +27,7 @@ class Post < ApplicationRecord
   end
 
   def rendered_body
-    MarkdownRenderer.render(body_content)
+    MarkdownRenderer.render(body_markdown)
   end
 
   def localized_title
@@ -59,7 +59,13 @@ class Post < ApplicationRecord
   private
 
   def heading_anchor(text)
-    text.downcase.gsub(/[^\w\s-]/, "").gsub(/\s+/, "-").gsub(/-+/, "-").strip
+    # Replicates Redcarpet's with_toc_data ID algorithm:
+    # spaces → hyphens, keep [a-z0-9_-] and all Unicode above U+007F as-is.
+    text.downcase
+        .gsub(" ", "-")
+        .gsub(/[^a-z0-9_-￿-]/, "")
+        .gsub(/-+/, "-")
+        .strip
   end
 
   def strip_header(markdown)
