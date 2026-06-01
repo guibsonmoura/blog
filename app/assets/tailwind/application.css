@@ -190,3 +190,48 @@
     display: none;
   }
 }
+
+/*
+  Reactions card — see specs/reactions-card.md
+  One-shot spin on the selected tile + a full-viewport emoji burst on react.
+*/
+@layer components {
+  /* Full-viewport burst layer: fixed, click-through, above content. */
+  .reaction-burst {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  /* A single floating emoji. Per-particle motion is set via inline custom
+     properties (--dx, --rot, --scale, --delay) from the Stimulus controller. */
+  .reaction-burst-emoji {
+    position: absolute;
+    bottom: 28%;
+    font-size: 1.75rem;
+    line-height: 1;
+    opacity: 0;
+    will-change: transform, opacity;
+    animation: reaction-float 5s ease-out forwards;
+    animation-delay: var(--delay, 0ms);
+  }
+
+  @keyframes reaction-float {
+    0%   { opacity: 0; transform: translate(0, 0) rotate(0deg) scale(0.6); }
+    15%  { opacity: 1; }
+    100% {
+      opacity: 0;
+      transform:
+        translate(var(--dx, 0px), -60vh)
+        rotate(var(--rot, 0deg))
+        scale(var(--scale, 1));
+    }
+  }
+
+  /* Respect reduced-motion: no burst movement. */
+  @media (prefers-reduced-motion: reduce) {
+    .reaction-burst-emoji { animation: none; opacity: 0; }
+  }
+}

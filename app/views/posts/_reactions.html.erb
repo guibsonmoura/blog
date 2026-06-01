@@ -1,40 +1,61 @@
-<section id="reactions" data-controller="reactions" class="border-t border-neutral-200 pt-8 dark:border-neutral-800">
-  <div class="flex items-baseline justify-between gap-3">
-    <h2 class="text-sm font-medium uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
-      <%= t("posts.show.reactions_section") %>
-    </h2>
-    <% total = post.reactions.size %>
-    <% if total.positive? %>
-      <span class="text-xs tabular-nums text-neutral-400 dark:text-neutral-500">
-        <%= t("posts.show.reaction_total", count: total) %>
-      </span>
-    <% end %>
-  </div>
-
+<%# Reactions section — flat, blends with the page. Radio family (single choice). See specs/reactions-card.md %>
+<section id="reactions" data-controller="reactions"
+         class="border-t border-neutral-200 pt-12 dark:border-neutral-800">
   <%# The visitor's single current reaction (by account when signed in, else by durable cookie). %>
   <% mine = reader_signed_in? ? post.reactions.find { |r| r.reader_id == current_reader.id } :
                                 post.reactions.find { |r| r.reader_id.nil? && r.session_id == reader_id } %>
   <% selected_type = mine&.reaction_type %>
+  <% total_count = post.reactions.size %>
 
-  <%# Active/inactive token sets are kept in sync with reactions_controller.js (setActive). %>
-  <% active_classes = "border-blue-600 bg-blue-600 text-white shadow-sm dark:border-blue-500 dark:bg-blue-600 dark:text-white" %>
-  <% inactive_classes = "border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-600" %>
-
-  <div class="mt-5 flex flex-wrap gap-2">
-    <% Reaction.reaction_types.each_key do |type| %>
-      <% count = post.reactions.count { |r| r.reaction_type == type } %>
-      <% active = (type == selected_type) %>
-
-      <%= form_with url: post_reactions_path(post, reaction_type: type),
-                    data: { reactions_target: "form", reaction_type: type, active: active.to_s },
-                    class: "inline-flex" do |f| %>
-        <%= f.button type: "submit",
-                     data: { reactions_target: "button", active: active.to_s },
-                     class: "group inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-medium transition-all duration-150 hover:-translate-y-0.5 #{active ? active_classes : inactive_classes}" do %>
-          <span class="text-base leading-none transition-transform duration-150 group-hover:scale-125" aria-hidden="true"><%= t("reactions.#{type}") %></span>
-          <span data-reactions-target="count" class="min-w-[0.75rem] text-center text-xs tabular-nums <%= "opacity-40" unless count.positive? %>"><%= count %></span>
-        <% end %>
-      <% end %>
-    <% end %>
+  <div class="flex items-center justify-between gap-3">
+    <h2 class="text-sm font-medium uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
+      <%= t("posts.show.reactions_section") %>
+    </h2>
+    <span data-reactions-target="total"
+          aria-live="polite"
+          data-one="<%= t("reactions.total.one", count: "%{count}") %>"
+          data-other="<%= t("reactions.total.other", count: "%{count}") %>"
+          class="text-sm tabular-nums text-neutral-500 dark:text-neutral-400">
+      <%= t("reactions.total", count: total_count) %>
+    </span>
   </div>
+
+  <fieldset class="mt-4">
+    <legend class="sr-only"><%= t("posts.show.reactions_section") %></legend>
+
+    <div class="grid grid-cols-3 gap-3 sm:grid-cols-6">
+      <% Reaction.reaction_types.each_key do |type| %>
+        <% count = post.reactions.count { |r| r.reaction_type == type } %>
+        <% active = (type == selected_type) %>
+
+        <div class="relative">
+          <input type="radio"
+                 name="reaction"
+                 id="reaction_<%= type %>"
+                 value="<%= type %>"
+                 <%= "checked" if active %>
+                 data-reactions-target="input"
+                 data-reaction-type="<%= type %>"
+                 data-reaction-url="<%= post_reactions_path(post, reaction_type: type) %>"
+                 class="peer sr-only" />
+          <label for="reaction_<%= type %>"
+                 data-reactions-target="tile"
+                 class="flex min-h-[5rem] cursor-pointer select-none flex-col items-center justify-center gap-1 rounded-lg border
+                        border-neutral-200 bg-transparent text-neutral-700 transition
+                        hover:-translate-y-0.5 hover:border-neutral-400
+                        peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:text-blue-700
+                        peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-blue-500 peer-focus-visible:ring-offset-2
+                        dark:border-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-600
+                        dark:peer-checked:border-blue-600 dark:peer-checked:bg-blue-950/40 dark:peer-checked:text-blue-300
+                        dark:peer-focus-visible:ring-offset-neutral-900">
+            <span data-reactions-target="emoji" aria-hidden="true" class="text-2xl sm:text-3xl">
+              <%= t("reactions.#{type}") %>
+            </span>
+            <span class="sr-only"><%= t("reactions.labels.#{type}") %></span>
+            <span data-reactions-target="count" class="text-sm tabular-nums"><%= count %></span>
+          </label>
+        </div>
+      <% end %>
+    </div>
+  </fieldset>
 </section>

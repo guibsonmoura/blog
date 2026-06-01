@@ -54,6 +54,16 @@ pt:
     wow: "😮"
     sad: "😢"
     fire: "🔥"
+    total:
+      one: "%{count} reação"
+      other: "%{count} reações"
+    labels:
+      like: "Curtir"
+      heart: "Amei"
+      haha: "Haha"
+      wow: "Uau"
+      sad: "Triste"
+      fire: "Incrível"
 
   comments:
     created: "Seu comentário foi publicado."

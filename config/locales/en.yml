@@ -54,6 +54,16 @@ en:
     wow: "😮"
     sad: "😢"
     fire: "🔥"
+    total:
+      one: "%{count} reaction"
+      other: "%{count} reactions"
+    labels:
+      like: "Like"
+      heart: "Love"
+      haha: "Haha"
+      wow: "Wow"
+      sad: "Sad"
+      fire: "Fire"
 
   comments:
     created: "Your comment was posted."
