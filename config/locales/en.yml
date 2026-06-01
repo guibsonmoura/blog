@@ -40,6 +40,9 @@ en:
     show:
       by: "by %{author}"
       reactions_section: "Reactions"
+      reaction_total:
+        one: "%{count} reaction"
+        other: "%{count} reactions"
       comments_section: "Comments"
       no_comments: "Be the first to leave a comment."
       activity: "%{reactions} reactions · %{comments} comments"
@@ -78,7 +81,6 @@ en:
     sign_in_microsoft: "Sign in with Microsoft"
     sign_in_facebook: "Sign in with Facebook"
     sign_in_x: "Sign in with X"
-    sign_in_developer: "Dev sign-in (local)"
     signed_in_as: "Signed in as %{name}"
     sign_out: "Sign out"
     sign_in_required: "Please sign in to comment."
