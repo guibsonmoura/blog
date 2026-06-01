@@ -33,6 +33,11 @@ services:
       MINIO_REGION: ${MINIO_REGION:-us-east-1}
       MINIO_BUCKET: ${MINIO_BUCKET:-blog-production}
       RAILS_LOG_LEVEL: ${RAILS_LOG_LEVEL:-info}
+      # Reader OAuth (delivered by CD from GitHub secrets; blank => provider stays disabled)
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      TWITTER_CLIENT_ID: ${TWITTER_CLIENT_ID}
+      TWITTER_CLIENT_SECRET: ${TWITTER_CLIENT_SECRET}
       # Seed admin (db:prepare needs these to create the first admin user)
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
