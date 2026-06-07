@@ -25,7 +25,7 @@ gem "jwt", "~> 3.2"
 
 # Public reader authentication via OAuth2 (Google + Microsoft).
 gem "omniauth", "~> 2.1"
-gem "omniauth-rails_csrf_protection", "~> 1.0"   # forces CSRF-protected POST to /auth/:provider
+gem "omniauth-rails_csrf_protection", "~> 2.0"   # forces CSRF-protected POST to /auth/:provider
 gem "omniauth-google-oauth2", "~> 1.1"
 gem "omniauth-entra-id", "~> 3.0"                # Microsoft Entra / Azure AD
 gem "omniauth-facebook", "~> 10.0"

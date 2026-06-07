@@ -172,7 +172,7 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     jmespath (1.6.2)
-    json (2.19.7)
+    json (2.19.8)
     jwt (3.2.0)
       base64
     kamal (2.11.0)
@@ -267,7 +267,7 @@ GEM
     omniauth-oauth2 (1.9.0)
       oauth2 (>= 2.0.2, < 3)
       omniauth (~> 2.0)
-    omniauth-rails_csrf_protection (1.0.2)
+    omniauth-rails_csrf_protection (2.0.1)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     omniauth-twitter2 (1.2.0)
@@ -483,7 +483,7 @@ DEPENDENCIES
   omniauth-entra-id (~> 3.0)
   omniauth-facebook (~> 10.0)
   omniauth-google-oauth2 (~> 1.1)
-  omniauth-rails_csrf_protection (~> 1.0)
+  omniauth-rails_csrf_protection (~> 2.0)
   omniauth-twitter2
   pg (~> 1.1)
   propshaft
