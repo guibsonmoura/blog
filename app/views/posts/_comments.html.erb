@@ -1,8 +1,4 @@
 <section id="comments" class="border-t border-neutral-200 pt-12 dark:border-neutral-800">
-  <h2 class="text-sm font-medium uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
-    <%= t("posts.show.comments_section") %>
-  </h2>
-
   <% threads = post.comments.top_level.includes(:reader, :comment_likes, replies: [ :reader, :comment_likes ]).order(:created_at) %>
 
   <div class="flex items-baseline justify-between gap-3">
