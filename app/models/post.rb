@@ -64,7 +64,9 @@ class Post < ApplicationRecord
 
     lines = markdown.lines
 
-    separator_index = lines.index { |l| l.strip == "---" }
+    # Only treat --- as the header separator if it appears in the first 8 lines.
+    # A --- beyond that is a horizontal rule in the body content.
+    separator_index = lines.first(8).index { |l| l.strip == "---" }
     return lines.drop(separator_index + 1).join.lstrip if separator_index
 
     after_title = lines.drop_while { |l| l.match?(/\A#\s+/) || l.strip.empty? }
