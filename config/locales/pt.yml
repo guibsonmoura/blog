@@ -22,6 +22,7 @@ pt:
 
   nav:
     home: "guibsonmoura.com"
+    about: "Sobre"
     locale_toggle: "EN"
 
   posts:
