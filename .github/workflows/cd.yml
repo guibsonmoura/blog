@@ -77,18 +77,27 @@ jobs:
 
       - name: Roll the swarm stack to the new image
         uses: appleboy/ssh-action@v1
+        env:
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          TWITTER_CLIENT_ID: ${{ secrets.TWITTER_CLIENT_ID }}
+          TWITTER_CLIENT_SECRET: ${{ secrets.TWITTER_CLIENT_SECRET }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
-          envs: IMAGE_TAG
+          envs: IMAGE_TAG,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,TWITTER_CLIENT_ID,TWITTER_CLIENT_SECRET
           script: |
             set -e
             cd /home/guibson/projetos/blog
             # Load .env (swarm stack deploy ignores env_file), then override the image tag
             set -a; . ./.env; set +a
+            # Reader OAuth secrets come from GitHub Actions (forwarded via envs above).
+            # Exported here so `docker stack deploy` interpolation picks them up — nothing
+            # is written to disk. Blank/unset => the provider stays disabled (see omniauth.rb).
             export IMAGE_TAG="${IMAGE_TAG}"
+            export GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET TWITTER_CLIENT_ID TWITTER_CLIENT_SECRET
             # Public GHCR image — no docker login needed.
             # --detach=true: don't block on convergence. The stack has a run-once
             # `createbuckets` task (restart_policy: none) that exits to 0/1, so

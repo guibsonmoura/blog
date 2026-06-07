@@ -29,7 +29,7 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
+    overflow-x: clip;
     width: 100%;
   }
 
@@ -37,7 +37,7 @@
     position: relative;
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   /* Long unbreakable words (URLs, hashes) must wrap, not overflow */
