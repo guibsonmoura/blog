@@ -2,13 +2,37 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/*
-  Reading-comfort palette — based on specs/comfortable-reading.md
-  Light: #FAFAF7 background / #222222 text (paper-like, reduces eye strain)
-  Dark:  #1a1a1a background / #e8e6e1 text (soft dark, not pure black/white)
-*/
 /* Custom breakpoint for 375px — sits between 0 and Tailwind's sm (640px) */
 @custom-variant xs (@media (width >= 375px));
+
+/*
+  Warm paper palette — light: creme/sépia, dark: marrom-preto quente.
+  Single terracota accent (#B0512F light / #DB8B5F dark).
+  Defined as CSS custom properties so they switch automatically with .dark.
+*/
+@theme {
+  /* Warm neutral scale — overrides Tailwind's cool grey */
+  --color-neutral-50:  #FFFDF8;   /* paper-1: near-white warm */
+  --color-neutral-100: #F4EEE2;   /* paper-2: cream */
+  --color-neutral-200: #E7DECE;   /* rule-0: warm border */
+  --color-neutral-300: #DAD0BD;   /* rule-1: stronger border / dark body text */
+  --color-neutral-400: #9A9080;   /* ink-3: faint text */
+  --color-neutral-500: #6E6557;   /* ink-2: muted text */
+  --color-neutral-600: #6E6557;   /* ink-2 */
+  --color-neutral-700: #4A4339;   /* ink-1: body text */
+  --color-neutral-800: #332D24;   /* paper-3 dark: dark surfaces/borders */
+  --color-neutral-900: #221E18;   /* paper-1 dark */
+  --color-neutral-950: #211D17;   /* ink-0: near-black warm */
+
+  /* Terracota replaces blue throughout */
+  --color-blue-50:  #F3E2D7;   /* accent-wash */
+  --color-blue-200: #E9A179;   /* accent-strong dark (dark:hover) */
+  --color-blue-300: #DB8B5F;   /* accent dark (dark:text links) */
+  --color-blue-500: #B0512F;   /* accent (focus rings) */
+  --color-blue-600: #B0512F;   /* accent (focus border) */
+  --color-blue-700: #B0512F;   /* accent (main links) */
+  --color-blue-900: #8F3F22;   /* accent-strong light (hover) */
+}
 
 @layer base {
   /* box-sizing: border-box prevents padding from adding to element width */
@@ -17,11 +41,46 @@
   }
 
   :root {
-    --reading-bg: #FAFAF7;
-    --reading-text: #222222;
-    --reading-bg-dark: #1a1a1a;
-    --reading-text-dark: #e8e6e1;
+    /* Light — paper palette */
+    --paper-0: #FBF7EF;
+    --paper-1: #FFFDF8;
+    --paper-2: #F4EEE2;
+    --paper-3: #ECE3D3;
+    --ink-0:   #211D17;
+    --ink-1:   #4A4339;
+    --ink-2:   #6E6557;
+    --ink-3:   #9A9080;
+    --rule-0:  #E7DECE;
+    --rule-1:  #DAD0BD;
+    --accent:        #B0512F;
+    --accent-strong: #8F3F22;
+    --accent-wash:   #F3E2D7;
+    --positive: #4F6B3A;
+    --critical: #9E3B2E;
+
+    /* Semantic aliases — used in component classes below */
+    --reading-bg:   var(--paper-0);
+    --reading-text: var(--ink-1);
     --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  }
+
+  .dark {
+    /* Dark — marrom-preto quente */
+    --paper-0: #1A1712;
+    --paper-1: #221E18;
+    --paper-2: #2A251E;
+    --paper-3: #332D24;
+    --ink-0:   #EDE5D6;
+    --ink-1:   #D2C8B6;
+    --ink-2:   #A89E8C;
+    --ink-3:   #7C7363;
+    --rule-0:  #342E25;
+    --rule-1:  #443C30;
+    --accent:        #DB8B5F;
+    --accent-strong: #E9A179;
+    --accent-wash:   #34271E;
+    --positive: #8AA56A;
+    --critical: #D4775F;
   }
 
   html {
@@ -59,54 +118,33 @@
 }
 
 @layer components {
-  /* Page surface — paper-like reading background */
+  /* Page surface — paper-like reading background, auto-switches with .dark */
   .reading-surface {
-    background-color: var(--reading-bg);
-    color: var(--reading-text);
-  }
-
-  .dark .reading-surface {
-    background-color: var(--reading-bg-dark);
-    color: var(--reading-text-dark);
+    background-color: var(--paper-0);
+    color: var(--ink-1);
   }
 
   .reading-header {
-    background-color: color-mix(in srgb, var(--reading-bg) 90%, transparent);
-  }
-
-  .dark .reading-header {
-    background-color: color-mix(in srgb, var(--reading-bg-dark) 90%, transparent);
+    background-color: color-mix(in srgb, var(--paper-0) 90%, transparent);
   }
 
   /* Post title */
   .reading-title {
-    color: var(--reading-text);
-  }
-
-  .dark .reading-title {
-    color: var(--reading-text-dark);
+    color: var(--ink-0);
   }
 
   /* Post excerpt */
   .reading-excerpt {
     font-size: 18px;
     line-height: 1.7;
-    color: #444444;
-  }
-
-  .dark .reading-excerpt {
-    color: #b0ada6;
+    color: var(--ink-2);
   }
 
   .markdown {
     /* 18px / line-height 1.7 as recommended in comfortable-reading spec */
     font-size: 18px;
     line-height: 1.7;
-    color: var(--reading-text);
-  }
-
-  .dark .markdown {
-    color: var(--reading-text-dark);
+    color: var(--ink-1);
   }
 
   .markdown > * + * {
@@ -138,15 +176,19 @@
   }
 
   .markdown code {
-    @apply rounded bg-neutral-200 px-1.5 py-0.5 text-sm text-neutral-950 dark:bg-neutral-800 dark:text-neutral-100;
+    @apply rounded bg-neutral-100 px-1.5 py-0.5 text-sm text-neutral-950 dark:bg-neutral-800 dark:text-neutral-100;
   }
 
   .markdown pre {
-    @apply overflow-x-auto rounded-md bg-neutral-950 p-4 text-sm leading-6 text-neutral-100;
+    @apply overflow-x-auto rounded-md p-4 text-sm leading-6;
+    background-color: #1C1916;
+    color: #EDE5D6;
   }
 
   .markdown pre code {
-    @apply bg-transparent p-0 text-neutral-100;
+    background-color: transparent;
+    padding: 0;
+    color: #EDE5D6;
   }
 
   .markdown ul {
